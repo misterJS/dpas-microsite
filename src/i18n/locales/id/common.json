@@ -1,0 +1,94 @@
+{
+  "hero": {
+    "title": { "left": "PRULindungi", "right": "Syariah" },
+    "subtitle": "Asuransi Kecelakaan Syariah",
+    "alt": { "logo": "PRUDENTIAL Syariah × UOB", "family": "Keluarga muslim dengan bayi" }
+  },
+  "content": {
+    "products": "Pilih jenis perlindungan",
+    "protectKind": "Jenis perlindungan",
+    "planTerm": "Masa perlindungan",
+    "planVariant": "Varian perlindungan"
+  },
+  "form": {
+    "success": "Form berhasil dikirim.",
+    "planType": "Paket",
+    "planType_ph": "Pilih paket",
+    "plan": { "silver": "Silver", "gold": "Gold", "platinum": "Platinum" },
+    "product_desc": "Produk dan Layanan Proteksi",
+    "exceptional_protect": "Pengecualian Proteksi",
+    "snk": "Cara & Ketentuan Klaim",
+    "applied_claim_document": "Dokumen Pengajuan Klaim",
+    "contributeTotal": "Total Kontribusi",
+    "plan_desc": "Pilih paket perlindungan yang sesuai.",
+    "coverage": "Coverage",
+    "coverage_6months": "6 bulan",
+    "coverage_12months": "12 bulan",
+    "existingPolicy": "Sudah punya polis Prudential?",
+    "existingPolicy_desc": "Aktifkan jika Anda saat ini memiliki polis aktif.",
+    "notes": "Catatan",
+    "notes_ph": "Informasi tambahan",
+    "benefit_desc": "Ringkasan Manfaat",
+    "basicBenefit": "Manfaat Dasar",
+    "totalContributionPayable": "Total Kontribusi yang dibayarkan",
+    "next": "Lanjutkan"
+  },
+  "footer": {
+    "title": "Customer Line",
+    "hours": "Senin – Sabtu: 08.00 – 17.00 WIB",
+    "phone": "(021)-1500577",
+    "email": "customer.idn@prudentialsyariah.co.id",
+    "website": "www.prudentialsyariah.co.id"
+  },
+  "menu": {
+    "sections": {
+      "ktpInfo": "Informasi KTP",
+      "contactAddress": "Kontak & Alamat",
+      "jobInfo": "Informasi pekerjaan",
+      "beneficiary": "Penerima manfaat"
+    },
+    "hints": {
+      "requiredNote": "*Wajib diisi",
+      "ktpHint": "Harap mengisi data sesuai dengan KTP"
+    },
+    "fields": {
+      "branch": "Kantor Cabang UOB Indonesia",
+      "nik": "Masukkan NIK E-KTP (16 angka)",
+      "fullName": "Masukkan nama lengkap sesuai KTP",
+      "pob": "Tempat Lahir",
+      "married": "Status pernikahan",
+      "gender": "Jenis Kelamin",
+      "email": "Alamat Email",
+      "postalCode": "Kode POS",
+      "province": "Provinsi",
+      "city": "Kota",
+      "district": "Kecamatan",
+      "subdistrict": "Kelurahan",
+      "addressKtp": "Alamat (Sesuai KTP)",
+      "jobType": "Pekerjaan",
+      "salary": "Pendapatan bulanan",
+      "beneficiaryName": "Nama Penerima Manfaat (Sesuai KK/KTP/Paspor)",
+      "beneficiaryAddress": "Alamat penerima manfaat (Sesuai KTP)",
+      "beneficiaryRelation": "Hubungan dengan Penerima Manfaat",
+      "submit": "Kirim Data",
+      "backwardPage": "Kembali memilih Paket Perlindungan"
+    },
+    "options": {
+      "branches": {
+        "thamrin": "UOB Thamrin",
+        "kelapa_gading": "UOB Kelapa Gading",
+        "bsd": "UOB BSD",
+        "pondok_indah": "UOB Pondok Indah"
+      },
+      "genders": { "pria": "Pria", "wanita": "Wanita" },
+      "marital": { "menikah": "Menikah", "belum": "Belum Menikah", "bercerai": "Bercerai" },
+      "jobs": { "ob": "Office Boy", "manager": "Manager", "staff": "Staff" },
+      "salary": { "gol1": "Rp5 - 10 Juta", "gol2": "Rp10 - 20 Juta", "gol3": "Rp50 Juta >" },
+      "provinces": { "dki": "DKI Jakarta", "jabar": "Jawa Barat", "jateng": "Jawa Tengah" },
+      "cities": { "jaksel": "Kota Jakarta Selatan", "jakpus": "Kota Jakarta Pusat", "depok": "Kota Depok" },
+      "districts": { "keb_baru": "Kebayoran Baru", "tebet": "Tebet" },
+      "subdistricts": { "gunung": "Kel. Gunung", "kramat_pela": "Kel. Kramat Pela" },
+      "relations": { "istri": "Istri", "suami": "Suami", "anak": "Anak" }
+    }
+  }
+}
