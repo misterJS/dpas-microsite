@@ -1,8 +1,14 @@
 {
   "hero": {
-    "title": { "left": "PRULindungi", "right": "Syariah" },
+    "title": {
+      "left": "PRULindungi",
+      "right": "Syariah"
+    },
     "subtitle": "Asuransi Kecelakaan Syariah",
-    "alt": { "logo": "PRUDENTIAL Syariah × UOB", "family": "Keluarga muslim dengan bayi" }
+    "alt": {
+      "logo": "PRUDENTIAL Syariah × UOB",
+      "family": "Keluarga muslim dengan bayi"
+    }
   },
   "content": {
     "products": "Pilih jenis perlindungan",
@@ -14,7 +20,11 @@
     "success": "Form berhasil dikirim.",
     "planType": "Paket",
     "planType_ph": "Pilih paket",
-    "plan": { "silver": "Silver", "gold": "Gold", "platinum": "Platinum" },
+    "plan": {
+      "silver": "Silver",
+      "gold": "Gold",
+      "platinum": "Platinum"
+    },
     "product_desc": "Produk dan Layanan Proteksi",
     "exceptional_protect": "Pengecualian Proteksi",
     "snk": "Cara & Ketentuan Klaim",
@@ -39,6 +49,21 @@
     "phone": "(021)-1500577",
     "email": "customer.idn@prudentialsyariah.co.id",
     "website": "www.prudentialsyariah.co.id"
+  },
+  "health": {
+    "title": "Pertanyaan kesehatan",
+    "q1": "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?",
+    "q2": "Apakah Surat Pengajuan Asuransi Jiwa atas diri Calon Peserta Yang Diasuransikan pernah dikecualikan/ditangguhkan/ditolak/diterima dengan tingkat Kontribusi khusus?",
+    "yes": "Ya",
+    "no": "Tidak",
+    "back": "Kembali",
+    "required": "Wajib dipilih",
+    "reject": {
+      "title": "Terimakasih! Tapi...",
+      "body": "Mohon maaf Anda belum memenuhi persyaratan pembelian Produk Asuransi PRULindungi Syariah. Terima kasih.",
+      "close": "Tutup",
+      "home": "Kembali ke homepage"
+    }
   },
   "menu": {
     "sections": {
@@ -80,15 +105,48 @@
         "bsd": "UOB BSD",
         "pondok_indah": "UOB Pondok Indah"
       },
-      "genders": { "pria": "Pria", "wanita": "Wanita" },
-      "marital": { "menikah": "Menikah", "belum": "Belum Menikah", "bercerai": "Bercerai" },
-      "jobs": { "ob": "Office Boy", "manager": "Manager", "staff": "Staff" },
-      "salary": { "gol1": "Rp5 - 10 Juta", "gol2": "Rp10 - 20 Juta", "gol3": "Rp50 Juta >" },
-      "provinces": { "dki": "DKI Jakarta", "jabar": "Jawa Barat", "jateng": "Jawa Tengah" },
-      "cities": { "jaksel": "Kota Jakarta Selatan", "jakpus": "Kota Jakarta Pusat", "depok": "Kota Depok" },
-      "districts": { "keb_baru": "Kebayoran Baru", "tebet": "Tebet" },
-      "subdistricts": { "gunung": "Kel. Gunung", "kramat_pela": "Kel. Kramat Pela" },
-      "relations": { "istri": "Istri", "suami": "Suami", "anak": "Anak" }
+      "genders": {
+        "pria": "Pria",
+        "wanita": "Wanita"
+      },
+      "marital": {
+        "menikah": "Menikah",
+        "belum": "Belum Menikah",
+        "bercerai": "Bercerai"
+      },
+      "jobs": {
+        "ob": "Office Boy",
+        "manager": "Manager",
+        "staff": "Staff"
+      },
+      "salary": {
+        "gol1": "Rp5 - 10 Juta",
+        "gol2": "Rp10 - 20 Juta",
+        "gol3": "Rp50 Juta >"
+      },
+      "provinces": {
+        "dki": "DKI Jakarta",
+        "jabar": "Jawa Barat",
+        "jateng": "Jawa Tengah"
+      },
+      "cities": {
+        "jaksel": "Kota Jakarta Selatan",
+        "jakpus": "Kota Jakarta Pusat",
+        "depok": "Kota Depok"
+      },
+      "districts": {
+        "keb_baru": "Kebayoran Baru",
+        "tebet": "Tebet"
+      },
+      "subdistricts": {
+        "gunung": "Kel. Gunung",
+        "kramat_pela": "Kel. Kramat Pela"
+      },
+      "relations": {
+        "istri": "Istri",
+        "suami": "Suami",
+        "anak": "Anak"
+      }
     }
   }
 }

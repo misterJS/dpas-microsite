@@ -109,20 +109,14 @@ export default function BenefitDetailForm() {
                         <FloatingSelect
                             value={field.value}
                             onValueChange={field.onChange}
-                            label={
-                                <>
-                                    {t("form.planType_ph")}<span className="text-red-500"> *</span>
-                                </>
-                            }
+                            label={<>{t("form.planType_ph")}<span className="text-red-500"> *</span></>}
                             wrapperClassName="rounded-[12px]"
                         >
-                            <SelectContent className="rounded-xl border p-0 shadow-[0_18.54px_21.4px_0_rgba(0,0,0,0.05)]">
-                                <SelectItem value="silver">{t("form.plan.silver")}</SelectItem>
-                                <SelectSeparator className="mx-3" />
-                                <SelectItem value="gold">{t("form.plan.gold")}</SelectItem>
-                                <SelectSeparator className="mx-3" />
-                                <SelectItem value="platinum">{t("form.plan.platinum")}</SelectItem>
-                            </SelectContent>
+                            <SelectItem value="silver">{t("form.plan.silver")}</SelectItem>
+                            <SelectSeparator className="mx-3" />
+                            <SelectItem value="gold">{t("form.plan.gold")}</SelectItem>
+                            <SelectSeparator className="mx-3" />
+                            <SelectItem value="platinum">{t("form.plan.platinum")}</SelectItem>
                         </FloatingSelect>
                     )}
                 />
