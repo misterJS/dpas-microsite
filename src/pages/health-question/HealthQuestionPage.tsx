@@ -35,7 +35,7 @@ export default function HealthQuestionsPage() {
     const onSubmit = (v: FormValues) => {
         const notQualified = v.q1 === "ya" || v.q2 === "ya"
         if (notQualified) setRejectOpen(true)
-        else navigate("/ringkasan-produk")
+        else navigate("/riplay")
     }
 
     return (

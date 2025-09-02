@@ -7,6 +7,8 @@ const BenefitPage = lazy(() => import("@/pages/benefit/BenefitPage"))
 const BenefitDetailPage = lazy(() => import("@/pages/benefit/detail/BenefitDetailPage"))
 const RegisterPage = lazy(() => import("@/pages/register/RegisterPage"))
 const HealthQuestionsPage = lazy(() => import("@/pages/health-question/HealthQuestionPage"))
+const RiplayPage = lazy(() => import("@/pages/riplay/RiplayPage"))
+const ConsentPage = lazy(() => import("@/pages/consent/ConsentPage"))
 const NotFoundPage = lazy(() => import("@/pages/not-found/NotFoundPage"))
 
 export const routes: RouteObject[] = [
@@ -18,6 +20,8 @@ export const routes: RouteObject[] = [
       { path: "/benefit/:id", element: <BenefitDetailPage /> },
       { path: "/register", element: <RegisterPage /> },
       { path: "/health-question", element: <HealthQuestionsPage /> },
+      { path: "/riplay", element: <RiplayPage /> },
+      { path: "/consent", element: <ConsentPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },
