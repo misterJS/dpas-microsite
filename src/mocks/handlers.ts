@@ -119,4 +119,18 @@ export const handlers = [
       },
     })
   }),
+
+  // ZIP LOOKUP
+  http.get(url("/microsite/address-by-zip"), ({ request }) => {
+    const u = new URL(request.url)
+    const q = u.searchParams.get("q") || ""
+    // Return a deterministic address for any 5-digit input
+    const res = {
+      province: [{ provinceId: "dki", provinceName: "DKI Jakarta" }],
+      city: [{ cityId: "jaksel", cityName: "Kota Jakarta Selatan" }],
+      district: [{ districtId: "keb_baru", districtName: "Kebayoran Baru" }],
+      subdistrict: [{ subdistrictId: "gunung", subdistrictName: "Kel. Gunung" }],
+    }
+    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data: res })
+  }),
 ]

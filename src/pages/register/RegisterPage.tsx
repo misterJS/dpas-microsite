@@ -4,22 +4,19 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
 import { z } from "zod"
 import { useProvinces, useCities, useDistricts, useSubdistricts } from "@/hooks/useLocation"
+import { useBranches, useJobs, useSalaries } from "@/hooks/useOptions"
+import { useZipLookup } from "@/hooks/useZip"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Form, FormField, FormMessage } from "@/components/ui/form"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { SelectItem, SelectSeparator } from "@/components/ui/select"
-import { FloatingField } from "@/components/form/floating-field"
-import { FloatingSelect } from "@/components/form/floating-select"
+import { RHFTextField, RHFSelectField, RHFPhoneField, RHFDateField } from "@/components/form/rhf-fields"
 import { cn } from "@/lib/utils"
 import { Info } from "lucide-react"
 import { Link } from "react-router-dom"
-import { DateField } from "@/components/form/date-field"
-import { PhoneField } from "@/components/form/phone-field"
 
-const BRANCH_VALUES = ["thamrin", "kelapa_gading", "bsd", "pondok_indah"] as const
-type Branch = (typeof BRANCH_VALUES)[number]
 
 const PLAN_VALUES = ["silver", "gold", "platinum"] as const
 const GENDER_VALUES = ["pria", "wanita"] as const
@@ -40,17 +37,13 @@ type District = (typeof DISTRICT_VALUES)[number]
 const SUBDISTRICT_VALUES = ["gunung", "kramat_pela"] as const
 type Subdistrict = (typeof SUBDISTRICT_VALUES)[number]
 
-const JOBS_VALUES = ["ob", "manager", "staff"] as const
-type Jobs = (typeof JOBS_VALUES)[number]
-
-const SALARY_VALUES = ["gol1", "gol2", "gol3"] as const
-type Salary = (typeof SALARY_VALUES)[number]
+// Dynamic: jobType and salary will be loaded via API
 
 const RELATION_VALUES = ["istri", "suami", "anak"] as const
 type Relation = (typeof RELATION_VALUES)[number]
 
 const schema = z.object({
-    branch: z.enum(BRANCH_VALUES, { message: "Pilih kantor cabang" }),
+    branch: z.string().min(1, "Pilih kantor cabang"),
     planType: z.enum(PLAN_VALUES, { message: "Pilih paket" }).optional(),
     gender: z.enum(GENDER_VALUES, { message: "Pilih Jenis Kelamin" }),
     married: z.enum(MARITAL_VALUES, { message: "Pilih Status Pernikahan" }),
@@ -67,8 +60,8 @@ const schema = z.object({
     district: z.enum(DISTRICT_VALUES, { message: "Pilih kecamatan" }),
     subdistrict: z.enum(SUBDISTRICT_VALUES, { message: "Pilih kelurahan" }),
     addressKtp: z.string().min(10, "Alamat minimal 10 karakter"),
-    jobType: z.enum(JOBS_VALUES, { message: "Pilih Pekerjaan" }),
-    salary: z.enum(SALARY_VALUES, { message: "Pilih Salary" }),
+    jobType: z.string().min(1, "Pilih Pekerjaan"),
+    salary: z.string().min(1, "Pilih Salary"),
     beneficiaryName: z.string().min(2, "Nama minimal 2 karakter"),
     beneficiaryAddress: z.string().min(2, "Masukkan tempat lahir"),
     beneficiaryRelation: z.enum(RELATION_VALUES, { message: "Pilih Relasi" })
@@ -99,6 +92,23 @@ export default function RegisterPage() {
     const { data: cities = [] } = useCities(province)
     const { data: districts = [] } = useDistricts(city)
     const { data: subdistricts = [] } = useSubdistricts(district)
+    const { data: branches = [] } = useBranches()
+    const { data: jobs = [] } = useJobs()
+    const { data: salaries = [] } = useSalaries()
+    const postalCode = form.watch("postalCode")
+    const { data: zip } = useZipLookup(postalCode)
+
+    React.useEffect(() => {
+        if (!zip) return
+        const p = zip.province?.[0]?.provinceId
+        const c = zip.city?.[0]?.cityId
+        const d = zip.district?.[0]?.districtId
+        const s = zip.subdistrict?.[0]?.subdistrictId
+        if (p) form.setValue("province", p as any)
+        if (c) form.setValue("city", c as any)
+        if (d) form.setValue("district", d as any)
+        if (s) form.setValue("subdistrict", s as any)
+    }, [zip])
 
     return (
         <div className="space-y-6">
@@ -113,29 +123,14 @@ export default function RegisterPage() {
 
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                            <FormField
-                                control={form.control}
-                                name="branch"
-                                render={({ field }) => (
-                                    <FloatingSelect
-                                        value={field.value}
-                                        onValueChange={(v: Branch) => field.onChange(v)}
-                                        label={
-                                            <>
-                                                {t("menu.fields.branch")} <span className="text-red-500">*</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    >
-                                        {BRANCH_VALUES.map((v, i) => (
-                                            <React.Fragment key={v}>
-                                                <SelectItem value={v}>{t(`menu.options.branches.${v}`)}</SelectItem>
-                                                {i < BRANCH_VALUES.length - 1 && <SelectSeparator className="mx-3" />}
-                                            </React.Fragment>
-                                        ))}
-                                    </FloatingSelect>
-                                )}
-                            />
+                            <RHFSelectField name="branch" label={t("menu.fields.branch")} requiredMark>
+                                {branches.map((b, i) => (
+                                    <React.Fragment key={b.code}>
+                                        <SelectItem value={b.code}>{b.name}</SelectItem>
+                                        {i < branches.length - 1 && <SelectSeparator className="mx-3" />}
+                                    </React.Fragment>
+                                ))}
+                            </RHFSelectField>
 
                             <hr />
 
@@ -149,95 +144,35 @@ export default function RegisterPage() {
                                 </CardContent>
                             </Card>
 
-                            <FormField
-                                control={form.control}
+                            <RHFTextField
                                 name="nik"
-                                render={({ field }) => (
-                                    <FloatingField
-                                        {...field}
-                                        type="text"
-                                        inputMode="numeric"
-                                        pattern="\d*"
-                                        maxLength={16}
-                                        label={
-                                            <>
-                                                {t("menu.fields.nik")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    />
-                                )}
+                                type="text"
+                                inputMode="numeric"
+                                pattern="\\d*"
+                                maxLength={16}
+                                label={t("menu.fields.nik")}
+                                requiredMark
                             />
 
-                            <FormField
-                                control={form.control}
-                                name="fullName"
-                                render={({ field }) => (
-                                    <FloatingField
-                                        {...field}
-                                        label={
-                                            <>
-                                                {t("menu.fields.fullName")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    />
-                                )}
-                            />
+                            <RHFTextField name="fullName" label={t("menu.fields.fullName")} requiredMark />
 
-                            <FormField
-                                control={form.control}
-                                name="pob"
-                                render={({ field }) => (
-                                    <FloatingField
-                                        {...field}
-                                        label={
-                                            <>
-                                                {t("menu.fields.pob")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    />
-                                )}
-                            />
+                            <RHFTextField name="pob" label={t("menu.fields.pob")} requiredMark />
 
-                            <FormField
-                                control={form.control}
-                                name="dob"
-                                render={({ field }) => (
-                                    <DateField
-                                        label={"Tanggal lahir (dd/mm/yyyy)"}
-                                        requiredMark
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        wrapperClassName="mt-2"
-                                    />
-                                )}
-                            />
+                            <RHFDateField name="dob" label={"Tanggal lahir (dd/mm/yyyy)"} requiredMark wrapperClassName="mt-2" />
 
-                            <FormField
-                                control={form.control}
+                            <RHFSelectField
                                 name="married"
-                                render={({ field }) => (
-                                    <FloatingSelect
-                                        value={field.value}
-                                        onValueChange={(v: Married) => field.onChange(v)}
-                                        label={
-                                            <>
-                                                {t("menu.fields.married")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    >
-                                        {MARITAL_VALUES.map((v, i) => (
-                                            <React.Fragment key={v}>
-                                                <SelectItem value={v}>{t(`menu.options.marital.${v}`)}</SelectItem>
-                                                {i < MARITAL_VALUES.length - 1 && <SelectSeparator className="mx-3" />}
-                                            </React.Fragment>
-                                        ))}
-                                    </FloatingSelect>
-                                )}
-                            />
+                                label={t("menu.fields.married")}
+                                requiredMark
+                                onValue={(v: Married) => v}
+                            >
+                                {MARITAL_VALUES.map((v, i) => (
+                                    <React.Fragment key={v}>
+                                        <SelectItem value={v}>{t(`menu.options.marital.${v}`)}</SelectItem>
+                                        {i < MARITAL_VALUES.length - 1 && <SelectSeparator className="mx-3" />}
+                                    </React.Fragment>
+                                ))}
+                            </RHFSelectField>
 
                             <FormField
                                 control={form.control}
@@ -264,295 +199,95 @@ export default function RegisterPage() {
 
                             <SectionTitle>{t("menu.sections.contactAddress")}</SectionTitle>
 
-                            <FormField
-                                control={form.control}
-                                name="email"
-                                render={({ field }) => (
-                                    <FloatingField
-                                        {...field}
-                                        type="email"
-                                        label={
-                                            <>
-                                                {t("menu.fields.email")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    />
-                                )}
-                            />
+                            <RHFTextField name="email" type="email" label={t("menu.fields.email")} requiredMark />
 
-                            <FormField
-                                control={form.control}
-                                name="phone"
-                                render={({ field }) => (
-                                    <PhoneField
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        label={"nomor ponsel anda"}
-                                        requiredMark
-                                        wrapperClassName="rounded-[12px]"
-                                    />
-                                )}
-                            />
+                            <RHFPhoneField name="phone" label={"nomor ponsel anda"} requiredMark />
 
                             <hr />
 
-                            <FormField
-                                control={form.control}
-                                name="postalCode"
-                                render={({ field }) => (
-                                    <FloatingField
-                                        {...field}
-                                        type="text"
-                                        inputMode="numeric"
-                                        pattern="\d*"
-                                        maxLength={5}
-                                        label={<>{t("menu.fields.postalCode")}</>}
-                                        wrapperClassName="rounded-[12px]"
-                                    />
-                                )}
-                            />
+                            <RHFTextField name="postalCode" type="text" inputMode="numeric" pattern="\\d*" maxLength={5} label={t("menu.fields.postalCode")} />
 
-                            <FormField
-                                control={form.control}
-                                name="province"
-                                render={({ field }) => (
-                                    <FloatingSelect
-                                        value={field.value}
-                                        onValueChange={(v: Province) => field.onChange(v)}
-                                        label={
-                                            <>
-                                                {t("menu.fields.province")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    >
-                                        {provinces.map((v, i) => (
-                                            <React.Fragment key={v.code}>
-                                                <SelectItem value={v.code}>{v.name}</SelectItem>
-                                                {i < provinces.length - 1 && <SelectSeparator className="mx-3" />}
-                                            </React.Fragment>
-                                        ))}
-                                    </FloatingSelect>
-                                )}
-                            />
+                            <RHFSelectField name="province" label={t("menu.fields.province")} requiredMark onValue={(v: Province) => v}>
+                                {provinces.map((v, i) => (
+                                    <React.Fragment key={v.code}>
+                                        <SelectItem value={v.code}>{v.name}</SelectItem>
+                                        {i < provinces.length - 1 && <SelectSeparator className="mx-3" />}
+                                    </React.Fragment>
+                                ))}
+                            </RHFSelectField>
 
-                            <FormField
-                                control={form.control}
-                                name="city"
-                                render={({ field }) => (
-                                    <FloatingSelect
-                                        value={field.value}
-                                        onValueChange={(v: City) => field.onChange(v)}
-                                        label={
-                                            <>
-                                                {t("menu.fields.city")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    >
-                                        {cities.map((v, i) => (
-                                            <React.Fragment key={v.code}>
-                                                <SelectItem value={v.code}>{v.name}</SelectItem>
-                                                {i < cities.length - 1 && <SelectSeparator className="mx-3" />}
-                                            </React.Fragment>
-                                        ))}
-                                    </FloatingSelect>
-                                )}
-                            />
+                            <RHFSelectField name="city" label={t("menu.fields.city")} requiredMark onValue={(v: City) => v}>
+                                {cities.map((v, i) => (
+                                    <React.Fragment key={v.code}>
+                                        <SelectItem value={v.code}>{v.name}</SelectItem>
+                                        {i < cities.length - 1 && <SelectSeparator className="mx-3" />}
+                                    </React.Fragment>
+                                ))}
+                            </RHFSelectField>
 
-                            <FormField
-                                control={form.control}
-                                name="district"
-                                render={({ field }) => (
-                                    <FloatingSelect
-                                        value={field.value}
-                                        onValueChange={(v: District) => field.onChange(v)}
-                                        label={
-                                            <>
-                                                {t("menu.fields.district")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    >
-                                        {districts.map((v, i) => (
-                                            <React.Fragment key={v.code}>
-                                                <SelectItem value={v.code}>{v.name}</SelectItem>
-                                                {i < districts.length - 1 && <SelectSeparator className="mx-3" />}
-                                            </React.Fragment>
-                                        ))}
-                                    </FloatingSelect>
-                                )}
-                            />
+                            <RHFSelectField name="district" label={t("menu.fields.district")} requiredMark onValue={(v: District) => v}>
+                                {districts.map((v, i) => (
+                                    <React.Fragment key={v.code}>
+                                        <SelectItem value={v.code}>{v.name}</SelectItem>
+                                        {i < districts.length - 1 && <SelectSeparator className="mx-3" />}
+                                    </React.Fragment>
+                                ))}
+                            </RHFSelectField>
 
-                            <FormField
-                                control={form.control}
-                                name="subdistrict"
-                                render={({ field }) => (
-                                    <FloatingSelect
-                                        value={field.value}
-                                        onValueChange={(v: Subdistrict) => field.onChange(v)}
-                                        label={
-                                            <>
-                                                {t("menu.fields.subdistrict")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    >
-                                        {subdistricts.map((v, i) => (
-                                            <React.Fragment key={v.code}>
-                                                <SelectItem value={v.code}>{v.name}</SelectItem>
-                                                {i < subdistricts.length - 1 && <SelectSeparator className="mx-3" />}
-                                            </React.Fragment>
-                                        ))}
-                                    </FloatingSelect>
-                                )}
-                            />
+                            <RHFSelectField name="subdistrict" label={t("menu.fields.subdistrict")} requiredMark onValue={(v: Subdistrict) => v}>
+                                {subdistricts.map((v, i) => (
+                                    <React.Fragment key={v.code}>
+                                        <SelectItem value={v.code}>{v.name}</SelectItem>
+                                        {i < subdistricts.length - 1 && <SelectSeparator className="mx-3" />}
+                                    </React.Fragment>
+                                ))}
+                            </RHFSelectField>
 
-                            <FormField
-                                control={form.control}
-                                name="addressKtp"
-                                render={({ field }) => (
-                                    <FloatingField
-                                        {...field}
-                                        label={
-                                            <>
-                                                {t("menu.fields.addressKtp")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    />
-                                )}
-                            />
+                            <RHFTextField name="addressKtp" label={t("menu.fields.addressKtp")} requiredMark />
 
                             <SectionTitle>{t("menu.sections.jobInfo")}</SectionTitle>
 
-                            <FormField
-                                control={form.control}
-                                name="jobType"
-                                render={({ field }) => (
-                                    <FloatingSelect
-                                        value={field.value}
-                                        onValueChange={(v: Jobs) => field.onChange(v)}
-                                        label={
-                                            <>
-                                                {t("menu.fields.jobType")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    >
-                                        {JOBS_VALUES.map((v, i) => (
-                                            <React.Fragment key={v}>
-                                                <SelectItem value={v}>{t(`menu.options.jobs.${v}`)}</SelectItem>
-                                                {i < JOBS_VALUES.length - 1 && <SelectSeparator className="mx-3" />}
-                                            </React.Fragment>
-                                        ))}
-                                    </FloatingSelect>
-                                )}
-                            />
+                            <RHFSelectField name="jobType" label={t("menu.fields.jobType")} requiredMark>
+                                {jobs.map((v, i) => (
+                                    <React.Fragment key={v.code}>
+                                        <SelectItem value={v.code}>{v.name}</SelectItem>
+                                        {i < jobs.length - 1 && <SelectSeparator className="mx-3" />}
+                                    </React.Fragment>
+                                ))}
+                            </RHFSelectField>
 
-                            <FormField
-                                control={form.control}
-                                name="salary"
-                                render={({ field }) => (
-                                    <FloatingSelect
-                                        value={field.value}
-                                        onValueChange={(v: Salary) => field.onChange(v)}
-                                        label={
-                                            <>
-                                                {t("menu.fields.salary")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    >
-                                        {SALARY_VALUES.map((v, i) => (
-                                            <React.Fragment key={v}>
-                                                <SelectItem value={v}>{t(`menu.options.salary.${v}`)}</SelectItem>
-                                                {i < SALARY_VALUES.length - 1 && <SelectSeparator className="mx-3" />}
-                                            </React.Fragment>
-                                        ))}
-                                    </FloatingSelect>
-                                )}
-                            />
+                            <RHFSelectField name="salary" label={t("menu.fields.salary")} requiredMark>
+                                {salaries.map((v, i) => (
+                                    <React.Fragment key={v.code}>
+                                        <SelectItem value={v.code}>{v.name}</SelectItem>
+                                        {i < salaries.length - 1 && <SelectSeparator className="mx-3" />}
+                                    </React.Fragment>
+                                ))}
+                            </RHFSelectField>
 
                             <SectionTitle>{t("menu.sections.beneficiary")}</SectionTitle>
 
-                            <FormField
-                                control={form.control}
-                                name="beneficiaryName"
-                                render={({ field }) => (
-                                    <FloatingField
-                                        {...field}
-                                        label={
-                                            <>
-                                                {t("menu.fields.beneficiaryName")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    />
-                                )}
-                            />
+                            <RHFTextField name="beneficiaryName" label={t("menu.fields.beneficiaryName")} requiredMark />
 
-                            <FormField
-                                control={form.control}
-                                name="beneficiaryPhone"
-                                render={({ field }) => (
-                                    <PhoneField
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                        label={"nomor ponsel penerima manfaat"}
-                                        requiredMark
-                                        wrapperClassName="rounded-[12px]"
-                                    />
-                                )}
-                            />
+                            <RHFPhoneField name="beneficiaryPhone" label={"nomor ponsel penerima manfaat"} requiredMark />
 
-                            <FormField
-                                control={form.control}
-                                name="beneficiaryAddress"
-                                render={({ field }) => (
-                                    <FloatingField
-                                        {...field}
-                                        label={
-                                            <>
-                                                {t("menu.fields.beneficiaryAddress")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    />
-                                )}
-                            />
+                            <RHFTextField name="beneficiaryAddress" label={t("menu.fields.beneficiaryAddress")} requiredMark />
 
-                            <FormField
-                                control={form.control}
-                                name="beneficiaryRelation"
-                                render={({ field }) => (
-                                    <FloatingSelect
-                                        value={field.value}
-                                        onValueChange={(v: Relation) => field.onChange(v)}
-                                        label={
-                                            <>
-                                                {t("menu.fields.beneficiaryRelation")}<span className="text-red-500"> *</span>
-                                            </>
-                                        }
-                                        wrapperClassName="rounded-[12px]"
-                                    >
-                                        {RELATION_VALUES.map((v, i) => (
-                                            <React.Fragment key={v}>
-                                                <SelectItem value={v}>{t(`menu.options.relations.${v}`)}</SelectItem>
-                                                {i < RELATION_VALUES.length - 1 && <SelectSeparator className="mx-3" />}
-                                            </React.Fragment>
-                                        ))}
-                                    </FloatingSelect>
-                                )}
-                            />
+                            <RHFSelectField name="beneficiaryRelation" label={t("menu.fields.beneficiaryRelation")} requiredMark onValue={(v: Relation) => v}>
+                                {RELATION_VALUES.map((v, i) => (
+                                    <React.Fragment key={v}>
+                                        <SelectItem value={v}>{t(`menu.options.relations.${v}`)}</SelectItem>
+                                        {i < RELATION_VALUES.length - 1 && <SelectSeparator className="mx-3" />}
+                                    </React.Fragment>
+                                ))}
+                            </RHFSelectField>
 
                             <Button type="submit" className="bg-[#2A504E] w-full py-5">
                                 {t("menu.fields.submit")}
                             </Button>
 
                             <Link
-                                to={'/products/1'}
+                                to={'/products'}
                                 className="text-center items-center font-semibold"
                                 aria-label={"backward-page"}
                             >
