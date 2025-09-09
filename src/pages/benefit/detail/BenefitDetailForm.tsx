@@ -186,6 +186,7 @@ export default function BenefitDetailForm({ detail, productCode, slug = "uob" }:
                 <p className="text-base text-[#ED1B2E]">{t("form.snk")}</p>
                 <p className="text-base text-[#ED1B2E]">{t("form.applied_claim_document")}</p>
                 <FixedBottomBar>
+                    <div className={open ? "pointer-events-none" : undefined} />
                     <button
                         type="button"
                         onClick={() => setOpen(v => !v)}
@@ -210,7 +211,8 @@ export default function BenefitDetailForm({ detail, productCode, slug = "uob" }:
                 <Sheet open={open} onOpenChange={setOpen}>
                     <SheetContent
                         side="bottom"
-                        className="p-0 rounded-t-2xl bottom-28"
+                        className="p-0 rounded-t-2xl shadow-none"
+                        style={{ bottom: "var(--fixed-bottom-bar-height, 0px)" }}
                         onTouchStart={handleTouchStart}
                         onTouchMove={handleTouchMove}
                     >

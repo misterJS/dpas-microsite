@@ -5,11 +5,18 @@ function useBodyBottomPadding(height: number | null) {
   React.useEffect(() => {
     if (typeof document === "undefined") return
     const prev = document.body.style.paddingBottom
+    const prevVar = document.body.style.getPropertyValue("--fixed-bottom-bar-height")
     if (height != null) {
       document.body.style.paddingBottom = `${height}px`
+      document.body.style.setProperty("--fixed-bottom-bar-height", `${height}px`)
     }
     return () => {
       document.body.style.paddingBottom = prev
+      if (prevVar) {
+        document.body.style.setProperty("--fixed-bottom-bar-height", prevVar)
+      } else {
+        document.body.style.removeProperty("--fixed-bottom-bar-height")
+      }
     }
   }, [height])
 }
@@ -35,7 +42,7 @@ export default function FixedBottomBar({ children }: { children: React.ReactNode
 
   useBodyBottomPadding(h)
   return createPortal(
-    <div ref={ref} className="fixed inset-x-0 bottom-0 z-[70] pointer-events-auto">
+    <div ref={ref} className="fixed inset-x-0 bottom-0 z-[40] pointer-events-auto">
       {children}
     </div>,
     document.body

@@ -15,7 +15,7 @@ import { SelectItem, SelectSeparator } from "@/components/ui/select"
 import { RHFTextField, RHFSelectField, RHFPhoneField, RHFDateField } from "@/components/form/rhf-fields"
 import { cn } from "@/lib/utils"
 import { Info } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 
 const PLAN_VALUES = ["silver", "gold", "platinum"] as const
@@ -37,8 +37,6 @@ type District = (typeof DISTRICT_VALUES)[number]
 const SUBDISTRICT_VALUES = ["gunung", "kramat_pela"] as const
 type Subdistrict = (typeof SUBDISTRICT_VALUES)[number]
 
-// Dynamic: jobType and salary will be loaded via API
-
 const RELATION_VALUES = ["istri", "suami", "anak"] as const
 type Relation = (typeof RELATION_VALUES)[number]
 
@@ -52,7 +50,9 @@ const schema = z.object({
     pob: z.string().min(2, "Masukkan tempat lahir"),
     phone: z.string().regex(/^\d{9,13}$/, "Nomor ponsel tidak valid"),
     beneficiaryPhone: z.string().regex(/^\d{9,13}$/, "Nomor ponsel tidak valid"),
-    dob: z.date({ message: "Pilih tanggal lahir" }),
+    dob: z
+        .date({ message: "Pilih tanggal lahir" })
+        .refine((d) => d <= new Date(), { message: "Tanggal lahir tidak boleh di masa depan" }),
     email: z.string().email("Email tidak valid"),
     postalCode: z.string().regex(/^\d{5}$/, "Kode POS harus 5 digit"),
     province: z.enum(PROVINCE_VALUES, { message: "Pilih provinsi" }),
@@ -74,6 +74,7 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
 
 export default function RegisterPage() {
     const { t } = useTranslation("common")
+    const navigate = useNavigate()
 
     const form = useForm<FormValues>({
         resolver: zodResolver(schema),
@@ -82,6 +83,7 @@ export default function RegisterPage() {
 
     const onSubmit = (values: FormValues) => {
         console.log("Submit:", values)
+        navigate("/riplay")
     }
 
     const province = form.watch("province")
@@ -100,14 +102,19 @@ export default function RegisterPage() {
 
     React.useEffect(() => {
         if (!zip) return
-        const p = zip.province?.[0]?.provinceId
-        const c = zip.city?.[0]?.cityId
-        const d = zip.district?.[0]?.districtId
-        const s = zip.subdistrict?.[0]?.subdistrictId
-        if (p) form.setValue("province", p as any)
-        if (c) form.setValue("city", c as any)
-        if (d) form.setValue("district", d as any)
-        if (s) form.setValue("subdistrict", s as any)
+        const p = zip.province?.[0]?.provinceId as any
+        const c = zip.city?.[0]?.cityId as any
+        const d = zip.district?.[0]?.districtId as any
+        const s = zip.subdistrict?.[0]?.subdistrictId as any
+        const curr = form.getValues()
+        const next = {
+            ...curr,
+            province: p ?? curr.province,
+            city: c ?? curr.city,
+            district: d ?? curr.district,
+            subdistrict: s ?? curr.subdistrict,
+        } as Partial<FormValues>
+        form.reset(next, { keepDirtyValues: true, keepErrors: true })
     }, [zip])
 
     return (
@@ -122,7 +129,7 @@ export default function RegisterPage() {
                     <h1 className="mb-4 text-2xl text-[#6AC3BE] font-semibold">{t("menu.fields.submit")}</h1>
 
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                             <RHFSelectField name="branch" label={t("menu.fields.branch")} requiredMark>
                                 {branches.map((b, i) => (
                                     <React.Fragment key={b.code}>
@@ -148,7 +155,7 @@ export default function RegisterPage() {
                                 name="nik"
                                 type="text"
                                 inputMode="numeric"
-                                pattern="\\d*"
+                                pattern="[0-9]*"
                                 maxLength={16}
                                 label={t("menu.fields.nik")}
                                 requiredMark
@@ -205,7 +212,7 @@ export default function RegisterPage() {
 
                             <hr />
 
-                            <RHFTextField name="postalCode" type="text" inputMode="numeric" pattern="\\d*" maxLength={5} label={t("menu.fields.postalCode")} />
+                            <RHFTextField name="postalCode" type="text" inputMode="numeric" pattern="[0-9]*" maxLength={5} label={t("menu.fields.postalCode")} />
 
                             <RHFSelectField name="province" label={t("menu.fields.province")} requiredMark onValue={(v: Province) => v}>
                                 {provinces.map((v, i) => (
