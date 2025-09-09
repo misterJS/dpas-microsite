@@ -22,7 +22,7 @@ export default function BenefitDetailPage () {
                     buttonTitle={t("actions.changeProtection")}
                 />
             )}
-            <BenefitDetailForm />
+            <BenefitDetailForm detail={detail} productCode={id} slug="uob" />
         </div>
     )
 }

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { getProducts, getProductDetail } from "@/app/services/product";
+import { getProducts, getProductDetail, computePremium } from "@/app/services/product";
+import type { ComputePremiumReq } from "@/api/types";
 
 export const useProducts = (slug?: string, q?: { search?: string }) =>
   useQuery({
@@ -15,3 +16,15 @@ export const useProductDetail = (slug?: string, productCode?: string) =>
     enabled: !!slug && !!productCode,
   });
 
+export const useComputePremium = (slug?: string, body?: ComputePremiumReq) =>
+  useQuery({
+    queryKey: [
+      "compute-premium",
+      slug,
+      body?.productCode,
+      body?.packageId,
+      body?.policyTermId,
+    ],
+    queryFn: () => computePremium(slug!, body!),
+    enabled: !!slug && !!body?.productCode && !!body?.packageId && !!body?.policyTermId,
+  });
