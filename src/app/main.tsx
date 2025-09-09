@@ -1,4 +1,4 @@
-import "@/i18n"
+import i18n from "@/i18n"
 import React, { Suspense } from "react"
 import ReactDOM from "react-dom/client"
 import { RouterProvider } from "react-router-dom"
@@ -16,7 +16,7 @@ if (import.meta.env.VITE_MOCK === "true") {
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <Suspense fallback={<div className="p-6">Loading…</div>}>
+      <Suspense fallback={<div className="p-6">{i18n.t("status.loading")}</div>}>
         <RouterProvider router={router} />
       </Suspense>
       <ReactQueryDevtools initialIsOpen={false} />

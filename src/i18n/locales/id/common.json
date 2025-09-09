@@ -61,6 +61,12 @@
     "email": "customer.idn@prudentialsyariah.co.id",
     "website": "www.prudentialsyariah.co.id"
   },
+  "status": {
+    "loading": "Memuat…",
+    "loadFailed": "Gagal memuat data",
+    "loadProductsFailed": "Gagal memuat produk",
+    "loadProductDetailFailed": "Gagal memuat detail produk"
+  },
   "health": {
     "title": "Pertanyaan kesehatan",
     "q1": "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?",
@@ -165,7 +171,9 @@
   "actions": {
     "continue": "Lanjutkan",
     "back": "Kembali",
-    "close": "Tutup"
+    "close": "Tutup",
+    "readMore": "Selengkapnya",
+    "changeProtection": "Ubah jenis perlindungan"
   },
   "riplay": {
     "cta": "Lanjutkan",

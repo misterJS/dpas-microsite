@@ -16,12 +16,9 @@
     "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^5.0.1",
     "autoprefixer": "^10.4.21",
-<<<<<<< HEAD
     "jest": "^30.0.4",
     "jest-environment-jsdom": "^30.0.4",
-=======
     "msw": "^2.11.1",
->>>>>>> 2797651ee89bcb3075353a4800e3c72f5aee149d
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.13",
     "tailwindcss-animate": "^1.0.7",

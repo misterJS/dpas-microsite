@@ -46,7 +46,7 @@ export default function BenefitCard({
                     <Link
                         to={href}
                         className="inline-flex items-center gap-2 font-semibold group"
-                        aria-label={`${title} - Selengkapnya`}
+                        aria-label={`${title} - ${buttonTitle}`}
                     >
                         <span>{buttonTitle}</span>
                         <IoArrowForwardOutline
