@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
 import { z } from "zod"
-
+import { useProvinces, useCities, useDistricts, useSubdistricts } from "@/hooks/useLocation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Form, FormField, FormMessage } from "@/components/ui/form"
@@ -90,6 +90,15 @@ export default function RegisterPage() {
     const onSubmit = (values: FormValues) => {
         console.log("Submit:", values)
     }
+
+    const province = form.watch("province")
+    const city = form.watch("city")
+    const district = form.watch("district")
+
+    const { data: provinces = [] } = useProvinces()
+    const { data: cities = [] } = useCities(province)
+    const { data: districts = [] } = useDistricts(city)
+    const { data: subdistricts = [] } = useSubdistricts(district)
 
     return (
         <div className="space-y-6">
@@ -318,10 +327,10 @@ export default function RegisterPage() {
                                         }
                                         wrapperClassName="rounded-[12px]"
                                     >
-                                        {PROVINCE_VALUES.map((v, i) => (
-                                            <React.Fragment key={v}>
-                                                <SelectItem value={v}>{t(`menu.options.provinces.${v}`)}</SelectItem>
-                                                {i < PROVINCE_VALUES.length - 1 && <SelectSeparator className="mx-3" />}
+                                        {provinces.map((v, i) => (
+                                            <React.Fragment key={v.code}>
+                                                <SelectItem value={v.code}>{v.name}</SelectItem>
+                                                {i < provinces.length - 1 && <SelectSeparator className="mx-3" />}
                                             </React.Fragment>
                                         ))}
                                     </FloatingSelect>
@@ -342,10 +351,10 @@ export default function RegisterPage() {
                                         }
                                         wrapperClassName="rounded-[12px]"
                                     >
-                                        {CITY_VALUES.map((v, i) => (
-                                            <React.Fragment key={v}>
-                                                <SelectItem value={v}>{t(`menu.options.cities.${v}`)}</SelectItem>
-                                                {i < CITY_VALUES.length - 1 && <SelectSeparator className="mx-3" />}
+                                        {cities.map((v, i) => (
+                                            <React.Fragment key={v.code}>
+                                                <SelectItem value={v.code}>{v.name}</SelectItem>
+                                                {i < cities.length - 1 && <SelectSeparator className="mx-3" />}
                                             </React.Fragment>
                                         ))}
                                     </FloatingSelect>
@@ -366,10 +375,10 @@ export default function RegisterPage() {
                                         }
                                         wrapperClassName="rounded-[12px]"
                                     >
-                                        {DISTRICT_VALUES.map((v, i) => (
-                                            <React.Fragment key={v}>
-                                                <SelectItem value={v}>{t(`menu.options.districts.${v}`)}</SelectItem>
-                                                {i < DISTRICT_VALUES.length - 1 && <SelectSeparator className="mx-3" />}
+                                        {districts.map((v, i) => (
+                                            <React.Fragment key={v.code}>
+                                                <SelectItem value={v.code}>{v.name}</SelectItem>
+                                                {i < districts.length - 1 && <SelectSeparator className="mx-3" />}
                                             </React.Fragment>
                                         ))}
                                     </FloatingSelect>
@@ -390,10 +399,10 @@ export default function RegisterPage() {
                                         }
                                         wrapperClassName="rounded-[12px]"
                                     >
-                                        {SUBDISTRICT_VALUES.map((v, i) => (
-                                            <React.Fragment key={v}>
-                                                <SelectItem value={v}>{t(`menu.options.subdistricts.${v}`)}</SelectItem>
-                                                {i < SUBDISTRICT_VALUES.length - 1 && <SelectSeparator className="mx-3" />}
+                                        {subdistricts.map((v, i) => (
+                                            <React.Fragment key={v.code}>
+                                                <SelectItem value={v.code}>{v.name}</SelectItem>
+                                                {i < subdistricts.length - 1 && <SelectSeparator className="mx-3" />}
                                             </React.Fragment>
                                         ))}
                                     </FloatingSelect>
