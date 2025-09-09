@@ -2,38 +2,44 @@ import { bannerLanding, itemLanding } from "@/assets"
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button"
 import { IoArrowForwardOutline } from "react-icons/io5"
-import { Link } from "react-router-dom"
-export default function HomePage() {
+import { Link, useNavigate } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 
+export default function HomePage() {
+  const navigate = useNavigate()
+  const { t } = useTranslation("common")
+  const title = t("landing.title").split(" ")
+  
   const Tittle = (props: { color?: string }) => {
     return (
       <div className="text-4xl font-light font-sans">
-        <span className={`font-extrabold ${props.color}`}>PRU</span>
-        <span>Lindungi</span>
-        <p>Syariah</p>
+        <span className={`font-extrabold ${props.color}`}>{title[0]}</span>
+        <span>{title[1]}</span>
+        <p>{title[2]}</p>
       </div>
     );
   };
 
   return (
-    <div className="">
+    <div>
       <div className="relative">
         <img
           src={bannerLanding}
-          alt={'imageAlt'}
+          alt={'image.banner'}
           className="block w-full object-cover"
           loading="lazy"
         />
         <div className="relative w-full h-32 bg-cover bg-center bg-[#F7F7F7]"></div>
         <div className="absolute right-0 bottom-[70px]">
           <div className="bg-white pl-5 pr-16 py-10 rounded-l-lg">
-            <div className="font-semibold">Asuransi Jiwa</div>
+            <div className="font-semibold">{t("landing.lifeInsurance")}</div>
             <Tittle color="text-red-600" />
-            <div className="text-base leading-7 text-foreground/80">Asuransi Kecelakaan Syariah</div>
+            <div className="text-base leading-7 text-foreground/80">{t("landing.subTittle")}</div>
             <Button
               className={cn("text-white bg-red-600 font-medium rounded-full text-lg px-5 py-2.5 text-center me-2 mb-2 mt-5")}
+              onClick={() => navigate("/register")}
             >
-              Daftar sekarang
+              {t("landing.registerNow")}
             </Button>
           </div>
         </div>
@@ -43,7 +49,7 @@ export default function HomePage() {
         <div className="mb-10">
           <img
             src={itemLanding}
-            alt={'imageAlt'}
+            alt={'image.item'}
             className="block w-full aspect-[16/9] object-cover"
             loading="lazy"
           />
@@ -52,21 +58,19 @@ export default function HomePage() {
       <div className="p-4">
         <Tittle />
         <p className="text-base leading-7 text-foreground/80 mt-3">
-          Asuransi Jiwa PRULindungi Syariah (PRULindungi Syariah) adalah produk asuransi jiwa tradisional dari PT Prudential
-          Sharia Life Assurance (Prudential Syariah) dengan perlindungan Manfaat Dasar Meninggal Dunia yang dilengkapi dengan
-          tambahan Manfaat Pilihan untuk melengkapi perlindungan jiwa Anda atas risiko Kecelakaan.
+          {t("landing.desc")}
         </p>
         <div className="mt-5 mb-5">
           <Link
-              to={''}
-              className="inline-flex items-center gap-2 font-semibold group"
-              aria-label={`Selengkapnya`}
+            to={'/pdf/check-replay'}
+            className="inline-flex items-center gap-2 font-semibold group"
+            aria-label={`Selengkapnya`}
           >
-              <span>Cek RIPLAY Umum</span>
-              <IoArrowForwardOutline
-                  aria-hidden
-                  className="text-[#E30613] text-[20px] shrink-0 transition-transform group-hover:translate-x-0.5"
-              />
+            <span>{t("landing.checkRiplay")}</span>
+            <IoArrowForwardOutline
+                aria-hidden
+                className="text-[#E30613] text-[20px] shrink-0 transition-transform group-hover:translate-x-0.5"
+            />
           </Link>
         </div>
       </div>
