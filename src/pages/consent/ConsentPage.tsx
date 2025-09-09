@@ -10,6 +10,7 @@ import { Form, FormField, FormItem, FormControl, FormMessage } from "@/component
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import MedalSilver from "@/assets/Medal Silver 1.png"
+import FixedBottomBar from "@/components/common/FixedBottomBar"
 
 type SummaryData = {
     nik: string
@@ -328,26 +329,28 @@ export default function ConsentPage() {
                                     />
                                 </div>
                             </section>
-                            <div className="fixed inset-x-0 bottom-0 bg-white border-t pt-3 pb-[calc(16px+env(safe-area-inset-bottom))] shadow-[0_-6px_20px_rgba(0,0,0,0.08)]">
-                                <div className="px-4 space-y-3">
-                                    <Button
-                                        form={FORM_ID}
-                                        type="submit"
-                                        disabled={!canSubmit}
-                                        className="w-full h-12 rounded-[16px] bg-[#6AC3BE] hover:bg-[#5ab6b1] text-white text-base font-semibold disabled:bg-[#BDBDBD]"
-                                    >
-                                        {t("consent.ctaAgree")}
-                                    </Button>
-                                    <button
-                                        type="button"
-                                        onClick={() => navigate(-1)}
-                                        className="w-full h-12 rounded-[16px] text-base font-semibold text-[#222]"
-                                        aria-label={t("consent.ctaBack")}
-                                    >
-                                        {t("consent.ctaBack")}
-                                    </button>
+                            <FixedBottomBar>
+                                <div className="bg-white border-t pt-3 pb-[calc(16px+env(safe-area-inset-bottom))] shadow-[0_-6px_20px_rgba(0,0,0,0.08)]">
+                                    <div className="px-4 space-y-3">
+                                        <Button
+                                            form={FORM_ID}
+                                            type="submit"
+                                            disabled={!canSubmit}
+                                            className="w-full h-12 rounded-[16px] bg-[#6AC3BE] hover:bg-[#5ab6b1] text-white text-base font-semibold disabled:bg-[#BDBDBD]"
+                                        >
+                                            {t("consent.ctaAgree")}
+                                        </Button>
+                                        <button
+                                            type="button"
+                                            onClick={() => navigate(-1)}
+                                            className="w-full h-12 rounded-[16px] text-base font-semibold text-[#222]"
+                                            aria-label={t("consent.ctaBack")}
+                                        >
+                                            {t("consent.ctaBack")}
+                                        </button>
+                                    </div>
                                 </div>
-                            </div>
+                            </FixedBottomBar>
                         </form>
                     </Form>
                 </CardContent>
