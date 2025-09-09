@@ -77,92 +77,92 @@ export type ProductDetail = {
 export const productList: ProductListItem[] = [
   {
     productId: 1,
-    productName: "PRU Care Silver",
+    productName: "Kecelakaan",
     micrositeId: "uob",
-    productCode: "PRUCARE_S",
-    image: "/images/products/prucare-silver.png",
-    desc: "Perlindungan dasar kesehatan dengan premi terjangkau.",
+    productCode: "ACC",
+    image: AccidentImg,
+    desc: "Perlindungan atas risiko meninggal dunia akibat kecelakaan.",
   },
   {
     productId: 2,
-    productName: "PRU Care Gold",
+    productName: "Cacat Total Akibat Kecelakaan",
     micrositeId: "uob",
-    productCode: "PRUCARE_G",
-    image: "/images/products/prucare-gold.png",
-    desc: "Perlindungan kesehatan komprehensif untuk keluarga.",
-  },
-  {
-    productId: 3,
-    productName: "PRU Care Platinum",
-    micrositeId: "uob",
-    productCode: "PRUCARE_P",
-    image: "/images/products/prucare-platinum.png",
-    desc: "Perlindungan maksimal dengan manfaat premium.",
+    productCode: "CTAK",
+    image: AccidentImg,
+    desc: "Perlindungan atas risiko cacat total yang disebabkan oleh kecelakaan.",
   },
 ]
 
 export const productDetails: Record<string, ProductDetail> = {
-  PRUCARE_S: {
-    productCode: "PRUCARE_S",
-    productName: "PRU Care Silver",
-    desc: "Paket Silver dengan manfaat dasar.",
+  ACC: {
+    productCode: "ACC",
+    productName: "Kecelakaan",
+    desc: "Perlindungan atas risiko meninggal dunia akibat kecelakaan.",
     terms: [
       { termId: 101, term: 6, termUnit: "M" },
       { termId: 102, term: 12, termUnit: "M" },
     ],
     packages: [
       {
-        packageId: 201,
+        packageId: 1101,
         packageName: "Silver",
         packageCode: "SIL",
         benefits: [
-          { benefCode: "IPD", benefName: "Rawat Inap", benefAmount: 10000000, benefType: "LIMIT" },
-          { benefCode: "OPD", benefName: "Rawat Jalan", benefAmount: 2000000, benefType: "LIMIT" },
+          { benefCode: "DEATH_ACC", benefName: "Manfaat meninggal dunia akibat kecelakaan", benefAmount: 18000000, benefType: "LIMIT" },
+        ],
+      },
+      {
+        packageId: 1102,
+        packageName: "Gold",
+        packageCode: "GLD",
+        benefits: [
+          { benefCode: "DEATH_ACC", benefName: "Manfaat meninggal dunia akibat kecelakaan", benefAmount: 36000000, benefType: "LIMIT" },
+        ],
+      },
+      {
+        packageId: 1103,
+        packageName: "Platinum",
+        packageCode: "PLT",
+        benefits: [
+          { benefCode: "DEATH_ACC", benefName: "Manfaat meninggal dunia akibat kecelakaan", benefAmount: 54000000, benefType: "LIMIT" },
         ],
       },
     ],
   },
-  PRUCARE_G: {
-    productCode: "PRUCARE_G",
-    productName: "PRU Care Gold",
-    desc: "Paket Gold dengan manfaat lebih lengkap.",
+  CTAK: {
+    productCode: "CTAK",
+    productName: "Cacat Total Akibat Kecelakaan",
+    desc: "Perlindungan atas risiko cacat total yang disebabkan oleh kecelakaan.",
     terms: [
       { termId: 103, term: 6, termUnit: "M" },
       { termId: 104, term: 12, termUnit: "M" },
     ],
     packages: [
       {
-        packageId: 202,
+        packageId: 1201,
+        packageName: "Silver",
+        packageCode: "SIL",
+        benefits: [
+          { benefCode: "TOTAL_DISABILITY_ACC", benefName: "Manfaat cacat total akibat kecelakaan", benefAmount: 6000000, benefType: "LIMIT" },
+        ],
+      },
+      {
+        packageId: 1202,
         packageName: "Gold",
         packageCode: "GLD",
         benefits: [
-          { benefCode: "IPD", benefName: "Rawat Inap", benefAmount: 20000000, benefType: "LIMIT" },
-          { benefCode: "OPD", benefName: "Rawat Jalan", benefAmount: 5000000, benefType: "LIMIT" },
-          { benefCode: "MTR", benefName: "Maternity", benefAmount: 3000000, benefType: "LIMIT" },
+          { benefCode: "TOTAL_DISABILITY_ACC", benefName: "Manfaat cacat total akibat kecelakaan", benefAmount: 12000000, benefType: "LIMIT" },
         ],
       },
-    ],
-  },
-  PRUCARE_P: {
-    productCode: "PRUCARE_P",
-    productName: "PRU Care Platinum",
-    desc: "Paket Platinum dengan manfaat premium.",
-    terms: [
-      { termId: 105, term: 6, termUnit: "M" },
-      { termId: 106, term: 12, termUnit: "M" },
-    ],
-    packages: [
       {
-        packageId: 203,
+        packageId: 1203,
         packageName: "Platinum",
         packageCode: "PLT",
         benefits: [
-          { benefCode: "IPD", benefName: "Rawat Inap", benefAmount: 50000000, benefType: "LIMIT" },
-          { benefCode: "OPD", benefName: "Rawat Jalan", benefAmount: 10000000, benefType: "LIMIT" },
-          { benefCode: "MTR", benefName: "Maternity", benefAmount: 7000000, benefType: "LIMIT" },
-          { benefCode: "DNT", benefName: "Perawatan Gigi", benefAmount: 3000000, benefType: "LIMIT" },
+          { benefCode: "TOTAL_DISABILITY_ACC", benefName: "Manfaat cacat total akibat kecelakaan", benefAmount: 24000000, benefType: "LIMIT" },
         ],
       },
     ],
   },
 }
+import AccidentImg from "@/assets/accident.png"

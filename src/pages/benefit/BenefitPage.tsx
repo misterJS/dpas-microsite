@@ -8,8 +8,8 @@ export default function BenefitPage() {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl">{t("content.products")}</h1>
-      {isLoading && <div className="p-2">Loading…</div>}
-      {isError && <div className="p-2 text-red-600">Gagal memuat produk</div>}
+      {isLoading && <div className="p-2">{t("status.loading")}</div>}
+      {isError && <div className="p-2 text-red-600">{t("status.loadProductsFailed")}</div>}
       {products?.map((p) => (
         <BenefitCard
           key={p.productCode}
@@ -17,7 +17,7 @@ export default function BenefitPage() {
           description={p.desc}
           imageSrc={p.image}
           href={`/products/${p.productCode}`}
-          buttonTitle="Selengkapnya"
+          buttonTitle={t("actions.readMore")}
         />
       ))}
     </div>

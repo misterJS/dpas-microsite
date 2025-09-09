@@ -64,7 +64,7 @@ export default function HomePage() {
           <Link
             to={'/pdf/check-replay'}
             className="inline-flex items-center gap-2 font-semibold group"
-            aria-label={`Selengkapnya`}
+            aria-label={t("actions.readMore")}
           >
             <span>{t("landing.checkRiplay")}</span>
             <IoArrowForwardOutline
