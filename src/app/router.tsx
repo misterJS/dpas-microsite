@@ -1,6 +1,7 @@
 import { lazy } from "react"
 import { createBrowserRouter, type RouteObject } from "react-router-dom"
 import RootLayout from "./layout/RootLayout"
+import DetailPdf from "@/pages/pdf/DetailPdf"
 
 const HomePage = lazy(() => import("@/pages/home/HomePage"))
 const BenefitPage = lazy(() => import("@/pages/benefit/BenefitPage"))
@@ -18,6 +19,7 @@ export const routes: RouteObject[] = [
       { path: "/", element: <HomePage /> },
       { path: "/benefit", element: <BenefitPage /> },
       { path: "/benefit/:id", element: <BenefitDetailPage /> },
+      { path: "/pdf/:type", element: <DetailPdf /> },
       { path: "/register", element: <RegisterPage /> },
       { path: "/health-question", element: <HealthQuestionsPage /> },
       { path: "/riplay", element: <RiplayPage /> },

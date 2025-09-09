@@ -264,5 +264,13 @@
       "ackNo": "Tidak, Saya belum membaca dan memahami.",
       "required": "Wajib dipilih"
     }
+  },
+  "landing": {
+    "title": "PRU Lindungi Syariah",
+    "subTittle": "Asuransi Kecelakaan Syariah",
+    "desc": "Asuransi Jiwa PRULindungi Syariah (PRULindungi Syariah) adalah produk asuransi jiwa tradisional dari PT Prudential Sharia Life Assurance (Prudential Syariah) dengan perlindungan Manfaat Dasar Meninggal Dunia yang dilengkapi dengan tambahan Manfaat Pilihan untuk melengkapi perlindungan jiwa Anda atas risiko Kecelakaan.",
+    "lifeInsurance": "Asuransi Jiwa",
+    "registerNow": "Daftar sekarang",
+    "checkRiplay": "Cek RIPLAY Umum"
   }
 }
