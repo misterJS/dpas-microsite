@@ -81,7 +81,7 @@ export const productList: ProductListItem[] = [
     micrositeId: "uob",
     productCode: "ACC",
     image: AccidentImg,
-    desc: "Perlindungan atas risiko meninggal dunia akibat kecelakaan.",
+    desc: "Perlindungan yang mengutamakan Manfaat Meninggal Dunia Akibat Kecelakaan, dengan Santunan Asuransi atas risiko meninggal dunia yang diakibatkan oleh Kecelakaan hingga Rp54.000.000",
   },
   {
     productId: 2,
@@ -89,7 +89,7 @@ export const productList: ProductListItem[] = [
     micrositeId: "uob",
     productCode: "CTAK",
     image: AccidentImg,
-    desc: "Perlindungan atas risiko cacat total yang disebabkan oleh kecelakaan.",
+    desc: "Perlindungan yang mengutamakan Manfaat Cacat Total Akibat Kecelakaan, dengan Santunan Asuransi atas risiko Cacat Total yang diakibatkan oleh Kecelakaan hingga Rp54.000.000.",
   },
 ]
 
@@ -97,7 +97,7 @@ export const productDetails: Record<string, ProductDetail> = {
   ACC: {
     productCode: "ACC",
     productName: "Kecelakaan",
-    desc: "Perlindungan atas risiko meninggal dunia akibat kecelakaan.",
+    desc: "Perlindungan yang mengutamakan Manfaat Meninggal Dunia Akibat Kecelakaan, dengan Santunan Asuransi atas risiko meninggal dunia yang diakibatkan oleh Kecelakaan hingga Rp54.000.000",
     terms: [
       { termId: 101, term: 6, termUnit: "M" },
       { termId: 102, term: 12, termUnit: "M" },
@@ -132,7 +132,7 @@ export const productDetails: Record<string, ProductDetail> = {
   CTAK: {
     productCode: "CTAK",
     productName: "Cacat Total Akibat Kecelakaan",
-    desc: "Perlindungan atas risiko cacat total yang disebabkan oleh kecelakaan.",
+    desc: "Santunan asuransi, memastikan dukungan finansial di saat yang tak terduga",
     terms: [
       { termId: 103, term: 6, termUnit: "M" },
       { termId: 104, term: 12, termUnit: "M" },
