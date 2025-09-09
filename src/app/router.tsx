@@ -16,8 +16,8 @@ export const routes: RouteObject[] = [
     element: <RootLayout />,
     children: [
       { path: "/", element: <HomePage /> },
-      { path: "/benefit", element: <BenefitPage /> },
-      { path: "/benefit/:id", element: <BenefitDetailPage /> },
+      { path: "/products", element: <BenefitPage /> },
+      { path: "/products/:id", element: <BenefitDetailPage /> },
       { path: "/register", element: <RegisterPage /> },
       { path: "/health-question", element: <HealthQuestionsPage /> },
       { path: "/riplay", element: <RiplayPage /> },

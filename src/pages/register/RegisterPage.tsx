@@ -552,7 +552,7 @@ export default function RegisterPage() {
                             </Button>
 
                             <Link
-                                to={'/benefit/1'}
+                                to={'/products/1'}
                                 className="text-center items-center font-semibold"
                                 aria-label={"backward-page"}
                             >

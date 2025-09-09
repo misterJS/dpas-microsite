@@ -1,19 +1,27 @@
 import BenefitCard from "@/components/cards/BenefitCards"
 import { useTranslation } from "react-i18next"
 import BenefitDetailForm from "./BenefitDetailForm"
+import { useParams } from "react-router-dom"
+import { useProductDetail } from "@/hooks/useProducts"
 
 export default function BenefitDetailPage () {
     const { t } = useTranslation("common")
+    const { id } = useParams()
+    const { data: detail, isLoading, isError } = useProductDetail("uob", id)
     return (
         <div className="space-y-6">
             <h1 className="text-2xl mt-8">{t("content.protectKind")}</h1>
-            <BenefitCard
-                title="Accident"
-                description="Klaim Cacat Total hanya dapat dilakukan 1 kali untuk 1 jenis Cacat Total dan Manfaat Asuransi Cacat Total berakhir."
-                imageSrc={undefined}
-                href="/benefit"
-                buttonTitle="Ubah jenis perlindungan"
-            />
+            {isLoading && <div className="p-2">Loading…</div>}
+            {isError && <div className="p-2 text-red-600">Gagal memuat detail produk</div>}
+            {detail && (
+                <BenefitCard
+                    title={detail.productName}
+                    description={detail.desc}
+                    imageSrc={undefined}
+                    href="/products"
+                    buttonTitle="Ubah jenis perlindungan"
+                />
+            )}
             <BenefitDetailForm />
         </div>
     )

@@ -47,4 +47,44 @@ export const handlers = [
     const body = await request.json()
     return HttpResponse.json({ ok: true, received: body })
   }),
+
+  // PRODUCTS
+  http.get(url("/microsite/:slug/products"), ({ request }) => {
+    const u = new URL(request.url)
+    const path = u.pathname
+    const m = path.match(/\/microsite\/([^/]+)\/products/i)
+    const slug = m?.[1]
+    const search = (u.searchParams.get("search") ?? "").toLowerCase()
+
+    let items = mock.productList
+    if (slug) items = items.filter((p) => p.micrositeId === slug)
+    if (search) {
+      items = items.filter(
+        (p) =>
+          p.productName.toLowerCase().includes(search) ||
+          p.productCode.toLowerCase().includes(search) ||
+          p.desc.toLowerCase().includes(search)
+      )
+    }
+
+    return HttpResponse.json({
+      responseCode: "00",
+      responseMessage: "OK",
+      data: items,
+    })
+  }),
+
+  http.get(url("/microsite/:slug/products/:productCode"), ({ request }) => {
+    const u = new URL(request.url)
+    const path = u.pathname
+    const m = path.match(/\/microsite\/([^/]+)\/products\/([^/]+)/i)
+    const productCode = m?.[2]
+    const detail = productCode ? mock.productDetails[productCode] : undefined
+
+    return HttpResponse.json({
+      responseCode: "00",
+      responseMessage: detail ? "OK" : "NOT_FOUND",
+      data: { products: detail ? [detail] : [] },
+    })
+  }),
 ]
