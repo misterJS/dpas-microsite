@@ -23,4 +23,5 @@ export default {
     '!<rootDir>/src/assets/**',
   ],
   coveragePathIgnorePatterns: ['/node_modules/'],
+  coverageReporters: ['text', 'text-summary', 'lcovonly'],
 };
