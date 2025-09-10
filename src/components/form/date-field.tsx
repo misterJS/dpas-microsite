@@ -1,6 +1,7 @@
 import * as React from "react"
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
+import type { DayPickerProps } from "react-day-picker"
 import { cn } from "@/lib/utils"
 import { FormControl, FormItem, FormLabel, FormMessage, useFormField } from "@/components/ui/form"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -13,6 +14,12 @@ type Props = {
   onChange?: (d?: Date) => void
   wrapperClassName?: string
   requiredMark?: boolean
+  // Pass-through configuration for the calendar (month/year dropdowns, limits, etc.)
+  captionLayout?: DayPickerProps["captionLayout"]
+  fromYear?: DayPickerProps["fromYear"]
+  toYear?: DayPickerProps["toYear"]
+  disabled?: DayPickerProps["disabled"]
+  defaultMonth?: DayPickerProps["defaultMonth"]
 }
 
 export function DateField({
@@ -21,9 +28,20 @@ export function DateField({
   onChange,
   wrapperClassName,
   requiredMark,
+  captionLayout,
+  fromYear,
+  toYear,
+  disabled,
+  defaultMonth,
 }: Props) {
   const [open, setOpen] = React.useState(false)
   useFormField()
+
+  const now = React.useMemo(() => new Date(), [])
+  const finalToYear = toYear ?? now.getFullYear()
+  const finalFromYear = fromYear ?? finalToYear - 100
+  const finalDefaultMonth = defaultMonth ?? value ?? new Date(finalToYear - 30, 0, 1)
+  const finalDisabled = disabled ?? { after: now }
 
   return (
     <FormItem className="space-y-0">
@@ -58,6 +76,11 @@ export function DateField({
                   onChange?.(d)
                   if (d) setOpen(false)
                 }}
+                captionLayout={captionLayout ?? "dropdown"}
+                fromYear={finalFromYear}
+                toYear={finalToYear}
+                defaultMonth={finalDefaultMonth}
+                disabled={finalDisabled}
                 initialFocus
               />
             </PopoverContent>

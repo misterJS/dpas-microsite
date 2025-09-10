@@ -11,16 +11,16 @@ export const useCities = (province?: string) =>
     enabled: !!province,
   })
 
-export const useDistricts = (city?: string) =>
+export const useDistricts = (province?: string, city?: string) =>
   useQuery({
-    queryKey: ["districts", city],
-    queryFn: () => getDistricts(city!),
-    enabled: !!city,
+    queryKey: ["districts", province, city],
+    queryFn: () => getDistricts(province!, city!),
+    enabled: !!province && !!city,
   })
 
-export const useSubdistricts = (district?: string) =>
+export const useSubdistricts = (province?: string, city?: string, district?: string) =>
   useQuery({
-    queryKey: ["subdistricts", district],
-    queryFn: () => getSubdistricts(district!),
-    enabled: !!district,
+    queryKey: ["subdistricts", province, city, district],
+    queryFn: () => getSubdistricts(province!, city!, district!),
+    enabled: !!province && !!city && !!district,
   })

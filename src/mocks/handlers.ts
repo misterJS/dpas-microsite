@@ -88,6 +88,17 @@ export const handlers = [
     })
   }),
 
+  // BANK BRANCHES (spec)
+  http.get(url("/microsite/:slug/bank-branches"), () => {
+    const data = (mock.branches || []).map(b => ({
+      branchId: b.code,
+      descItem: b.name,
+      shortDesc: b.name,
+      longDesc: b.name,
+    }))
+    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
+  }),
+
   // PREMIUM COMPUTE
   http.post(url("/microsite/:slug/compute-premium"), async ({ request }) => {
     const body = (await request.json()) as {
@@ -132,5 +143,38 @@ export const handlers = [
       subdistrict: [{ subdistrictId: "gunung", subdistrictName: "Kel. Gunung" }],
     }
     return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data: res })
+  }),
+
+  // LOCATION CHAIN (spec)
+  http.get(url("/microsite/province"), () => {
+    const data = (mock.provinces || []).map(p => ({ provinceId: p.code, provinceName: p.name }))
+    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
+  }),
+  http.get(url("/microsite/province/:provinceId/city"), ({ params }) => {
+    const prov = String(params.provinceId ?? "")
+    const items = mock.cities[prov] || []
+    const data = items.map(c => ({ cityId: c.code, cityName: c.name }))
+    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
+  }),
+  http.get(url("/microsite/province/:provinceId/city/:cityId/district"), ({ params }) => {
+    const city = String(params.cityId ?? "")
+    const items = mock.districts[city] || []
+    const data = items.map(d => ({ districtId: d.code, districtName: d.name }))
+    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
+  }),
+  http.get(url("/microsite/province/:provinceId/city/:cityId/district/:districtId/subdistrict"), ({ params }) => {
+    const dist = String(params.districtId ?? "")
+    const items = mock.subdistricts[dist] || []
+    const data = items.map(s => ({ subdistrictId: s.code, subdistrictName: s.name }))
+    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
+  }),
+
+  // HEALTH QUESTIONS (spec minimal mock)
+  http.get(url("/microsite/:slug/product/:productCode/question"), () => {
+    const data = [
+      { questionId: "Q1", questionCode: "HEALTH_Q1", questionText: "Apakah pernah dirawat?", questionAnswerType: "YES_NO" },
+      { questionId: "Q2", questionCode: "HEALTH_Q2", questionText: "Apakah merokok?", questionAnswerType: "YES_NO" },
+    ]
+    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
   }),
 ]

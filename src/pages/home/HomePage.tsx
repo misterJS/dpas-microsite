@@ -37,7 +37,7 @@ export default function HomePage() {
             <div className="text-base leading-7 text-foreground/80">{t("landing.subTittle")}</div>
             <Button
               className={cn("text-white bg-red-600 font-medium rounded-full text-lg px-5 py-2.5 text-center me-2 mb-2 mt-5")}
-              onClick={() => navigate("/register")}
+              onClick={() => navigate("/registration-form")}
             >
               {t("landing.registerNow")}
             </Button>

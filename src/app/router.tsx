@@ -20,7 +20,7 @@ export const routes: RouteObject[] = [
       { path: "/products", element: <BenefitPage /> },
       { path: "/products/:id", element: <BenefitDetailPage /> },
       { path: "/pdf/:type", element: <DetailPdf /> },
-      { path: "/register", element: <RegisterPage /> },
+      { path: "/registration-form", element: <RegisterPage /> },
       { path: "/health-question", element: <HealthQuestionsPage /> },
       { path: "/riplay", element: <RiplayPage /> },
       { path: "/consent", element: <ConsentPage /> },

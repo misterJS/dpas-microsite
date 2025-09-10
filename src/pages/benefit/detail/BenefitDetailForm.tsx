@@ -50,7 +50,7 @@ export default function BenefitDetailForm({ detail, productCode, slug = "uob" }:
 
     const onSubmit = (values: FormValues) => {
         console.log("Submit:", values)
-        navigate('/register')
+        navigate('/registration-form')
     }
     const [open, setOpen] = useState(false)
     const startY = useRef<number | null>(null)

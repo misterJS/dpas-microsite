@@ -92,30 +92,63 @@ export default function RegisterPage() {
 
     const { data: provinces = [] } = useProvinces()
     const { data: cities = [] } = useCities(province)
-    const { data: districts = [] } = useDistricts(city)
-    const { data: subdistricts = [] } = useSubdistricts(district)
+    const { data: districts = [] } = useDistricts(province, city)
+    const { data: subdistricts = [] } = useSubdistricts(province, city, district)
     const { data: branches = [] } = useBranches()
     const { data: jobs = [] } = useJobs()
     const { data: salaries = [] } = useSalaries()
     const postalCode = form.watch("postalCode")
     const { data: zip } = useZipLookup(postalCode)
 
+    // Autofill cascade from ZIP lookup, step-by-step to wait data dependencies
     React.useEffect(() => {
         if (!zip) return
-        const p = zip.province?.[0]?.provinceId as any
-        const c = zip.city?.[0]?.cityId as any
-        const d = zip.district?.[0]?.districtId as any
-        const s = zip.subdistrict?.[0]?.subdistrictId as any
+        const p = zip.province?.[0]?.provinceId as Province | undefined
+        if (!p) return
         const curr = form.getValues()
-        const next = {
-            ...curr,
-            province: p ?? curr.province,
-            city: c ?? curr.city,
-            district: d ?? curr.district,
-            subdistrict: s ?? curr.subdistrict,
-        } as Partial<FormValues>
-        form.reset(next, { keepDirtyValues: true, keepErrors: true })
+        if (curr.province !== p) {
+            form.setValue("province", p as Province, { shouldDirty: true, shouldTouch: true })
+        }
     }, [zip])
+
+    React.useEffect(() => {
+        if (!zip) return
+        const c = zip.city?.[0]?.cityId as City | undefined
+        if (!c) return
+        // Wait until cities for current province are loaded, then set
+        if (cities.length > 0 && cities.some(v => v.code === c)) {
+            const curr = form.getValues()
+            if (curr.city !== c) {
+                form.setValue("city", c as City, { shouldDirty: true, shouldTouch: true })
+            }
+        }
+    }, [zip, cities])
+
+    React.useEffect(() => {
+        if (!zip) return
+        const d = zip.district?.[0]?.districtId as District | undefined
+        if (!d) return
+        // Wait until districts for current city are loaded, then set
+        if (districts.length > 0 && districts.some(v => v.code === d)) {
+            const curr = form.getValues()
+            if (curr.district !== d) {
+                form.setValue("district", d as District, { shouldDirty: true, shouldTouch: true })
+            }
+        }
+    }, [zip, districts])
+
+    React.useEffect(() => {
+        if (!zip) return
+        const s = zip.subdistrict?.[0]?.subdistrictId as Subdistrict | undefined
+        if (!s) return
+        // Wait until subdistricts for current district are loaded, then set
+        if (subdistricts.length > 0 && subdistricts.some(v => v.code === s)) {
+            const curr = form.getValues()
+            if (curr.subdistrict !== s) {
+                form.setValue("subdistrict", s as Subdistrict, { shouldDirty: true, shouldTouch: true })
+            }
+        }
+    }, [zip, subdistricts])
 
     return (
         <div className="space-y-6">

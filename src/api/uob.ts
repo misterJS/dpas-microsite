@@ -19,9 +19,9 @@ export async function getProductDetail(slug: string, productCode: string) {
 
 // PREMIUM
 export async function computePremium(slug: string, body: ComputePremiumReq) {
-  const { data } = await api.get<ApiEnvelope<ComputePremiumRes>>(
+  const { data } = await api.post<ApiEnvelope<ComputePremiumRes>>(
     `/microsite/${slug}/compute-premium`,
-    { data: body }
+    body
   );
   return data.data;
 }
