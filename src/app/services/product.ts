@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import type { ApiEnvelope, ProductDetail, ProductListItem } from "@/api/types";
+import type { ApiEnvelope, ProductDetail, ProductListItem, ComputePremiumReq, ComputePremiumRes } from "@/api/types";
 
 export const getProducts = async (
   slug: string,
@@ -22,3 +22,13 @@ export const getProductDetail = async (
   return data.data.products?.[0];
 };
 
+export const computePremium = async (
+  slug: string,
+  body: ComputePremiumReq
+): Promise<ComputePremiumRes> => {
+  const { data } = await api.post<ApiEnvelope<ComputePremiumRes>>(
+    `/microsite/${slug}/compute-premium`,
+    body
+  );
+  return data.data;
+};

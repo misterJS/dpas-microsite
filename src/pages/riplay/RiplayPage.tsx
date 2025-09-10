@@ -29,7 +29,7 @@ export default function RiplayPage() {
         <div className="px-4">
           <Button
             className="w-full h-14 rounded-[20px] bg-[#6AC3BE] hover:bg-[#5ab6b1] text-white text-xl font-semibold"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/consent")}
           >
             {t("riplay.cta")}
           </Button>

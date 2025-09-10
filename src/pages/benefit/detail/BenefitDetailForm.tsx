@@ -1,4 +1,4 @@
-import { useRef, useState } from "react"
+import { useRef, useState, useMemo } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -25,6 +25,8 @@ import {
 import FixedBottomBar from "@/components/common/FixedBottomBar"
 import { useNavigate } from "react-router-dom"
 import { FloatingSelect } from "@/components/form/floating-select"
+import type { ProductDetail } from "@/api/types"
+import { useComputePremium } from "@/hooks/useProducts"
 
 const schema = z.object({
     planType: z.enum(["silver", "gold", "platinum"], { message: "Pilih paket" }),
@@ -33,7 +35,9 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>
 
-export default function BenefitDetailForm() {
+type Props = { detail?: ProductDetail; productCode?: string; slug?: string }
+
+export default function BenefitDetailForm({ detail, productCode, slug = "uob" }: Props) {
     const { t } = useTranslation("common")
     const navigate = useNavigate()
     const form = useForm<FormValues>({
@@ -61,10 +65,28 @@ export default function BenefitDetailForm() {
             startY.current = null
         }
     }
-    const planLabel =
-        form.watch("planType") ? t(`form.plan.${form.watch("planType")}`) : t("form.plan.silver")
-    const termLabel =
-        form.watch("coverage") === "12" ? t("form.coverage_12months") : t("form.coverage_6months")
+    const planValue = form.watch("planType")
+    const planLabel = planValue ? t(`form.plan.${planValue}`) : t("form.plan.silver")
+    const termValue = form.watch("coverage")
+    const termLabel = termValue === "12" ? t("form.coverage_12months") : t("form.coverage_6months")
+
+    const selected = useMemo(() => {
+        const codeMap: Record<string, string> = { silver: "SIL", gold: "GLD", platinum: "PLT" }
+        const pkg = detail?.packages.find(p => p.packageCode.toUpperCase() === codeMap[planValue ?? ""])
+        const termNum = termValue ? Number(termValue) : undefined
+        const term = detail?.terms.find(t => t.term === termNum)
+        return { pkg, term }
+    }, [detail, planValue, termValue])
+
+    const { data: premium } = useComputePremium(
+        slug,
+        selected.pkg && selected.term && productCode
+            ? { productCode: productCode!, packageId: selected.pkg.packageId, policyTermId: selected.term.termId }
+            : undefined
+    )
+
+    const fmtIDR = (n?: number | string) =>
+        n == null ? "-" : `Rp ${Number(n).toLocaleString("id-ID")}`
     const FORM_ID = "benefit-form"
     return (
         <Form {...form}>
@@ -121,6 +143,42 @@ export default function BenefitDetailForm() {
                     )}
                 />
 
+                {planValue && detail && (
+                    <section className="rounded-[12px] border p-4 space-y-3">
+                        <h2 className="text-xl font-semibold">{t("form.benefit_desc")}</h2>
+                        <p className="text-sm text-muted-foreground">{t("form.plan_desc")}</p>
+
+                        <div className="space-y-2 text-sm leading-6">
+                            <p className="font-medium">{t("form.basicBenefit")}</p>
+                            <p>
+                                {t("content.deathBenefit")} <br />
+                                {fmtIDR(3000000)}
+                            </p>
+                            {selected.pkg?.benefits?.length ? (
+                                <>
+                                    <p className="mt-3 font-medium">{t("content.addonBenefit")}</p>
+                                    {selected.pkg.benefits.map((b) => (
+                                        <p key={b.benefCode}>
+                                            {b.benefName}
+                                            <br />
+                                            {fmtIDR(b.benefAmount)}
+                                        </p>
+                                    ))}
+                                </>
+                            ) : null}
+                        </div>
+
+                        <hr className="my-2" />
+                        <div className="text-base">
+                            <p className="font-semibold">Kontribusi</p>
+                            <p>
+                                {planLabel} ({termLabel}) {" "}
+                                <span className="text-[#ED1B2E] font-medium">{fmtIDR(premium?.premiumAmount ?? 0)}</span>
+                            </p>
+                        </div>
+                    </section>
+                )}
+
                 <hr />
                 <h1 className="text-2xl">{t("form.notes_ph")}</h1>
                 <p className="text-base text-[#ED1B2E]">{t("form.product_desc")}</p>
@@ -128,6 +186,7 @@ export default function BenefitDetailForm() {
                 <p className="text-base text-[#ED1B2E]">{t("form.snk")}</p>
                 <p className="text-base text-[#ED1B2E]">{t("form.applied_claim_document")}</p>
                 <FixedBottomBar>
+                    <div className={open ? "pointer-events-none" : undefined} />
                     <button
                         type="button"
                         onClick={() => setOpen(v => !v)}
@@ -152,7 +211,8 @@ export default function BenefitDetailForm() {
                 <Sheet open={open} onOpenChange={setOpen}>
                     <SheetContent
                         side="bottom"
-                        className="p-0 rounded-t-2xl bottom-28"
+                        className="p-0 rounded-t-2xl shadow-none"
+                        style={{ bottom: "var(--fixed-bottom-bar-height, 0px)" }}
                         onTouchStart={handleTouchStart}
                         onTouchMove={handleTouchMove}
                     >

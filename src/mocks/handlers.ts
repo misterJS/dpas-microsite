@@ -87,4 +87,50 @@ export const handlers = [
       data: { products: detail ? [detail] : [] },
     })
   }),
+
+  // PREMIUM COMPUTE
+  http.post(url("/microsite/:slug/compute-premium"), async ({ request }) => {
+    const body = (await request.json()) as {
+      productCode: string
+      packageId: number | string
+      policyTermId: number | string
+    }
+
+    // Simple mock: derive premium by tier and term
+    // SIL/GLD/PLT → 6M: 18k/30k/42k, 12M: 32k/48k/72k
+    const details = mock.productDetails[body.productCode]
+    const pkg = details?.packages.find(p => String(p.packageId) === String(body.packageId))
+    const term = details?.terms.find(t => String(t.termId) === String(body.policyTermId))
+    const code = pkg?.packageCode ?? "SIL"
+    const is12 = term?.term === 12
+    const amount = (() => {
+      if (code === "PLT") return is12 ? 72000 : 42000
+      if (code === "GLD") return is12 ? 48000 : 30000
+      return is12 ? 32000 : 18000
+    })()
+
+    return HttpResponse.json({
+      responseCode: "00",
+      responseMessage: "OK",
+      data: {
+        premiumAmount: amount,
+        ujrohAmount: 0,
+        tabaruAmount: 0,
+      },
+    })
+  }),
+
+  // ZIP LOOKUP
+  http.get(url("/microsite/address-by-zip"), ({ request }) => {
+    const u = new URL(request.url)
+    const q = u.searchParams.get("q") || ""
+    // Return a deterministic address for any 5-digit input
+    const res = {
+      province: [{ provinceId: "dki", provinceName: "DKI Jakarta" }],
+      city: [{ cityId: "jaksel", cityName: "Kota Jakarta Selatan" }],
+      district: [{ districtId: "keb_baru", districtName: "Kebayoran Baru" }],
+      subdistrict: [{ subdistrictId: "gunung", subdistrictName: "Kel. Gunung" }],
+    }
+    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data: res })
+  }),
 ]
