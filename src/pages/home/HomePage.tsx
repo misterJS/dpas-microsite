@@ -2,7 +2,7 @@ import { bannerLanding, itemLanding } from "@/assets"
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button"
 import { IoArrowForwardOutline } from "react-icons/io5"
-import { Link, useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
 export default function HomePage() {
@@ -37,7 +37,8 @@ export default function HomePage() {
             <div className="text-base leading-7 text-foreground/80">{t("landing.subTittle")}</div>
             <Button
               className={cn("text-white bg-red-600 font-medium rounded-full text-lg px-5 py-2.5 text-center me-2 mb-2 mt-5")}
-              onClick={() => navigate("/registration-form")}
+              onClick={() => navigate("/products")}
+              id="registerNow"
             >
               {t("landing.registerNow")}
             </Button>
@@ -61,17 +62,18 @@ export default function HomePage() {
           {t("landing.desc")}
         </p>
         <div className="mt-5 mb-5">
-          <Link
-            to={'/pdf/check-replay'}
-            className="inline-flex items-center gap-2 font-semibold group"
-            aria-label={t("actions.readMore")}
+
+          <Button
+            className={cn("pl-0 inline-flex items-center gap-2 font-semibold text-black bg-transparent shadow-none text-base")}
+            onClick={() => navigate("/pdf/check-replay")}
+            id="checkRiplay"
           >
             <span>{t("landing.checkRiplay")}</span>
             <IoArrowForwardOutline
                 aria-hidden
                 className="text-[#E30613] text-[20px] shrink-0 transition-transform group-hover:translate-x-0.5"
             />
-          </Link>
+          </Button>
         </div>
       </div>
     </div>

@@ -5,6 +5,6 @@ export default {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '\\.(jpg|jpeg|png|gif|webp|svg)$': '<rootDir>/src/assets',
+    '\\.(jpg|jpeg|png|gif|webp|svg|pdf)$': '<rootDir>/src/assets',
   },
 };
