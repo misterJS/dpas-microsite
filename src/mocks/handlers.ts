@@ -48,7 +48,6 @@ export const handlers = [
     return HttpResponse.json({ ok: true, received: body })
   }),
 
-  // PRODUCTS
   http.get(url("/microsite/:slug/products"), ({ request }) => {
     const u = new URL(request.url)
     const path = u.pathname
@@ -68,7 +67,7 @@ export const handlers = [
     }
 
     return HttpResponse.json({
-      responseCode: "00",
+      responseCode: "200",
       responseMessage: "OK",
       data: items,
     })
@@ -82,13 +81,12 @@ export const handlers = [
     const detail = productCode ? mock.productDetails[productCode] : undefined
 
     return HttpResponse.json({
-      responseCode: "00",
+      responseCode: "200",
       responseMessage: detail ? "OK" : "NOT_FOUND",
       data: { products: detail ? [detail] : [] },
     })
   }),
 
-  // BANK BRANCHES (spec)
   http.get(url("/microsite/:slug/bank-branches"), () => {
     const data = (mock.branches || []).map(b => ({
       branchId: b.code,
@@ -96,19 +94,15 @@ export const handlers = [
       shortDesc: b.name,
       longDesc: b.name,
     }))
-    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
+    return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
   }),
 
-  // PREMIUM COMPUTE
   http.post(url("/microsite/:slug/compute-premium"), async ({ request }) => {
     const body = (await request.json()) as {
       productCode: string
       packageId: number | string
       policyTermId: number | string
     }
-
-    // Simple mock: derive premium by tier and term
-    // SIL/GLD/PLT → 6M: 18k/30k/42k, 12M: 32k/48k/72k
     const details = mock.productDetails[body.productCode]
     const pkg = details?.packages.find(p => String(p.packageId) === String(body.packageId))
     const term = details?.terms.find(t => String(t.termId) === String(body.policyTermId))
@@ -121,7 +115,7 @@ export const handlers = [
     })()
 
     return HttpResponse.json({
-      responseCode: "00",
+      responseCode: "200",
       responseMessage: "OK",
       data: {
         premiumAmount: amount,
@@ -131,50 +125,46 @@ export const handlers = [
     })
   }),
 
-  // ZIP LOOKUP
   http.get(url("/microsite/address-by-zip"), ({ request }) => {
     const u = new URL(request.url)
     const q = u.searchParams.get("q") || ""
-    // Return a deterministic address for any 5-digit input
     const res = {
       province: [{ provinceId: "dki", provinceName: "DKI Jakarta" }],
       city: [{ cityId: "jaksel", cityName: "Kota Jakarta Selatan" }],
       district: [{ districtId: "keb_baru", districtName: "Kebayoran Baru" }],
       subdistrict: [{ subdistrictId: "gunung", subdistrictName: "Kel. Gunung" }],
     }
-    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data: res })
+    return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data: res })
   }),
 
-  // LOCATION CHAIN (spec)
   http.get(url("/microsite/province"), () => {
     const data = (mock.provinces || []).map(p => ({ provinceId: p.code, provinceName: p.name }))
-    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
+    return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
   }),
   http.get(url("/microsite/province/:provinceId/city"), ({ params }) => {
     const prov = String(params.provinceId ?? "")
     const items = mock.cities[prov] || []
     const data = items.map(c => ({ cityId: c.code, cityName: c.name }))
-    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
+    return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
   }),
   http.get(url("/microsite/province/:provinceId/city/:cityId/district"), ({ params }) => {
     const city = String(params.cityId ?? "")
     const items = mock.districts[city] || []
     const data = items.map(d => ({ districtId: d.code, districtName: d.name }))
-    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
+    return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
   }),
   http.get(url("/microsite/province/:provinceId/city/:cityId/district/:districtId/subdistrict"), ({ params }) => {
     const dist = String(params.districtId ?? "")
     const items = mock.subdistricts[dist] || []
     const data = items.map(s => ({ subdistrictId: s.code, subdistrictName: s.name }))
-    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
+    return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
   }),
 
-  // HEALTH QUESTIONS (spec minimal mock)
   http.get(url("/microsite/:slug/product/:productCode/question"), () => {
     const data = [
-      { questionId: "Q1", questionCode: "HEALTH_Q1", questionText: "Apakah pernah dirawat?", questionAnswerType: "YES_NO" },
-      { questionId: "Q2", questionCode: "HEALTH_Q2", questionText: "Apakah merokok?", questionAnswerType: "YES_NO" },
+      { questionId: "Q1", questionCode: "HEALTH_Q1", questionText: "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?", questionAnswerType: "YES_NO" },
+      { questionId: "Q2", questionCode: "HEALTH_Q2", questionText: "Apakah Surat Pengajuan Asuransi Jiwa atas diri Calon Peserta Yang Diasuransikan pernah dikecualikan/ditangguhkan/ditolak/diterima dengan tingkat Kontribusi khusus?", questionAnswerType: "YES_NO" },
     ]
-    return HttpResponse.json({ responseCode: "00", responseMessage: "OK", data })
+    return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
   }),
 ]
