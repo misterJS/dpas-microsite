@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -11,6 +11,9 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 
 import MedalSilver from "@/assets/Medal Silver 1.png"
 import FixedBottomBar from "@/components/common/FixedBottomBar"
+import { useQuestions } from "@/hooks/useQuestions"
+import { SubmissionReq } from "@/api/types"
+import { useSubmissionStore } from "@/lib/store/submissionDataStore"
 
 type SummaryData = {
     nik: string
@@ -36,7 +39,7 @@ type AckValues = {
 
 export default function ConsentPage() {
     const { t } = useTranslation("common")
-
+    const { submission, setSubmissionData } = useSubmissionStore();
     const tList = (key: string): string[] => {
         const v = t(key, { returnObjects: true }) as unknown
         if (Array.isArray(v)) return v as string[]
@@ -44,6 +47,10 @@ export default function ConsentPage() {
         if (typeof v === "string") return [v]
         return []
     }
+    const [params] = useSearchParams()
+    const slug = params.get("slug") || "uob"
+    const productCode = params.get("product") || "ACC"
+    const { data: questions = [], isLoading, isError } = useQuestions(slug, productCode, 'CONSENT')
 
     const exclusionItems = tList("consent.exclusion.items")
     const shareItems = tList("consent.share.items")
@@ -94,7 +101,27 @@ export default function ConsentPage() {
         mode: "onChange",
     })
 
-    const onSubmit = () => navigate("/")
+    const watchAllField = form.watch()
+    const onSubmit = () => handleSetData()
+
+    const handleSetData = () => {
+            const dataQuestions = questions.map((value: any)=> {
+                value.questionCode = ""
+                value.answer = watchAllField.decAck1
+                return value
+            })
+    
+            const data: SubmissionReq = {
+                ...submission,
+                questionaire: {
+                    ...submission.questionaire,
+                    consent: dataQuestions,
+                } 
+            }
+            setSubmissionData(data)
+            navigate("/")
+        }
+    
 
     const canSubmit =
         form.watch("exclusionAck") === "yes" &&

@@ -9,18 +9,21 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from "@/component
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Button } from "@/components/ui/button"
 import { DialogComponent } from "@/components/common/DialogComponent"
-import { useHealthQuestions } from "@/hooks/useHealth"
+import { useQuestions } from "@/hooks/useQuestions"
+import { SubmissionReq } from "@/api/types"
+import { useSubmissionStore } from "@/lib/store/submissionDataStore"
 
 export default function HealthQuestionsPage() {
     const { t } = useTranslation("common")
     const navigate = useNavigate()
     const [params] = useSearchParams()
     const [rejectOpen, setRejectOpen] = useState(false)
+    const { submission, setSubmissionData } = useSubmissionStore();
 
     const slug = params.get("slug") || "uob"
     const productCode = params.get("product") || "ACC"
 
-    const { data: questions = [], isLoading, isError } = useHealthQuestions(slug, productCode)
+    const { data: questions = [], isLoading, isError } = useQuestions(slug, productCode, 'HEALTH_QUESTIONAIRE')
     const schema = useMemo(() => {
         const AnswerEnum = z.enum(["ya", "tidak"] as const, { message: t("health.required") })
         const shape: Record<string, typeof AnswerEnum> = {}
@@ -37,7 +40,25 @@ export default function HealthQuestionsPage() {
     const onSubmit = (v: z.infer<typeof schema>) => {
         const notQualified = Object.values(v as Record<string, string>).some((ans) => ans === "ya")
         if (notQualified) setRejectOpen(true)
-        else navigate("/riplay")
+        else handleSetData(v)
+    }
+
+    const handleSetData = (v: any) => {
+        const dataQuestions = questions.map((value: any)=> {
+            value.questionCode = ""
+            value.answer = v[value.questionId]
+            return value
+        })
+
+        const data: SubmissionReq = {
+            ...submission,
+            questionaire: {
+                ...submission.questionaire,
+                healthQuestionnaire: dataQuestions,
+            } 
+        }
+        setSubmissionData(data)
+        navigate("/pdf?type=riplay")
     }
 
     return (
