@@ -65,7 +65,7 @@ export default function HomePage() {
 
           <Button
             className={cn("pl-0 inline-flex items-center gap-2 font-semibold text-black bg-transparent shadow-none text-base")}
-            onClick={() => navigate("/pdf/check-replay")}
+            onClick={() => navigate("/pdf?type=check-riplay")}
             id="checkRiplay"
           >
             <span>{t("landing.checkRiplay")}</span>

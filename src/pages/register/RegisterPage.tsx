@@ -16,6 +16,8 @@ import { RHFTextField, RHFSelectField, RHFPhoneField, RHFDateField } from "@/com
 import { cn } from "@/lib/utils"
 import { Info } from "lucide-react"
 import { Link, useNavigate } from "react-router-dom"
+import { useSubmissionStore } from "@/lib/store/submissionDataStore"
+import { SubmissionReq } from "@/api/types"
 
 
 const PLAN_VALUES = ["silver", "gold", "platinum"] as const
@@ -75,15 +77,45 @@ const SectionTitle = ({ children }: { children: React.ReactNode }) => (
 export default function RegisterPage() {
     const { t } = useTranslation("common")
     const navigate = useNavigate()
-
+    const { submission, setSubmissionData } = useSubmissionStore();
     const form = useForm<FormValues>({
         resolver: zodResolver(schema),
         defaultValues: {} as Partial<FormValues>
     })
 
     const onSubmit = (values: FormValues) => {
-        console.log("Submit:", values)
-        navigate("/riplay")
+        handleSetData(values)
+    }
+
+    const handleSetData = (v: FormValues) => {
+        const data: SubmissionReq = {
+            ...submission,
+            client: {
+                nik: v.nik,
+                fullName: v.fullName,
+                pob: v.pob,
+                dob: v.dob,
+                maritalStatus: v.married,
+                sex: v.gender,
+                address: v.addressKtp,
+                phone: v.phone,
+                countryCode: "",
+                zipCode: v.postalCode,
+                Province: v.province,
+                cityName: v.city,
+                districtName: v.district,
+                subdistrictName: v.subdistrict,
+                job: v.jobType,
+                income: v.salary,
+                benefName: v.beneficiaryName,
+                benefPhone: v.beneficiaryPhone,
+                benefCountryCode: "",
+                benefAddress: v.beneficiaryAddress,
+                relation: v.beneficiaryRelation
+            } 
+        }
+        setSubmissionData(data)
+        navigate("/health-question")
     }
 
     const province = form.watch("province")

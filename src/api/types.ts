@@ -67,3 +67,76 @@ export type HealthQuestion = {
   questionType?: string;
   questionAnswerType?: string;
 };
+
+export type DocumentReq = {
+  nama: string;
+  dob: string;
+  gender: string;
+  beneficiary: string;
+  email: string;
+  packageName: string;
+  term: string;
+};
+
+export type DucumentRes = {
+  docId: string;
+  riplayURL: string;
+};
+
+export type SubmissionReq = {
+  product: {
+    productId: string
+    productCode: string
+    productName: string
+    package: {
+      packageId: number | null
+      packageName: string
+      packageCode: string
+      premiumAmount: number
+      term: {
+        termId: number
+        term: number
+        termUnit: string
+      }
+      benefits: []
+    }
+  }
+  client: {
+    nik: string
+    fullName: string
+    pob: string
+    dob: Date
+    maritalStatus: string
+    sex: string
+    address: string
+    phone: string
+    countryCode: string
+    zipCode: string
+    Province: string
+    cityName: string
+    districtName: string
+    subdistrictName: string
+    job: string
+    income: string
+    benefName: string
+    benefPhone: string
+    benefCountryCode: string
+    benefAddress: string
+    relation: string
+  }
+  questionaire: TQuestionaire
+}
+
+type TQuestionaire = {
+    consent: TQuestionnaireItem | unknown
+    healthQuestionnaire: TQuestionnaireItem | unknown
+  }
+
+type TQuestionnaireItem = {
+  answer: string
+  questionAnswerType: string
+  questionCode: string
+  questionId: string
+  questionText: string
+  type: string
+}

@@ -160,11 +160,19 @@ export const handlers = [
     return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
   }),
 
-  http.get(url("/microsite/:slug/product/:productCode/question"), () => {
-    const data = [
-      { questionId: "Q1", questionCode: "HEALTH_Q1", questionText: "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?", questionAnswerType: "YES_NO" },
-      { questionId: "Q2", questionCode: "HEALTH_Q2", questionText: "Apakah Surat Pengajuan Asuransi Jiwa atas diri Calon Peserta Yang Diasuransikan pernah dikecualikan/ditangguhkan/ditolak/diterima dengan tingkat Kontribusi khusus?", questionAnswerType: "YES_NO" },
-    ]
+  http.get(url("/microsite/:slug/product/:productCode/question"), ({ request }) => {
+    const u = new URL(request.url)
+    const type = u.searchParams.get("type") || ""
+    
+    const data = mock.questionList.filter((e)=> e.type === type) ?? []
+    return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
+  }),
+
+  http.post(url("/microsite/:slug/product/:productCode/generate-riplay"), async ({ request }) => {
+    const data = {
+      docId: "000001",
+      riplayURL: "https://pdfobject.com/pdf/sample.pdf",
+    }
     return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
   }),
 ]
