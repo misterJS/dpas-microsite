@@ -388,7 +388,7 @@ export default function ConsentPage() {
 
 function Row({ label, value }: { label: string; value: React.ReactNode }) {
     return (
-        <div className="grid grid-cols-[150px,1fr] gap-x-4">
+        <div className="grid grid-cols-2">
             <dt className="text-[#6B6B6B] font-semibold">{label}</dt>
             <dd className="text-[#4B4B4B]">{value}</dd>
         </div>
