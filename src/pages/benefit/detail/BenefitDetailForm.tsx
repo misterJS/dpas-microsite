@@ -25,8 +25,9 @@ import {
 import FixedBottomBar from "@/components/common/FixedBottomBar"
 import { useNavigate } from "react-router-dom"
 import { FloatingSelect } from "@/components/form/floating-select"
-import type { ProductDetail } from "@/api/types"
+import type { ProductDetail, ProductPackage, SubmissionReq } from "@/api/types"
 import { useComputePremium } from "@/hooks/useProducts"
+import { useSubmissionStore } from "@/lib/store/submissionDataStore"
 
 const schema = z.object({
     planType: z.enum(["silver", "gold", "platinum"], { message: "Pilih paket" }),
@@ -40,6 +41,7 @@ type Props = { detail?: ProductDetail; productCode?: string; slug?: string }
 export default function BenefitDetailForm({ detail, productCode, slug = "uob" }: Props) {
     const { t } = useTranslation("common")
     const navigate = useNavigate()
+    const { submission, setSubmissionData } = useSubmissionStore();
     const form = useForm<FormValues>({
         resolver: zodResolver(schema),
         defaultValues: {
@@ -49,9 +51,38 @@ export default function BenefitDetailForm({ detail, productCode, slug = "uob" }:
     })
 
     const onSubmit = (values: FormValues) => {
-        console.log("Submit:", values)
-        navigate('/registration-form')
+        handleSetData(values)
     }
+
+    const handleSetData = (v: FormValues) => {
+        if(detail){
+            const detailPackage = detail.packages.find((e)=> e.packageName.toLowerCase() === v.planType.toLowerCase())
+            const detailTerm = detail.terms.find((e)=> Number(e.term) === Number(v.coverage))
+            const data: SubmissionReq = {
+                ...submission,
+                product: {
+                    productId: "xxx",
+                    productCode: detail.productCode,
+                    productName: detail.productName,
+                    package: {
+                        packageId: detailPackage?.packageId,
+                        packageName: detailPackage?.packageName,
+                        packageCode: detailPackage?.packageCode,
+                        premiumAmount: 32000,
+                        term: {
+                            termId: detailTerm?.termId,
+                            term: detailTerm?.term,
+                            termUnit: detailTerm?.termUnit
+                        },
+                        benefits: detailPackage?.benefits
+                    }
+                } 
+            }
+            setSubmissionData(data)
+            navigate("/registration-form")
+        }
+    }
+
     const [open, setOpen] = useState(false)
     const startY = useRef<number | null>(null)
     const handleTouchStart = (e: React.TouchEvent) => {

@@ -5,25 +5,26 @@ import PdfViewer from "./PdfViewer";
 import { useDocument } from "@/hooks/useDocument";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { useSubmissionStore } from "@/lib/store/submissionDataStore";
 
 export default function ContentPdf() {
   const { t } = useTranslation("common")
   const navigate = useNavigate()
   const [pdf, setPdf] = useState('')
   const [params] = useSearchParams()
-
+  const { submission } = useSubmissionStore();
   const type = params.get("type") || "check-replay"
   const slug = params.get("slug") || "uob"
   const productCode = params.get("product") || "ACC"
 
   const body = {
-    nama: '',
-    dob: '',
-    gender: '',
+    nama: submission.client.fullName,
+    dob: submission.client.dob,
+    gender: submission.client.sex,
     beneficiary: '',
-    email: '',
-    packageName: '',
-    term: '',
+    email: submission.client.email ?? '',
+    packageName: submission.product.package.packageName,
+    term: submission.product.package.term.term,
   }
   
   const { data, isLoading, isError } = useDocument(type, slug, productCode, body)
