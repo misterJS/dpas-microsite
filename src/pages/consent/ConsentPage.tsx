@@ -3,11 +3,13 @@ import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-
+import moment from 'moment';
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Form, FormField, FormItem, FormControl, FormMessage } from "@/components/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import Logo from "@/assets/logo-pru-uob.png"
+import Family from "@/assets/family.png"
 
 import MedalSilver from "@/assets/Medal Silver 1.png"
 import FixedBottomBar from "@/components/common/FixedBottomBar"
@@ -60,13 +62,13 @@ export default function ConsentPage() {
     const location = useLocation() as { state?: Partial<SummaryData> }
 
     const data: SummaryData = {
-        nik: "1234567890123456",
-        email: "example@gmail.com",
-        dob: "01-01-2023",
-        fullName: "Prudential Syariah",
-        pob: "Jakarta",
-        gender: "Male",
-        address: "St. Sudirman, Jakarta Selatan",
+        nik: submission.client.nik,
+        email: submission.client.email ?? '',
+        dob: moment(submission.client.dob).format('DD/MM/YYYY'),
+        fullName: submission.client.fullName,
+        pob: submission.client.pob,
+        gender: submission.client.sex,
+        address: submission.client.address,
         months: location.state?.months ?? "X",
         price: location.state?.price ?? t("consent.priceSample"),
         planType: location.state?.planType ?? "silver",
@@ -136,7 +138,7 @@ export default function ConsentPage() {
     return (
         <div className="min-h-screen">
             <Card className="rounded-[22px] border bg-white">
-                <div className="grid grid-cols-[130px,1fr] rounded-t-[22px] overflow-hidden">
+                {/* <div className="grid grid-cols-[130px,1fr] rounded-t-[22px] overflow-hidden">
                     <div className="relative bg-[#ED1B2E]">
                         <img src={planMedal} alt="Medal paket" className="absolute left-2 -top-4 w-44 h-44 object-contain" />
                     </div>
@@ -149,7 +151,47 @@ export default function ConsentPage() {
                             </div>
                         </div>
                     </div>
+                </div> */}
+                <div className="flex justify-center">
+                    <img
+                        src={Logo}
+                        alt={t("hero.alt.logo")}
+                        width={100}
+                        height={50}
+                        loading="eager"
+                    />
                 </div>
+                <div className="text-center mb-4">
+                    <div className="font-bold text-2xl">
+                        <span className="text-[#ED1B2E]">{t("hero.title.left")}</span> 
+                        <span className="text-[#69C8C3]"> {t("hero.title.right")}</span>
+                    </div>
+                    <div className="text-sm">{t("consent.accidentInsurance")}</div>
+                </div>
+                <div className="flex">
+                    <div className="p-4 w-full bg-[#69C8C3] text-white">
+                        <div className="font-bold text-lg">{t("consent.accident")}</div>
+                        <div className="font-bold">{t("consent.summaryTitle")} {submission.product.package.packageName} ({submission.product.package.term.term} {t("consent.monthsSuffix")})</div>
+                        <div className="">Rp 32,000</div>
+                    </div>
+
+                    <div
+                        className="ml-auto max-w-[540px] rounded-l-2xl overflow-hidden"
+                        style={{
+                            WebkitMaskImage: "linear-gradient(to left, #69C8C3 15%, #69C8C3)",
+                            maskImage: "linear-gradient(to left, #69C8C3 15%, #69C8C3)",
+                        }}
+                    >
+                        <img
+                            src={Family}
+                            width={150}
+                            alt="Keluarga"
+                            className="block object-cover h-full"
+                            loading="eager"
+                        />
+                    </div>
+                </div>
+                
 
                 <CardContent className="p-5 space-y-6">
                     <dl className="grid grid-cols-1 gap-y-4">

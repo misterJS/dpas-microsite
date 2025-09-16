@@ -70,17 +70,24 @@ export type HealthQuestion = {
 
 export type DocumentReq = {
   nama: string;
-  dob: string;
+  dob: Date;
   gender: string;
   beneficiary: string;
   email: string;
-  packageName: string;
-  term: string;
+  packageName?: string;
+  term?: string | number;
 };
 
 export type DucumentRes = {
   docId: string;
   riplayURL: string;
+};
+
+type TBenefits = {
+  benefCode: string;
+  benefName: string;
+  benefAmount: string | number;
+  benefType: string;
 };
 
 export type SubmissionReq = {
@@ -89,16 +96,16 @@ export type SubmissionReq = {
     productCode: string
     productName: string
     package: {
-      packageId: number | null
-      packageName: string
-      packageCode: string
-      premiumAmount: number
+      packageId?: number | null
+      packageName?: string
+      packageCode?: string
+      premiumAmount?: number
       term: {
-        termId: number
-        term: number
-        termUnit: string
+        termId?: number
+        term?: number
+        termUnit?: string
       }
-      benefits: []
+      benefits?: TBenefits[]
     }
   }
   client: {
@@ -108,6 +115,7 @@ export type SubmissionReq = {
     dob: Date
     maritalStatus: string
     sex: string
+    email?: string
     address: string
     phone: string
     countryCode: string

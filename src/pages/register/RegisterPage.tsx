@@ -97,9 +97,10 @@ export default function RegisterPage() {
                 dob: v.dob,
                 maritalStatus: v.married,
                 sex: v.gender,
+                email: v.email,
                 address: v.addressKtp,
                 phone: v.phone,
-                countryCode: "",
+                countryCode: "+62",
                 zipCode: v.postalCode,
                 Province: v.province,
                 cityName: v.city,
@@ -109,7 +110,7 @@ export default function RegisterPage() {
                 income: v.salary,
                 benefName: v.beneficiaryName,
                 benefPhone: v.beneficiaryPhone,
-                benefCountryCode: "",
+                benefCountryCode: "+62",
                 benefAddress: v.beneficiaryAddress,
                 relation: v.beneficiaryRelation
             } 

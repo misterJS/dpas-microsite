@@ -12,10 +12,11 @@ export default function HeroHeader() {
 
     const isLandingPage = pathname === '/'
     const isPdfPage = pathname.includes('pdf')
+    const isConcent = pathname.includes('consent')
 
     return (
         <>
-            {!isPdfPage &&
+            {!isPdfPage && !isConcent &&
                 <section className="relative z-[60] pt-1 isolate overflow-hidden bg-white">
                     <div className="w-full">
                             <div className="flex justify-between items-center gap-6">

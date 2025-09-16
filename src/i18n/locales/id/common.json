@@ -180,7 +180,9 @@
     "back": "Kembali"
   },
   "consent": {
-    "summaryTitle": "PAKET Perlindungan",
+    "summaryTitle": "Paket",
+    "accidentInsurance": "Asuransi Kecelakaan Syariah",
+    "accident": "Kecelakaan",
     "monthsSuffix": "Bulan",
     "priceSample": "RpXX.XXX",
     "tncTitle": "Terms & Condition",
