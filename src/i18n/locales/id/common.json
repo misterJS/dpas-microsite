@@ -282,5 +282,26 @@
     "lifeInsurance": "Asuransi Jiwa",
     "registerNow": "Daftar sekarang",
     "checkRiplay": "Cek RIPLAY Umum"
+  },
+  "progressStatus": {
+    "header": {
+      "preparation": "Memverifikasi",
+      "payment": "Data"
+    },
+    "waiting": {
+      "title": "Jangan menutup halaman ini",
+      "desc": "Mohon menunggu. Kami sedang memverifikasi data anda",
+      "paymentButton": ""
+    },
+    "sucess": {
+      "title": "Verifikasi selesai",
+      "desc": "Silakan memulai pembayaran",
+      "paymentButton": "Mulai pembayaran"
+    },
+    "failed": {
+      "title": "Terimakasih telah menunggu",
+      "desc": "Namun sayangnya, anda belum dapat melanjutkan pembelian karena belum memenuhi kriteria dari kami",
+      "paymentButton": "Mulai pembayaran"
+    }
   }
 }

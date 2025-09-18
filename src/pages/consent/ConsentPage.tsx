@@ -121,7 +121,7 @@ export default function ConsentPage() {
                 } 
             }
             setSubmissionData(data)
-            navigate("/")
+            navigate("/waiting-status")
         }
     
 

@@ -2,9 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import type { DocumentReq } from "@/api/types";
 import { generateRipleyPDF } from "@/app/services/document";
 
-export const useDocument = (type?: string, slug?: string, productCode?: string, body?: DocumentReq) =>
+export const useDocument = (slug?: string, productCode?: string, body?: DocumentReq, shouldFetch?: boolean) =>
   useQuery({
-    queryKey: [type, slug, productCode],
-    queryFn: () => generateRipleyPDF(type!, slug!, productCode!, body!),
-    enabled: !!slug && !!productCode,
+    queryKey: ['generate-riplay', slug, productCode],
+    queryFn: () => generateRipleyPDF(slug!, productCode!, body!),
+    enabled: shouldFetch,
   });

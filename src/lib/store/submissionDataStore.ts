@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-import { encryptedLocalStorage } from "./encrypt-storage";
+import { createJSONStorage, persist } from "zustand/middleware";
+import { encryptedSessionStorage } from "./encrypt-storage";
 import { SubmissionReq } from "@/api/types";
 
 type TActionClient = {
@@ -67,6 +67,6 @@ export const useSubmissionStore = create<TActionClient>()(
   }),
   {
     name: "submission-data-storage",
-    storage: encryptedLocalStorage
+    storage: createJSONStorage(() => encryptedSessionStorage)
   })
 );
