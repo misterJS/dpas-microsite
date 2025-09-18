@@ -17,7 +17,7 @@ const PdfViewer = ({ pdfUrl }: {pdfUrl: string}) => {
 
   return (
       <Document
-        file={{ url: pdfUrl }}
+        file={pdfUrl}
         onLoadSuccess={onDocumentLoadSuccess}
       >
         {Array.from(new Array(numPages), (el, index) => (

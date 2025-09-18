@@ -2,6 +2,7 @@ import { lazy } from "react"
 import { createBrowserRouter, type RouteObject } from "react-router-dom"
 import RootLayout from "./layout/RootLayout"
 import DetailPdf from "@/pages/pdf/DetailPdf"
+import WaitingPage from "@/pages/waiting-status/WaitingPage"
 
 const HomePage = lazy(() => import("@/pages/home/HomePage"))
 const BenefitPage = lazy(() => import("@/pages/benefit/BenefitPage"))
@@ -24,6 +25,7 @@ export const routes: RouteObject[] = [
       { path: "/health-question", element: <HealthQuestionsPage /> },
       { path: "/riplay", element: <RiplayPage /> },
       { path: "/consent", element: <ConsentPage /> },
+      { path: "/waiting-status", element: <WaitingPage /> },
       { path: "*", element: <NotFoundPage /> },
     ],
   },

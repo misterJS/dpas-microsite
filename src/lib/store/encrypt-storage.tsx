@@ -25,3 +25,16 @@ export const encryptedLocalStorage = {
     localStorage.removeItem(name);
   },
 };
+
+export const encryptedSessionStorage = {
+  getItem: (name: string) => {
+    const item = sessionStorage.getItem(name);
+    return item ? decryptData(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    sessionStorage.setItem(name, encryptData(value));
+  },
+  removeItem: (name: string) => {
+    sessionStorage.removeItem(name);
+  },
+};

@@ -11,6 +11,7 @@ export default function ContentPdf() {
   const { t } = useTranslation("common")
   const navigate = useNavigate()
   const [pdf, setPdf] = useState('')
+  const [shouldFetch, setShouldFetch] = useState(false)
   const [params] = useSearchParams()
   const { submission } = useSubmissionStore();
   const type = params.get("type") || "check-replay"
@@ -27,13 +28,14 @@ export default function ContentPdf() {
     term: submission.product.package.term.term,
   }
   
-  const { data, isLoading, isError } = useDocument(type, slug, productCode, body)
+  const { data, isLoading, isError } = useDocument(slug, productCode, body, shouldFetch)
 
   useEffect(()=>{
     if(type === "check-riplay"){
       setPdf(pdfFileCheckRiplay)
     }else if(type === "riplay"){
-      data && setPdf(data.riplayURL)
+      setShouldFetch(true)
+      data && setPdf(`data:application/pdf;base64,${data.riplayURL}`)
     }
   }, [data])
 
@@ -54,7 +56,7 @@ export default function ContentPdf() {
         <>
           <Button
             disabled={false}
-            className="w-full h-12 rounded-[14px] text-base font-semibold disabled:bg-[#BDBDBD] bg-[#2A504E] text-white"
+            className="w-full h-12 rounded-[14px] text-base font-semibold disabled:bg-[#BDBDBD] bg-[#69C8C3] text-white"
             onClick={() => handleNextRoute()}
           >
             {t("form.next")}
