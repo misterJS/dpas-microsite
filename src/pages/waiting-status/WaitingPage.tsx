@@ -34,7 +34,7 @@ export default function ContentPdf() {
   }
 
   useEffect(() => {
-    startCountdown(30)
+    startCountdown(120)
   }, [])
 
   const handleNextRoute = () => {

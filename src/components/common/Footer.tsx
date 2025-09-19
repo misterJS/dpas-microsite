@@ -3,7 +3,9 @@ import { IoMailOutline } from "react-icons/io5"
 import { useTranslation } from "react-i18next"
 import { useLocation } from "react-router-dom"
 
-export const Footer: React.FC = () => {
+
+export default function Footer(props: { showFooter?: boolean }) {
+  const { showFooter } = props
   const { t } = useTranslation("common")
   const { pathname } = useLocation();    
   const isPdfPage = pathname.includes('pdf')
@@ -17,7 +19,7 @@ export const Footer: React.FC = () => {
 
   return (
     <>
-      {!isPdfPage &&
+      {showFooter &&
         <footer className="bg-black text-white border-t border-white/10">
           <div className="mx-auto max-w-7xl px-4 py-6 text-left">
             <h2 className="text-xl font-semibold">{t("footer.title")}</h2>
