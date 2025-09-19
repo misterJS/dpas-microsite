@@ -165,19 +165,86 @@ export const productDetails: Record<string, ProductDetail> = {
     ],
   },
 }
+import { HealthQuestion } from "@/api/types";
 import AccidentImg from "@/assets/accident.png"
 
-export type QuestionListItem = {
-  questionId: string
-  type: string
-  questionCode: string
-  questionText: string
-  questionAnswerType: string
-}
-
-export const questionList: QuestionListItem[] = [
-  { questionId: "Q1", type: "HEALTH_QUESTIONAIRE", questionCode: "HEALTH_Q1", questionText: "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?", questionAnswerType: "YES_NO" },
-  { questionId: "Q2", type: "HEALTH_QUESTIONAIRE", questionCode: "HEALTH_Q2", questionText: "Apakah Surat Pengajuan Asuransi Jiwa atas diri Calon Peserta Yang Diasuransikan pernah dikecualikan/ditangguhkan/ditolak/diterima dengan tingkat Kontribusi khusus?", questionAnswerType: "YES_NO" },
-  { questionId: "Q3", type: "CONSENT", questionCode: "CONSENT_Q1", questionText: "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?", questionAnswerType: "YES_NO" },
-  { questionId: "Q4", type: "CONSENT", questionCode: "CONSENT_Q2", questionText: "Apakah Surat Pengajuan Asuransi Jiwa atas diri Calon Peserta Yang Diasuransikan pernah dikecualikan/ditangguhkan/ditolak/diterima dengan tingkat Kontribusi khusus?", questionAnswerType: "YES_NO" },
+export const questionList: HealthQuestion[] = [
+  {
+      id: "1",
+      code: "HQ1",
+      question_order: 1,
+      question_text: "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?",
+      type: "HEALTH_QUESTIONAIRE",
+      answer_type: "YES_NO",
+      yes_label: "Ya, Saya Setuju",
+      no_label: "",
+      group_type: "AGREEMENT",
+      group_label: "Persetujuan",
+      group_order: 1
+  },
+  {
+      id: "2",
+      code: "HQ2",
+      question_order: 2,
+      question_text: "Apakah Surat Pengajuan Asuransi Jiwa atas diri Calon Peserta Yang Diasuransikan pernah dikecualikan/ditangguhkan/ditolak/diterima dengan tingkat Kontribusi Khusus?",
+      type: "HEALTH_QUESTIONAIRE",
+      answer_type: "YES_NO",
+      yes_label: "Ya, Saya Setuju",
+      no_label: "",
+      group_type: "AGREEMENT",
+      group_label: "Persetujuan",
+      group_order: 1
+  },
+  {
+      id: "3",
+      code: "CS1",
+      question_order: 2,
+      question_text: "URUTAN 1 NOMOR 2",
+      type: "CONSENT",
+      answer_type: "YES_NO",
+      yes_label: "Ya, Saya Setuju",
+      no_label: "",
+      group_type: "AGREEMENT",
+      group_label: "Persetujuan",
+      group_order: 1
+  },
+  {
+      id: "4",
+      code: "CS3",
+      question_order: 2,
+      question_text: "URUTAN 2 NOMOR 2",
+      type: "CONSENT",
+      answer_type: "YES_NO",
+      yes_label: "Ya, Saya Setuju",
+      no_label: "",
+      group_type: "COBA",
+      group_label: "LABEL COBA",
+      group_order: 2
+  },
+  {
+      id: "3",
+      code: "CS2",
+      question_order: 1,
+      question_text: "URUTAN 1 NOMOR 1",
+      type: "CONSENT",
+      answer_type: "YES_NO",
+      yes_label: "Ya, Saya Setuju",
+      no_label: "",
+      group_type: "AGREEMENT",
+      group_label: "Persetujuan",
+      group_order: 1
+  },
+  {
+      id: "4",
+      code: "CS3",
+      question_order: 1,
+      question_text: "URUTAN 2 NOMOR 1",
+      type: "CONSENT",
+      answer_type: "YES_NO",
+      yes_label: "Ya, Saya Setuju",
+      no_label: "",
+      group_type: "COBA",
+      group_label: "LABEL COBA",
+      group_order: 2
+  },
 ]
