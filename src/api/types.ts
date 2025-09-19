@@ -61,11 +61,17 @@ export type District = { districtId: string; districtName: string };
 export type Subdistrict = { subdistrictId: string; subdistrictName: string };
 
 export type HealthQuestion = {
-  questionId: string;
-  questionCode: string;
-  questionText: string;
-  questionType?: string;
-  questionAnswerType?: string;
+  id: string;
+  code: string;
+  question_order: string | number;
+  question_text: string;
+  type: string;
+  answer_type: string;
+  yes_label: string;
+  no_label: string;
+  group_type: string;
+  group_label: string;
+  group_order: string | number;
 };
 
 export type DocumentReq = {
