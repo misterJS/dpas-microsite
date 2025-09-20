@@ -1,15 +1,42 @@
 import { api } from "@/lib/api";
 import type { ApiEnvelope, HealthQuestion } from "@/api/types";
 
+export type Option = { code: string; name: string }
+
+export type TQuestion = { 
+  group_order: string | number; 
+  group_type: string; 
+  group_label: string;
+  question: HealthQuestion[]
+}
+
 export const getQuestions = async (
   slug: string,
   productCode: string,
   type: string
-): Promise<HealthQuestion[]> => {
+): Promise<TQuestion[]> => {
   const { data } = await api.get<ApiEnvelope<HealthQuestion[]>>(
     `/microsite/${slug}/product/${productCode}/question`,
-    { params: { type: type } }
+    { params: { type } }
   );
-  return data.data;
+  return mapQuestion(data?.data ?? []);
 };
 
+const mapQuestion = (data: HealthQuestion[]): TQuestion[] => {
+  const grouped: Record<string, TQuestion> = {};
+
+  for (const item of data) {
+    const key = `${item.group_order}-${item.group_type}-${item.group_label}`;
+    if (!grouped[key]) {
+      grouped[key] = {
+        group_order: item.group_order,
+        group_type: item.group_type,
+        group_label: item.group_label,
+        question: []
+      };
+    }
+    grouped[key].question.push(item);
+  }
+
+  return Object.values(grouped);
+};

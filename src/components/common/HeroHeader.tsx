@@ -6,19 +6,16 @@ import { useLocation } from "react-router-dom";
 import { logoPru, logoUob } from "@/assets";
 
 
-export default function HeroHeader() {
+export default function HeroHeader(props: { showHeader?: boolean }) {
+    const { showHeader } = props
     const { pathname } = useLocation();    
     const { t } = useTranslation("common")
 
     const isLandingPage = pathname === '/'
-    const isPdfPage = pathname.includes('pdf')
-    const isConcent = pathname.includes('consent')
-    const isWaitingPage = pathname.includes('waiting-status')
-
     return (
         <>
-            {!isPdfPage && !isConcent && !isWaitingPage &&
-                <section className="relative z-[60] pt-1 isolate overflow-hidden bg-white">
+            {showHeader &&
+                <section className="relative z-[60] isolate overflow-hidden bg-white">
                     <div className="w-full">
                             <div className="flex justify-between items-center gap-6">
                                 {isLandingPage ?
