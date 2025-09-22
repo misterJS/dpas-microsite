@@ -18,25 +18,7 @@ export default function HeroHeader(props: { showHeader?: boolean }) {
                 <section className="relative z-[60] isolate overflow-hidden bg-white">
                     <div className="w-full">
                             <div className="flex justify-between items-center gap-6">
-                                {isLandingPage ?
-                                <>
-                                    <div className="flex items-center ml-4">
-                                        <img
-                                            src={logoPru}
-                                            alt={t("alt.logo.pru")}
-                                            width={85}
-                                            loading="eager"
-                                        />
-                                        <img
-                                            src={logoUob}
-                                            alt={t("alt.logo.uob")}
-                                            width={85}
-                                            loading="eager"
-                                        />
-                                    </div>
-                                </>
-                                :
-                                <>
+                                
                                     <div className="flex items-center ml-4">
                                         <img
                                             src={Logo}
@@ -75,8 +57,6 @@ export default function HeroHeader(props: { showHeader?: boolean }) {
                                             />
                                         </div>
                                     </div>
-                                </>
-                                }
                             </div>
                     </div>
                 </section>

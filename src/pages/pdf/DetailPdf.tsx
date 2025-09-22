@@ -46,31 +46,35 @@ export default function ContentPdf() {
   }
 
   return (
-    <div className="max-w-max">
-      {isLoading && <div className="p-2">{t("status.loading")}</div>}
-      {isError && <div className="p-2 text-red-600">{t("status.loadFailed")}</div>}
-      {!isLoading && !isError && 
-      <>
-        <PdfViewer pdfUrl={pdf} />
-        {type !== "check-riplay" &&
-        <>
-          <Button
-            disabled={false}
-            className="w-full h-12 rounded-[14px] text-base font-semibold disabled:bg-[#BDBDBD] bg-[#69C8C3] text-white"
-            onClick={() => handleNextRoute()}
-          >
-            {t("form.next")}
-          </Button>
+    <div className="flex flex-col min-h-screen">
+    {isLoading && <div className="p-2">{t("status.loading")}</div>}
+    {isError && <div className="p-2 text-red-600">{t("status.loadFailed")}</div>}
 
-          <div className="text-center text-[#4B4B4B] mt-5">
-            <Link to={-1 as unknown as string} className="font-medium">
-              {t("health.back")}
-            </Link>
+    {!isLoading && !isError && (
+      <>
+        <div className="flex-1">
+          <PdfViewer pdfUrl={pdf} />
+        </div>
+
+        {type !== "check-riplay" && (
+          <div className="p-4 mt-auto">
+            <Button
+              disabled={false}
+              className="w-full h-12 rounded-[14px] text-base font-semibold disabled:bg-[#BDBDBD] bg-[#69C8C3] text-white"
+              onClick={() => handleNextRoute()}
+            >
+              {t("form.next")}
+            </Button>
+
+            <div className="text-center text-[#4B4B4B] mt-5">
+              <Link to={-1 as unknown as string} className="font-medium">
+                {t("health.back")}
+              </Link>
+            </div>
           </div>
-        </>
-        }
+        )}
       </>
-      }
-    </div>
+    )}
+  </div>
   );
 }

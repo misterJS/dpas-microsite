@@ -4,7 +4,7 @@ import type { ApiEnvelope, HealthQuestion } from "@/api/types";
 export type Option = { code: string; name: string }
 
 export type TQuestion = { 
-  group_order: string | number; 
+  group_order: number; 
   group_type: string; 
   group_label: string;
   question: HealthQuestion[]
@@ -38,5 +38,9 @@ const mapQuestion = (data: HealthQuestion[]): TQuestion[] => {
     grouped[key].question.push(item);
   }
 
-  return Object.values(grouped);
+  Object.values(grouped).forEach(group => {
+    group.question.sort((a: HealthQuestion, b: HealthQuestion) => a.question_order - b.question_order);
+  });
+
+  return Object.values(grouped).sort((a: TQuestion, b: TQuestion) => a.group_order - b.group_order);
 };

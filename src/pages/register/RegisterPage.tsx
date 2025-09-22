@@ -42,6 +42,8 @@ type Subdistrict = (typeof SUBDISTRICT_VALUES)[number]
 const RELATION_VALUES = ["istri", "suami", "anak"] as const
 type Relation = (typeof RELATION_VALUES)[number]
 
+type Branch = { code: string; name: string }
+
 const schema = z.object({
     branch: z.string().min(1, "Pilih kantor cabang"),
     planType: z.enum(PLAN_VALUES, { message: "Pilih paket" }).optional(),
@@ -102,7 +104,7 @@ export default function RegisterPage() {
                 phone: v.phone,
                 countryCode: "+62",
                 zipCode: v.postalCode,
-                Province: v.province,
+                province: v.province,
                 cityName: v.city,
                 districtName: v.district,
                 subdistrictName: v.subdistrict,
@@ -127,7 +129,7 @@ export default function RegisterPage() {
     const { data: cities = [] } = useCities(province)
     const { data: districts = [] } = useDistricts(province, city)
     const { data: subdistricts = [] } = useSubdistricts(province, city, district)
-    const { data: branches = [] } = useBranches()
+    const { data: branches = [] } = useBranches() as { data?: Branch[] }
     const { data: jobs = [] } = useJobs()
     const { data: salaries = [] } = useSalaries()
     const postalCode = form.watch("postalCode")

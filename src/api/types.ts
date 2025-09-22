@@ -63,7 +63,7 @@ export type Subdistrict = { subdistrictId: string; subdistrictName: string };
 export type HealthQuestion = {
   id: string;
   code: string;
-  question_order: string | number;
+  question_order: number;
   question_text: string;
   type: string;
   answer_type: string;
@@ -71,7 +71,7 @@ export type HealthQuestion = {
   no_label: string;
   group_type: string;
   group_label: string;
-  group_order: string | number;
+  group_order: number;
 };
 
 export type DocumentReq = {
@@ -126,7 +126,7 @@ export type SubmissionReq = {
     phone: string
     countryCode: string
     zipCode: string
-    Province: string
+    province: string
     cityName: string
     districtName: string
     subdistrictName: string
@@ -142,9 +142,9 @@ export type SubmissionReq = {
 }
 
 type TQuestionaire = {
-    consent: TQuestionnaireItem | unknown
-    healthQuestionnaire: TQuestionnaireItem | unknown
-  }
+  consent: TQuestionnaireItem | unknown
+  healthQuestionnaire: TQuestionnaireItem | unknown
+}
 
 type TQuestionnaireItem = {
   answer: string
@@ -153,4 +153,34 @@ type TQuestionnaireItem = {
   questionId: string
   questionText: string
   type: string
+}
+
+export type CreateSPAJRes = {
+  id: string;
+  spajNumber: string;
+}
+
+export type PaymentReq = {
+  allow_reg: boolean;
+  allow_pay: boolean;
+  cart: { prm: number };
+  cust_no: string;
+  main_insured_name: string;
+  cust_name: string;
+  pay_option: string;
+  source_app: string;
+  currency: string;
+  premium_amount: number;
+  email: string;
+  mobile_no: string;
+  is_sharia: boolean;
+  redirect_url: string;
+  source_bill: string;
+}
+
+export type PaymentRes = {
+  url: string;
+  bill_no: string;
+  resp_code: number;
+  resp_desc: string;
 }
