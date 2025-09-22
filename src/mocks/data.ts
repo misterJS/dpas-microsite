@@ -165,19 +165,112 @@ export const productDetails: Record<string, ProductDetail> = {
     ],
   },
 }
+import { HealthQuestion } from "@/api/types";
 import AccidentImg from "@/assets/accident.png"
 
-export type QuestionListItem = {
-  questionId: string
-  type: string
-  questionCode: string
-  questionText: string
-  questionAnswerType: string
-}
-
-export const questionList: QuestionListItem[] = [
-  { questionId: "Q1", type: "HEALTH_QUESTIONAIRE", questionCode: "HEALTH_Q1", questionText: "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?", questionAnswerType: "YES_NO" },
-  { questionId: "Q2", type: "HEALTH_QUESTIONAIRE", questionCode: "HEALTH_Q2", questionText: "Apakah Surat Pengajuan Asuransi Jiwa atas diri Calon Peserta Yang Diasuransikan pernah dikecualikan/ditangguhkan/ditolak/diterima dengan tingkat Kontribusi khusus?", questionAnswerType: "YES_NO" },
-  { questionId: "Q3", type: "CONSENT", questionCode: "CONSENT_Q1", questionText: "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?", questionAnswerType: "YES_NO" },
-  { questionId: "Q4", type: "CONSENT", questionCode: "CONSENT_Q2", questionText: "Apakah Surat Pengajuan Asuransi Jiwa atas diri Calon Peserta Yang Diasuransikan pernah dikecualikan/ditangguhkan/ditolak/diterima dengan tingkat Kontribusi khusus?", questionAnswerType: "YES_NO" },
+export const questionList: HealthQuestion[] = [
+  {
+      id: "1",
+      code: "HQ1",
+      question_order: 1,
+      question_text: "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?",
+      type: "HEALTH_QUESTIONAIRE",
+      answer_type: "YES_NO",
+      yes_label: "Ya, Saya Setuju",
+      no_label: "",
+      group_type: "AGREEMENT",
+      group_label: "Persetujuan",
+      group_order: 1
+  },
+  {
+      id: "2",
+      code: "HQ2",
+      question_order: 2,
+      question_text: "Apakah Surat Pengajuan Asuransi Jiwa atas diri Calon Peserta Yang Diasuransikan pernah dikecualikan/ditangguhkan/ditolak/diterima dengan tingkat Kontribusi Khusus?",
+      type: "HEALTH_QUESTIONAIRE",
+      answer_type: "YES_NO",
+      yes_label: "Ya, Saya Setuju",
+      no_label: "",
+      group_type: "AGREEMENT",
+      group_label: "Pengecualian",
+      group_order: 1
+  },
+  {
+      id: "3",
+      code: "CS1",
+      question_order: 2,
+      question_text: "Pengelola tidak akan membayarkan klaim Manfaat PRULindungi Syariah atas beban Dana Tabarru’ yang disebabkan oleh:(1) Kondisi Yang Telah Ada Sebelumnya;(2) Bunuh diri, percobaan bunuh diri atau dugaan bunuh diri atau melukai diri sendiri oleh Peserta Yang Diasuransikan, Kejahatan atau percobaan kejahatan atau pelanggaran hukum atau percobaan pelanggaran hukum dan undang-undang oleh Peserta Yang Diasuransikan atau perlawanan yang dibuat oleh Peserta Yang Diasuransikan pada saat penahanan seseorang yang dijalankan oleh pihak yang berwenang, kecuali dibuktikan sebaliknya oleh keputusan pengadilan;(3) Terlibat dalam penugasan dinas militer atau kepolisian atau penerbangan non-komersial atau aktivitas olahraga berbahaya (bungee jumping, diving, balapan jenis apa pun, olahraga udara termasuk gantole, balon udara, terjun payung dan sky diving atau kegiatan serta olahraga berbahaya lainnya);(4) Biaya Rawat Inap terkait dengan kehamilan atau melahirkan atau kesuburan atau mempercantik diri sendiri atau cacat yang sudah diderita sebelumnya atau operasi katarak atau biaya non-medis;(5) Klaim yang timbul dalam Masa Tunggu, kecuali karena Kecelakaan;(6) Penyakit yang disebabkan oleh HIV / AIDS atau semua jenis kanker;(7) Peserta Yang Diasuransikan di bawah pengaruh atau terlibat dalam penyalahgunaan narkotika, psikotropika, alkohol, racun, gas, bahan sejenis, atau obat, kecuali apabila zat atau bahan tersebut digunakan sebagai obat dalam resep Dokter; atau(8) Penyakit yang telah ditentukan oleh Pengelola selama periode waktu menunggu 180 (seratus delapan puluh) hari dari Tanggal Mulai Kepesertaan, antara lain, TBC (Tuberculosis) dan Asma; radang empedu, batu empedu, Penyakit yang berhubungan dengan ginjal, kencing manis (Diabetes Mellitus), liver, tekanan darah tinggi atau penyakit jantung dan pembuluh darah; Epilepsi, tumor pada permukaan kulit, semua jenis tumor jinak, Haemorrhoids (wasir), Anal Fistulae, usus buntu, Semua bentuk Hernia, Amandel dengan tidakan operasi, Penyakit peningkatan fungsi kelenjar gondok, kelainan sekat rongga hidung yang memerlukan pembedahan, sinusitis, penyakit yang berhubungan dengan sistem reproduksi, Hallux Valgus.Pengecualian secara lengkap dapat dilihat pada ketentuan Polis PRULindungi Syariah.",
+      type: "CONSENT",
+      answer_type: "YES_NO",
+      yes_label: "Ya, Saya telah membaca dan memahami.",
+      no_label: "Tidak, Saya belum membaca dan memahami.",
+      group_type: "EXCEPTION",
+      group_label: "Pengecualian",
+      group_order: 1
+  },
+  {
+      id: "4",
+      code: "CS2",
+      question_order: 1,
+      question_text: "Dengan ini SAYA dan/atau Calon Peserta Yang Diasuransikan dan/atau Calon Pembayar Kontribusi dan/atau Calon Penerima Manfaat yang diwakilkan  oleh SAYA: Menyatakan telah membaca, mendapat penjelasan dari Tenaga Pemasar, memahami dan menyetujui serta memberikan izin kepada Prudential Syariah  untuk mengumpulkan, menyimpan, memproses, mempergunakan dan membagikan Data Pribadi (termasuk namun tidak terbatas pada nama, alamat  surat menyurat, alamat email, nomor telepon, kontak, data kesehatan maupun informasi lainnya) yang SAYA berikan dalam SPAJ Syariah ini dan  dokumen lainnya sehubungan dengan pengajuan asuransi ini, serta informasi terkait Polis SAYA jika pengajuan ini disetujui, sesuai dengan kebijakan  internal Prudential Syariah maupun peraturan perundang-undangan yang berlaku untuk keperluan:",
+      type: "CONSENT",
+      answer_type: "YES_NO",
+      yes_label: "Ya",
+      no_label: "Tidak",
+      group_type: "AGREEMENT",
+      group_label: "PERSETUJUAN PEMBERIAN DATA DAN/ATAU INFORMASI PRIBADI KEPADA PIHAK LAIN & PENAWARAN PRODUK",
+      group_order: 2
+  },
+  {
+      id: "5",
+      code: "CS3",
+      question_order: 2,
+      question_text: "Saya dan/atau Calon Peserta Yang Diasuransikan bersedia menerima penawaran produk lainnya (yang tidak berhubungan dengan produk yang Saya miliki) dari Prudential Syariah dan Prudential Indonesia melalui sarana komunikasi  pribadi, baik yang dilakukan sendiri oleh Prudential Syariah dan Prudential Indonesia maupun oleh pihak ketiga atau mitra bisnis yang ditunjuk oleh atau bekerjasama dengan Prudential Syariah dan Prudential Indonesia.",
+      type: "CONSENT",
+      answer_type: "YES_NO",
+      yes_label: "Ya",
+      no_label: "Tidak",
+      group_type: "AGREEMENT",
+      group_label: "PERSETUJUAN PEMBERIAN DATA DAN/ATAU INFORMASI PRIBADI KEPADA PIHAK LAIN & PENAWARAN PRODUK",
+      group_order: 2
+  },
+  {
+      id: "5",
+      code: "CS4",
+      question_order: 1,
+      question_text: "Pastikan Anda membaca dan memahami Syarat dan Ketentuan sebelum mengajukan kepesertaan. Harap pastikan bahwa Anda telah membaca dan memahami Syarat dan Ketentuan Produk Asuransi Jiwa PRULindungi Syariah untuk melanjutkan proses pengajuan kepesertaan.",
+      type: "CONSENT",
+      answer_type: "YES",
+      yes_label: "Ya, Saya Setuju",
+      no_label: "",
+      group_type: "STATEMENT",
+      group_label: "Pernyataan kepersertaan Asuransi Jiwa PRULindungi Syariah",
+      group_order: 3
+  },
+  {
+      id: "6",
+      code: "CS5",
+      question_order: 2,
+      question_text: "Saya mengizinkan Prudential Syariah untuk melakukan tindakan yang dianggap perlu sesuai peraturan perundangan mengenai Anti Pencucian Uang, Pencegahan Pendanaan Terorisme, dan Pencegahan Pendanaan Proliferasi Senjata Pemusnah Massal serta ketentuan Grup Prudential terkait Penerapan Daftar Sanksi Tertentu yang termasuk namun tidak terbatas pada, the Office of Financial Sanctions Implementation HM Treasury, the United Nations, the European Union, the US Treasury Department Office of Foreign Assets Control.",
+      type: "CONSENT",
+      answer_type: "YES",
+      yes_label: "Ya, Saya Setuju",
+      no_label: "",
+      group_type: "STATEMENT",
+      group_label: "Pernyataan kepersertaan Asuransi Jiwa PRULindungi Syariah",
+      group_order: 3
+  },
+  {
+      id: "7",
+      code: "CS6",
+      question_order: 3,
+      question_text: "Dengan menyetujui form ini, Saya setuju untuk mengikuti kepesertaan pada Produk PRULindungi Syariah dari PT Prudential Sharia Life Assurance (Prudential Syariah) yang telah dilaporkan dan mendapatkan persetujuan dari Otoritas Jasa Keuangan (OJK).",
+      type: "CONSENT",
+      answer_type: "YES",
+      yes_label: "Ya, Saya Setuju",
+      no_label: "",
+      group_type: "STATEMENT",
+      group_label: "Pernyataan kepersertaan Asuransi Jiwa PRULindungi Syariah",
+      group_order: 3
+  },
 ]
