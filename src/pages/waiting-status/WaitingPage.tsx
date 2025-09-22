@@ -2,7 +2,7 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { waiting, sucess, failed } from "@/assets";
 import { useTranslation } from "react-i18next";
-import { useProposalStatus } from "@/hooks/useProposal";
+import { usePayment, useProposalStatus } from "@/hooks/useProposal";
 
 export default function ContentPdf() {
   const { t } = useTranslation("common")
@@ -18,6 +18,7 @@ export default function ContentPdf() {
   const [params] = useSearchParams()
   const spaj_number = params.get("spaj_number") || ""
   const { data, isLoading, isError } = useProposalStatus(spaj_number)
+  const { mutate, isSuccess: successPayment, isError: errorPayment } = usePayment();
 
   useEffect(() => {
     let timer = 120;
@@ -48,8 +49,31 @@ export default function ContentPdf() {
   }, [data?.success]);
 
   const handleNextRoute = () => {
+
+    const paramsPayment = {
+      allow_reg: false,
+      allow_pay: true,
+      cart: {
+          prm: 1200000
+      },
+      cust_no: "972222772222",
+      main_insured_name: "Bambang Sugeng",
+      cust_name: "Bambang Sugeng",
+      pay_option: "pruworks",
+      source_app: "dpas Microsite",
+      currency: "IDR",
+      premium_amount: 51282000,
+      email: "bambangsugeng@gmail.com",
+      mobile_no: "+62878787878787",
+      is_sharia: false,
+      redirect_url: "https://somesite.net",
+      source_bill: "somebill-12344"
+    }
     if(status === "success"){
-      navigate("/payment")
+      mutate(paramsPayment, {
+        onSuccess: (res) => { window.location.href = res.url },
+        onError: (err) => console.log(err)
+      });
     }else{
       navigate("/")
     }

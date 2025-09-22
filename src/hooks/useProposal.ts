@@ -1,7 +1,16 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getProducts, getProductDetail, computePremium } from "@/app/services/product";
-import type { ComputePremiumReq, SubmissionReq } from "@/api/types";
+import type { PaymentReq, SubmissionReq } from "@/api/types";
 import { createSPAJ, getPayment, getProposalStatus, submissionProposal } from "@/app/services/proposal";
+
+export const useCreateSPAJ = () =>
+  useMutation({
+    mutationFn: () => createSPAJ(),
+  });
+  
+export const useSubmissionProposal = () =>
+  useMutation({
+    mutationFn: (body: SubmissionReq) => submissionProposal(body),
+  });
 
 export const useProposalStatus = (spaj_number?: string) =>
   useQuery({
@@ -11,20 +20,7 @@ export const useProposalStatus = (spaj_number?: string) =>
     refetchInterval: 10_000,
   });
 
-export const useSubmissionProposal = () =>
+export const usePayment = () =>
   useMutation({
-    mutationFn: (body: SubmissionReq) => submissionProposal(body),
-  });
-
-
-export const useCreateSPAJ = () =>
-  useMutation({
-    mutationFn: () => createSPAJ(),
-  });
-
-export const usePayment = (spaj_number?: string) =>
-  useQuery({
-    queryKey: ["payment", spaj_number],
-    queryFn: () => getPayment(spaj_number!),
-    enabled: !!spaj_number,
+    mutationFn: (body: PaymentReq) => getPayment(body),
   });

@@ -177,10 +177,10 @@ export const handlers = [
     return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
   }),
 
-  http.get(url("/microsite/proposal/create-spaj"), async () => {
+  http.post(url("/microsite/proposal/create-spaj"), async () => {
     const data = {
-      sucess: true,
-      spaj_number: '12345678'
+        id: "efa307d8-13d4-4111-93ff-08e55c634fb7",
+        spajNumber: "9800000006"
     }
     return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
   }),
@@ -194,9 +194,19 @@ export const handlers = [
 
   http.get(url("/microsite/proposal/:spaj_number/status"), async () => {
     const data = {
-      success: true,
+      status: 'CLEAN',
     }
-    await delay(100_000);
+    await delay(10_000);
+    return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
+  }),
+
+  http.post(url("/microsite/payment"), async () => {
+    const data = {
+        url: "https://payment-uat.prudential.co.id/reserved?bill_no=250813000001",
+        bill_no: "250813000001",
+        resp_code: 0,
+        resp_desc: "Success"
+    }
     return HttpResponse.json({ responseCode: "200", responseMessage: "OK", data })
   }),
   

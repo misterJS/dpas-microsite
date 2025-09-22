@@ -17,6 +17,7 @@ import { SubmissionReq } from "@/api/types"
 import { useSubmissionStore } from "@/lib/store/submissionDataStore"
 import { useCreateSPAJ, useSubmissionProposal } from "@/hooks/useProposal"
 import { DialogComponent } from "@/components/common/DialogComponent"
+import MarkdownRenderer from "@/components/ui/markdown"
 
 type SummaryData = {
   nik: string
@@ -120,24 +121,19 @@ export default function ConsentPage() {
       }
     }
 
-    setSubmissionData(paramsSubmit)
-    mutateSubmit(paramsSubmit,
-        {
-            onSuccess: () => { 
-                mutateCreateSPAJ(undefined,
-                    {
-                        onSuccess: (response) => { 
-                            navigate(`/waiting-status?spaj_number=${response.spaj_number}`)
-                            },
-                        onError: (err) => setRejectOpen(true)
-                    }
-                );
+    mutateCreateSPAJ(undefined, {
+        onSuccess: (response) => { 
+            mutateSubmit(paramsSubmit,{
+                onSuccess: () => { 
+                    setSubmissionData(paramsSubmit)
+                    navigate(`/waiting-status?spaj_number=${response.spajNumber}`)
                 },
-            onError: (err) => setRejectOpen(true)
-        }
-    );
-
-    
+                onError: (err) => setRejectOpen(true)
+            }
+        );
+        },
+        onError: (err) => setRejectOpen(true)
+    });
   }
 
   const canSubmit =
@@ -221,7 +217,8 @@ export default function ConsentPage() {
                         <h3 className="font-semibold text-[16px] text-[#4B4B4B]">{q.group_label}</h3>
                         {q.question.map((item, idx) => (
                             <div key={`${item}-${idx}`}>
-                            <p className="text-[13px] text-[#4B4B4B] mt-2">{item.question_text}</p>
+                                <MarkdownRenderer content={item.question_text} />
+                                {/* <p className="text-[13px] text-[#4B4B4B] mt-2">{item.question_text}</p> */}
                             <div className="relative mt-4">
                                 <FormField
                                 control={form.control}

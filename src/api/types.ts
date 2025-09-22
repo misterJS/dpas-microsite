@@ -142,9 +142,9 @@ export type SubmissionReq = {
 }
 
 type TQuestionaire = {
-    consent: TQuestionnaireItem | unknown
-    healthQuestionnaire: TQuestionnaireItem | unknown
-  }
+  consent: TQuestionnaireItem | unknown
+  healthQuestionnaire: TQuestionnaireItem | unknown
+}
 
 type TQuestionnaireItem = {
   answer: string
@@ -153,4 +153,34 @@ type TQuestionnaireItem = {
   questionId: string
   questionText: string
   type: string
+}
+
+export type CreateSPAJRes = {
+  id: string;
+  spajNumber: string;
+}
+
+export type PaymentReq = {
+  allow_reg: boolean;
+  allow_pay: boolean;
+  cart: { prm: number };
+  cust_no: string;
+  main_insured_name: string;
+  cust_name: string;
+  pay_option: string;
+  source_app: string;
+  currency: string;
+  premium_amount: number;
+  email: string;
+  mobile_no: string;
+  is_sharia: boolean;
+  redirect_url: string;
+  source_bill: string;
+}
+
+export type PaymentRes = {
+  url: string;
+  bill_no: string;
+  resp_code: number;
+  resp_desc: string;
 }
