@@ -303,5 +303,87 @@
       "desc": "Namun sayangnya, anda belum dapat melanjutkan pembelian karena belum memenuhi kriteria dari kami",
       "paymentButton": "Mulai pembayaran"
     }
+  },
+  "docs": {
+    "product_desc": {
+      "title": "Ringkasan Produk dan Layanan Proteksi",
+      "basicTitle": "Manfaat meninggal dunia",
+      "basicAmount": "Rp 3.000.000",
+      "addonTitle": "Manfaat tambahan",
+      "addons": [
+        { "label": "Manfaat cacat total akibat kecelakaan", "amount": "Rp 6.000.000" },
+        { "label": "Manfaat meninggal dunia akibat kecelakaan", "amount": "Rp 18.000.000" }
+      ]
+    },
+    "exceptional_protect": {
+      "title": "PENGECUALIAN PROTEKSI",
+      "lead": "Pengelola tidak akan membayar klaim Manfaat Asuransi PRUTeC Care yang disebabkan oleh:",
+      "items": [
+        "Bunuh diri, percobaan bunuh diri, atau dugaan bunuh diri oleh Peserta Yang Diasuransikan.",
+        "Tindak pidana atau pelanggaran hukum yang dilakukan oleh Peserta Yang Diasuransikan.",
+        "Perkelahian atau tindakan kekerasan, kecuali dalam pembelaan diri yang wajar.",
+        "Kegiatan atau perlombaan yang berbahaya termasuk balap, panjat tebing, atau olahraga ekstrem.",
+        "HIV/AIDS atau penyakit menular seksual tertentu.",
+        "Kehamilan, melahirkan, atau komplikasinya, kecuali akibat kecelakaan yang dijamin.",
+        "Perang, huru-hara, terorisme, atau keadaan sejenisnya.",
+        "Radiasi nuklir, kontaminasi radioaktif, atau reaksi nuklir.",
+        "Kondisi yang telah ada sebelumnya yang tidak diungkapkan sesuai ketentuan polis.",
+        "Keracunan akibat alkohol, narkotika, atau obat terlarang tanpa resep.",
+        "Tindakan medis yang tidak sesuai dengan anjuran dokter berwenang."
+      ]
+    },
+    "snk": {
+      "title": "CARA & KETENTUAN KLAIM",
+      "how": {
+        "title": "Cara Pengajuan Klaim",
+        "steps": [
+          "Pengajuan oleh Penerima Manfaat yang ditunjuk melalui aplikasi Pulse atau kantor pusat/cabang sesuai ketentuan.",
+          "Pastikan aplikasi Pulse telah diperbarui.",
+          "Pengajuan klaim selain meninggal dunia dilakukan melalui aplikasi Pulse oleh Peserta Yang Diasuransikan.",
+          "Isi formulir klaim, lengkapi dokumen, lalu klik kirim di aplikasi.",
+          "Pilih polis yang akan diajukan klaimnya.",
+          "Ikuti petunjuk dan lengkapi data sesuai kebutuhan.",
+          "Unggah semua dokumen pendukung.",
+          "Tindak lanjut klaim akan diinformasikan melalui kontak yang terdaftar."
+        ]
+      },
+      "terms": {
+        "title": "Ketentuan Pengajuan Klaim",
+        "items": [
+          "Penerima Manfaat yang berhak menerima pembayaran sesuai penunjukan pada polis.",
+          "Dokumen identitas resmi (KTP) dan bukti hubungan keluarga jika diperlukan.",
+          "Dokumen pendukung sesuai jenis klaim harus lengkap dan sah.",
+          "Klaim diajukan dalam jangka waktu yang ditentukan pada polis.",
+          "Pengelola berhak meminta dokumen tambahan untuk verifikasi.",
+          "Pembayaran klaim dilakukan setelah verifikasi dan persetujuan selesai."
+        ]
+      }
+    },
+    "applied_claim_document": {
+      "title": "DOKUMEN PENGAJUAN KLAIM",
+      "disability": {
+        "title": "Dokumen Pengajuan Klaim Manfaat Cacat Total Akibat Kecelakaan",
+        "items": [
+          "Formulir pengajuan klaim elektronik yang telah diisi dengan benar.",
+          "KTP atau tanda kenal diri Peserta Yang Diasuransikan.",
+          "Wajib foto selfie dengan KTP, lengkap dari kamera; foto surat penggantian/pembaruan ganti nama jika ada.",
+          "Surat Keterangan Medis sesuai jenis kecelakaan dari fasilitas kesehatan yang berwenang.",
+          "Surat keterangan dokter mengenai kondisi medis peserta.",
+          "Dokumen pendukung lain yang relevan."
+        ]
+      },
+      "death": {
+        "title": "Dokumen Pengajuan Klaim Manfaat Meninggal Dunia",
+        "items": [
+          "Formulir pengajuan klaim elektronik yang telah diisi dengan benar.",
+          "KTP dan data kenal diri Peserta Yang Diasuransikan.",
+          "Akta kematian atau surat keterangan kematian dari instansi berwenang.",
+          "Surat keterangan dokter/rumah sakit mengenai sebab kematian.",
+          "Dokumen hubungan ahli waris dengan Peserta Yang Diasuransikan.",
+          "Dokumen pendukung tambahan sesuai penyebab kematian (mis. kepolisian bila kecelakaan).",
+          "Dokumen lain yang diminta Pengelola."
+        ]
+      }
+    }
   }
 }
