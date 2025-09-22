@@ -37,7 +37,7 @@ const initalState: SubmissionReq = {
     phone: "",
     countryCode: "",
     zipCode: "",
-    Province: "",
+    province: "",
     cityName: "",
     districtName: "",
     subdistrictName: "",

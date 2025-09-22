@@ -48,8 +48,10 @@ type District = (typeof DISTRICT_VALUES)[number];
 const SUBDISTRICT_VALUES = ["gunung", "kramat_pela"] as const;
 type Subdistrict = (typeof SUBDISTRICT_VALUES)[number];
 
-const RELATION_VALUES = ["istri", "suami", "anak"] as const;
-type Relation = (typeof RELATION_VALUES)[number];
+const RELATION_VALUES = ["istri", "suami", "anak"] as const
+type Relation = (typeof RELATION_VALUES)[number]
+
+type Branch = { code: string; name: string }
 
 const schema = z.object({
   branch: z.string().min(1, "Pilih kantor cabang"),
@@ -109,51 +111,51 @@ export default function RegisterPage() {
     handleSetData(values);
   };
 
-  const handleSetData = (v: FormValues) => {
-    const data: SubmissionReq = {
-      ...submission,
-      client: {
-        nik: v.nik,
-        fullName: v.fullName,
-        pob: v.pob,
-        dob: v.dob,
-        maritalStatus: v.married,
-        sex: v.gender,
-        email: v.email,
-        address: v.addressKtp,
-        phone: v.phone,
-        countryCode: "+62",
-        zipCode: v.postalCode,
-        Province: v.province,
-        cityName: v.city,
-        districtName: v.district,
-        subdistrictName: v.subdistrict,
-        job: v.jobType,
-        income: v.salary,
-        benefName: v.beneficiaryName,
-        benefPhone: v.beneficiaryPhone,
-        benefCountryCode: "+62",
-        benefAddress: v.beneficiaryAddress,
-        relation: v.beneficiaryRelation,
-      },
-    };
-    setSubmissionData(data);
-    navigate("/health-question");
-  };
+    const handleSetData = (v: FormValues) => {
+        const data: SubmissionReq = {
+            ...submission,
+            client: {
+                nik: v.nik,
+                fullName: v.fullName,
+                pob: v.pob,
+                dob: v.dob,
+                maritalStatus: v.married,
+                sex: v.gender,
+                email: v.email,
+                address: v.addressKtp,
+                phone: v.phone,
+                countryCode: "+62",
+                zipCode: v.postalCode,
+                province: v.province,
+                cityName: v.city,
+                districtName: v.district,
+                subdistrictName: v.subdistrict,
+                job: v.jobType,
+                income: v.salary,
+                benefName: v.beneficiaryName,
+                benefPhone: v.beneficiaryPhone,
+                benefCountryCode: "+62",
+                benefAddress: v.beneficiaryAddress,
+                relation: v.beneficiaryRelation
+            } 
+        }
+        setSubmissionData(data)
+        navigate("/health-question")
+    }
 
-  const province = form.watch("province");
-  const city = form.watch("city");
-  const district = form.watch("district");
+    const province = form.watch("province")
+    const city = form.watch("city")
+    const district = form.watch("district")
 
-  const { data: provinces = [] } = useProvinces();
-  const { data: cities = [] } = useCities(province);
-  const { data: districts = [] } = useDistricts(province, city);
-  const { data: subdistricts = [] } = useSubdistricts(province, city, district);
-  const { data: branches = [] } = useBranches();
-  const { data: jobs = [] } = useJobs();
-  const { data: salaries = [] } = useSalaries();
-  const postalCode = form.watch("postalCode");
-  const { data: zip } = useZipLookup(postalCode);
+    const { data: provinces = [] } = useProvinces()
+    const { data: cities = [] } = useCities(province)
+    const { data: districts = [] } = useDistricts(province, city)
+    const { data: subdistricts = [] } = useSubdistricts(province, city, district)
+    const { data: branches = [] } = useBranches() as { data?: Branch[] }
+    const { data: jobs = [] } = useJobs()
+    const { data: salaries = [] } = useSalaries()
+    const postalCode = form.watch("postalCode")
+    const { data: zip } = useZipLookup(postalCode)
 
   // Autofill cascade from ZIP lookup, step-by-step to wait data dependencies
   React.useEffect(() => {

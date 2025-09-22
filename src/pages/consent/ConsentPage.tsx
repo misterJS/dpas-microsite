@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
@@ -15,6 +15,9 @@ import FixedBottomBar from "@/components/common/FixedBottomBar"
 import { useQuestions } from "@/hooks/useQuestions"
 import { SubmissionReq } from "@/api/types"
 import { useSubmissionStore } from "@/lib/store/submissionDataStore"
+import { useCreateSPAJ, useSubmissionProposal } from "@/hooks/useProposal"
+import { DialogComponent } from "@/components/common/DialogComponent"
+import MarkdownRenderer from "@/components/ui/markdown"
 
 type SummaryData = {
   nik: string
@@ -31,11 +34,15 @@ type SummaryData = {
 
 export default function ConsentPage() {
   const { t } = useTranslation("common")
+  const [rejectOpen, setRejectOpen] = useState(false)
   const { submission, setSubmissionData } = useSubmissionStore();
 
   const [params] = useSearchParams()
   const slug = params.get("slug") || "uob"
   const productCode = params.get("product") || "ACC"
+
+  const { mutate : mutateSubmit, isSuccess: successSubmit, isError: errorSubmit } = useSubmissionProposal();
+  const { mutate : mutateCreateSPAJ, isSuccess: successCreateSPAJ, isError: errorCreateSPAJ } = useCreateSPAJ();
   const { data: questions = [], isLoading, isError } = useQuestions(slug, productCode, 'CONSENT')
 
   const navigate = useNavigate()
@@ -89,7 +96,12 @@ export default function ConsentPage() {
   }, [questions, form]);
 
   const watchAllField = form.watch()
-  const onSubmit = () => handleSetData()
+
+  const onSubmit = (v: z.infer<typeof schema>) => {
+    const allQualified = Object.values(v as Record<string, string>).every((ans) => ans === "yes");
+    if (allQualified) handleSetData()
+    else setRejectOpen(true)
+  }
 
   const handleSetData = () => {
     const dataQuestions = questions.flatMap(group => group.question).map(item => ({
@@ -101,7 +113,7 @@ export default function ConsentPage() {
         answer: watchAllField[item.code]
     }));
 
-    const data: SubmissionReq = {
+    const paramsSubmit: SubmissionReq = {
       ...submission,
       questionaire: {
         ...submission.questionaire,
@@ -109,8 +121,19 @@ export default function ConsentPage() {
       }
     }
 
-    setSubmissionData(data)
-    navigate("/waiting-status")
+    mutateCreateSPAJ(undefined, {
+        onSuccess: (response) => { 
+            mutateSubmit(paramsSubmit,{
+                onSuccess: () => { 
+                    setSubmissionData(paramsSubmit)
+                    navigate(`/waiting-status?spaj_number=${response.spajNumber}`)
+                },
+                onError: (err) => setRejectOpen(true)
+            }
+        );
+        },
+        onError: (err) => setRejectOpen(true)
+    });
   }
 
   const canSubmit =
@@ -122,12 +145,11 @@ export default function ConsentPage() {
   return (
     <div className="min-h-screen">
       <Card className="rounded-[22px] border bg-white">
-        <div className="flex justify-center">
+        <div className="flex justify-center mt-10 mb-5">
             <img
                 src={Logo}
                 alt={t("hero.alt.logo")}
-                width={100}
-                height={50}
+                width={150}
                 loading="eager"
             />
         </div>
@@ -138,27 +160,20 @@ export default function ConsentPage() {
             </div>
             <div className="text-sm">{t("consent.accidentInsurance")}</div>
         </div>
-        <div className="flex">
+        <div className="flex items-center bg-[#69C8C3] overflow-hidden">
             <div className="p-4 w-full bg-[#69C8C3] text-white">
                 <div className="font-bold text-lg">{t("consent.accident")}</div>
                 <div className="font-bold">{t("consent.summaryTitle")} {submission.product.package.packageName} ({submission.product.package.term.term} {t("consent.monthsSuffix")})</div>
                 <div className="">Rp 32,000</div>
             </div>
 
-            <div
-                className="ml-auto max-w-[540px] rounded-l-2xl overflow-hidden"
-                style={{
-                    WebkitMaskImage: "linear-gradient(to left, #69C8C3 15%, #69C8C3)",
-                    maskImage: "linear-gradient(to left, #69C8C3 15%, #69C8C3)",
-                }}
-            >
+            <div className="relative w-[220px] h-full">
                 <img
-                    src={Family}
-                    width={150}
-                    alt="Keluarga"
-                    className="block object-cover h-full"
-                    loading="eager"
+                src={Family}
+                alt="Keluarga"
+                className="h-full w-full object-cover"
                 />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#69C8C3] via-[#69C8C3]/60 to-transparent" />
             </div>
         </div>
 
@@ -173,14 +188,14 @@ export default function ConsentPage() {
                 <Row label={t("consent.fields.gender")} value={data.gender} />
                 <Row label={t("consent.fields.address")} value={data.address} />
             </dl>
-
+            <hr className="mt-5" />
             <h2 className="text-center text-[#54BDB7] text-2xl font-semibold">{t("consent.tncTitle")}</h2>
 
             <div className="space-y-4 text-[#666]">
                 <p className="font-medium">{t("consent.ripleyHeading")}</p>
                 <p className="leading-6">{t("consent.p1")}</p>
                 <p className="leading-6">{t("consent.p2")}</p>
-                <div className="leading-6">
+                <div className="leading-6" onClick={()=> navigate("/pdf?type=riplay")}>
                     <p>{t("consent.accessLead")}</p>
                     <p className="text-[#ED1B2E] font-medium break-all">
                         {t("consent.accessLinkShort")}
@@ -202,7 +217,8 @@ export default function ConsentPage() {
                         <h3 className="font-semibold text-[16px] text-[#4B4B4B]">{q.group_label}</h3>
                         {q.question.map((item, idx) => (
                             <div key={`${item}-${idx}`}>
-                            <p className="text-[13px] text-[#4B4B4B] mt-2">{item.question_text}</p>
+                                <MarkdownRenderer content={item.question_text} />
+                                {/* <p className="text-[13px] text-[#4B4B4B] mt-2">{item.question_text}</p> */}
                             <div className="relative mt-4">
                                 <FormField
                                 control={form.control}
@@ -267,6 +283,16 @@ export default function ConsentPage() {
             </Form>
         </CardContent>
       </Card>
+      <DialogComponent
+            open={rejectOpen}
+            onOpenChange={setRejectOpen}
+            title={t("health.reject.title")}
+            description={t("health.reject.body")}
+            primaryLabel={t("health.reject.close")}
+            onPrimary={() => setRejectOpen(false)}
+            secondaryLabel={t("health.reject.home")}
+            secondaryTo="/"
+        />
     </div>
   )
 }

@@ -293,7 +293,7 @@
       "desc": "Mohon menunggu. Kami sedang memverifikasi data anda",
       "paymentButton": ""
     },
-    "sucess": {
+    "success": {
       "title": "Verifikasi selesai",
       "desc": "Silakan memulai pembayaran",
       "paymentButton": "Mulai pembayaran"

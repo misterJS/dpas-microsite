@@ -1,8 +1,20 @@
-import React from "react"
-import { render, screen, fireEvent, act } from "@testing-library/react"
-import WaitingPage from "./WaitingPage"
+import { render, screen, fireEvent, act } from "@testing-library/react";
+import WaitingPage from "./WaitingPage";
+import { useProposalStatus } from "@/hooks/useProposal";
+import { UseQueryResult } from "@tanstack/react-query";
 
-// mock i18n
+jest.mock("@/assets", () => ({
+  waiting: "waiting.png",
+  sucess: "success.png",
+  failed: "failed.png",
+}));
+
+const mockNavigate = jest.fn();
+jest.mock("react-router-dom", () => ({
+  useNavigate: () => mockNavigate,
+  useSearchParams: () => [new URLSearchParams({ spaj_number: "12345" })],
+}));
+
 jest.mock("react-i18next", () => ({
   useTranslation: () => ({
     t: (key: string) => {
@@ -20,69 +32,43 @@ jest.mock("react-i18next", () => ({
   }),
 }))
 
-// mock navigate
-const mockNavigate = jest.fn()
-jest.mock("react-router-dom", () => ({
-  useNavigate: () => mockNavigate,
-}))
-
-// mock assets
-jest.mock("@/assets", () => ({
-  waiting: "waiting.png",
-  sucess: "success.png",
-  failed: "failed.png",
-}))
+const mockMutate = jest.fn();
+jest.mock("@/hooks/useProposal", () => ({
+  useProposalStatus: jest.fn(() => ({
+    data: { success: false },
+    isLoading: false,
+    isError: false,
+  })),
+  usePayment: jest.fn(() => ({
+    mutate: mockMutate,
+    isSuccess: false,
+    isError: false,
+  })),
+}));
 
 describe("WaitingPage", () => {
   beforeEach(() => {
-    jest.useFakeTimers()
-    jest.clearAllMocks()
-  })
+    jest.useFakeTimers();
+    jest.clearAllMocks();
+  });
 
   afterEach(() => {
-    jest.useRealTimers()
-  })
+    jest.useRealTimers();
+  });
 
-  it("renders initial waiting state correctly", () => {
-    render(<WaitingPage />)
+  test("renders initial waiting state", () => {
+    render(<WaitingPage />);
+    expect(screen.getByText("Waiting Title")).toBeInTheDocument();
+    expect(screen.getByText("Waiting Description")).toBeInTheDocument();
+    expect(screen.getByRole("img")).toHaveAttribute("src", "waiting.png");
+    expect(screen.getByRole("button")).toHaveTextContent("2:00");
+  });
 
-    expect(screen.getByText("Preparation")).toBeInTheDocument()
-    expect(screen.getByText("Payment")).toBeInTheDocument()
-    expect(screen.getByText("Waiting Title")).toBeInTheDocument()
-    expect(screen.getByText("Waiting Description")).toBeInTheDocument()
-    expect(screen.getByRole("button")).toHaveTextContent("2:00")
-    expect(screen.getByRole("img")).toHaveAttribute("src", "waiting.png")
-  })
+  test("navigates to home if status not success", () => {
+    render(<WaitingPage />);
+    const button = screen.getByRole("button");
+    fireEvent.click(button);
 
-  it("transitions to success state after countdown ends", () => {
-    render(<WaitingPage />)
-
-    // fast forward countdown 120s
-    act(() => {
-      jest.advanceTimersByTime(121_000)
-    })
-
-    expect(screen.getByText("Success Title")).toBeInTheDocument()
-    expect(screen.getByText("Success Description")).toBeInTheDocument()
-    expect(screen.getByRole("button")).toHaveTextContent("Pay Now")
-    expect(screen.getByRole("img")).toHaveAttribute("src", "success.png")
-  })
-
-  it("navigates to / when clicked before success", () => {
-    render(<WaitingPage />)
-
-    fireEvent.click(screen.getByRole("button"))
-    expect(mockNavigate).toHaveBeenCalledWith("/")
-  })
-
-  it("navigates to /payment when clicked after success", () => {
-    render(<WaitingPage />)
-
-    act(() => {
-      jest.advanceTimersByTime(121_000)
-    })
-
-    fireEvent.click(screen.getByRole("button"))
-    expect(mockNavigate).toHaveBeenCalledWith("/payment")
-  })
-})
+    expect(mockNavigate).toHaveBeenCalledWith("/");
+  });
+});
