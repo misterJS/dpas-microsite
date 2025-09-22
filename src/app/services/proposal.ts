@@ -13,8 +13,8 @@ export const getPayment = async (
 
 export const getProposalStatus = async (
   spaj_number: string
-): Promise<ComputePremiumRes> => {
-  const { data } = await api.get< ApiEnvelope<ComputePremiumRes>>(
+): Promise<any> => {
+  const { data } = await api.get< ApiEnvelope<any>>(
     `/microsite/proposal/${spaj_number}/status`
   );
   return data.data;
@@ -22,20 +22,17 @@ export const getProposalStatus = async (
 
 export const submissionProposal = async (
   body: SubmissionReq
-): Promise<ComputePremiumRes> => {
-  const { data } = await api.post<ApiEnvelope<ComputePremiumRes>>(
+): Promise<any> => {
+  const { data } = await api.post<ApiEnvelope<any>>(
     `/microsite/proposal/submit`,
     body
   );
   return data.data;
 };
 
-export const createSPAJ = async (
-  body: SubmissionReq
-): Promise<ComputePremiumRes> => {
-  const { data } = await api.post<ApiEnvelope<ComputePremiumRes>>(
-    `/microsite/proposal/create-spaj`,
-    body
+export const createSPAJ = async (): Promise<any> => {
+  const { data } = await api.get<ApiEnvelope<any>>(
+    `/microsite/proposal/create-spaj`
   );
   return data.data;
 };

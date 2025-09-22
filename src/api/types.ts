@@ -63,7 +63,7 @@ export type Subdistrict = { subdistrictId: string; subdistrictName: string };
 export type HealthQuestion = {
   id: string;
   code: string;
-  question_order: string | number;
+  question_order: number;
   question_text: string;
   type: string;
   answer_type: string;
@@ -71,7 +71,7 @@ export type HealthQuestion = {
   no_label: string;
   group_type: string;
   group_label: string;
-  group_order: string | number;
+  group_order: number;
 };
 
 export type DocumentReq = {
@@ -126,7 +126,7 @@ export type SubmissionReq = {
     phone: string
     countryCode: string
     zipCode: string
-    Province: string
+    province: string
     cityName: string
     districtName: string
     subdistrictName: string

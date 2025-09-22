@@ -1,7 +1,8 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { waiting, sucess, failed } from "@/assets";
 import { useTranslation } from "react-i18next";
+import { useProposalStatus } from "@/hooks/useProposal";
 
 export default function ContentPdf() {
   const { t } = useTranslation("common")
@@ -13,32 +14,41 @@ export default function ContentPdf() {
     title: t("progressStatus.waiting.title"),
     desc: t("progressStatus.waiting.desc")
   })
-  
-  const startCountdown = (durationInSeconds: number) => {
-    let timer = durationInSeconds;
 
-    const countdownInterval = setInterval(function () {
+  const [params] = useSearchParams()
+  const spaj_number = params.get("spaj_number") || ""
+  const { data, isLoading, isError } = useProposalStatus(spaj_number)
+
+  useEffect(() => {
+    let timer = 120;
+    const countdownInterval = setInterval(() => {
       const minutes = Math.floor(timer / 60);
       let seconds: string | number = timer % 60;
       seconds = seconds < 10 ? "0" + seconds : seconds;
-      setProgress(`${minutes}:${seconds}`)
+      setProgress(`${minutes}:${seconds}`);
 
-      if (--timer < 0) {
+      if (data?.success) {
         clearInterval(countdownInterval);
-        setStatus('sucess')
-        setImages(sucess)
-        setWording({ title: t("progressStatus.sucess.title"), desc: t("progressStatus.sucess.desc")})
-        setProgress(t("progressStatus.sucess.paymentButton"))
+        setStatus("success");
+        setImages(sucess);
+        setWording({
+          title: t("progressStatus.success.title"),
+          desc: t("progressStatus.success.desc"),
+        });
+        setProgress(t("progressStatus.success.paymentButton"));
+      }
+
+      if (--timer < 0 && !data?.success) {
+        timer = 120; // reset jadi 2 menit lagi
+        setProgress("2:00");
       }
     }, 1000);
-  }
 
-  useEffect(() => {
-    startCountdown(120)
-  }, [])
+    return () => clearInterval(countdownInterval);
+  }, [data?.success]);
 
   const handleNextRoute = () => {
-    if(status === "sucess"){
+    if(status === "success"){
       navigate("/payment")
     }else{
       navigate("/")

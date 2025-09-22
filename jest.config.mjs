@@ -2,11 +2,14 @@ export default {
   preset: 'ts-jest/presets/default-esm',
   testEnvironment: 'jsdom',
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
-  globals: {
-    'ts-jest': {
-      useESM: true,
-      tsconfig: { jsx: 'react-jsx' },
-    },
+  transform: {
+    '^.+\\.(ts|tsx)$': [
+      'ts-jest',
+      {
+        useESM: true,
+        tsconfig: { jsx: 'react-jsx' },
+      },
+    ],
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
