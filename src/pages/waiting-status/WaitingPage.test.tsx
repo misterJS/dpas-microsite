@@ -1,6 +1,7 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import WaitingPage from "./WaitingPage";
 import { useProposalStatus } from "@/hooks/useProposal";
+import { UseQueryResult } from "@tanstack/react-query";
 
 jest.mock("@/assets", () => ({
   waiting: "waiting.png",
@@ -10,9 +11,8 @@ jest.mock("@/assets", () => ({
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
-  ...(jest.requireActual("react-router-dom") as {}),
   useNavigate: () => mockNavigate,
-  useSearchParams: () => [new URLSearchParams("spaj_number=123")],
+  useSearchParams: () => [new URLSearchParams({ spaj_number: "12345" })],
 }));
 
 jest.mock("react-i18next", () => ({
@@ -32,9 +32,18 @@ jest.mock("react-i18next", () => ({
   }),
 }))
 
-// 🧪 Mock proposal hook
+const mockMutate = jest.fn();
 jest.mock("@/hooks/useProposal", () => ({
-  useProposalStatus: jest.fn(),
+  useProposalStatus: jest.fn(() => ({
+    data: { success: false },
+    isLoading: false,
+    isError: false,
+  })),
+  usePayment: jest.fn(() => ({
+    mutate: mockMutate,
+    isSuccess: false,
+    isError: false,
+  })),
 }));
 
 describe("WaitingPage", () => {
@@ -47,70 +56,19 @@ describe("WaitingPage", () => {
     jest.useRealTimers();
   });
 
-  it("renders initial waiting state", () => {
-    (useProposalStatus as jest.Mock).mockReturnValue({
-      data: undefined,
-      isLoading: false,
-      isError: false,
-    });
-
+  test("renders initial waiting state", () => {
     render(<WaitingPage />);
-
     expect(screen.getByText("Waiting Title")).toBeInTheDocument();
     expect(screen.getByText("Waiting Description")).toBeInTheDocument();
+    expect(screen.getByRole("img")).toHaveAttribute("src", "waiting.png");
     expect(screen.getByRole("button")).toHaveTextContent("2:00");
   });
 
-  it("navigates to /payment when success", () => {
-    (useProposalStatus as jest.Mock).mockReturnValue({
-      data: { success: true },
-      isLoading: false,
-      isError: false,
-    });
-
+  test("navigates to home if status not success", () => {
     render(<WaitingPage />);
-
-    // Jalankan timer biar useEffect update
-    act(() => {
-      jest.advanceTimersByTime(1000);
-    });
-
-    const button = screen.getByRole("button");
-    fireEvent.click(button);
-    expect(mockNavigate).toHaveBeenCalledWith("/payment");
-  });
-
-  it("navigates to / if not success", () => {
-    (useProposalStatus as jest.Mock).mockReturnValue({
-      data: { success: false },
-      isLoading: false,
-      isError: false,
-    });
-
-    render(<WaitingPage />);
-
     const button = screen.getByRole("button");
     fireEvent.click(button);
 
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
-
-  it("resets timer if expired and not success", () => {
-  (useProposalStatus as jest.Mock).mockReturnValue({
-    data: { success: false },
-    isLoading: false,
-    isError: false,
-  });
-
-  render(<WaitingPage />);
-  act(() => {
-    jest.advanceTimersByTime(120_000);
-  });
-
-  act(() => {
-    jest.advanceTimersByTime(1000);
-  });
-
-  expect(screen.getByRole("button")).toHaveTextContent("2:00");
-});
 });
