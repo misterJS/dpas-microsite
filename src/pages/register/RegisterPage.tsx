@@ -28,6 +28,7 @@ import { Info } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSubmissionStore } from "@/lib/store/submissionDataStore";
 import { SubmissionReq } from "@/api/types";
+import { useCheckAvailability } from "@/hooks/useProducts";
 
 const PLAN_VALUES = ["silver", "gold", "platinum"] as const;
 const GENDER_VALUES = ["pria", "wanita"] as const;
@@ -111,37 +112,52 @@ export default function RegisterPage() {
     handleSetData(values);
   };
 
-    const handleSetData = (v: FormValues) => {
-        const data: SubmissionReq = {
-            ...submission,
-            client: {
-                nik: v.nik,
-                fullName: v.fullName,
-                pob: v.pob,
-                dob: v.dob,
-                maritalStatus: v.married,
-                sex: v.gender,
-                email: v.email,
-                address: v.addressKtp,
-                phone: v.phone,
-                countryCode: "+62",
-                zipCode: v.postalCode,
-                province: v.province,
-                cityName: v.city,
-                districtName: v.district,
-                subdistrictName: v.subdistrict,
-                job: v.jobType,
-                income: v.salary,
-                benefName: v.beneficiaryName,
-                benefPhone: v.beneficiaryPhone,
-                benefCountryCode: "+62",
-                benefAddress: v.beneficiaryAddress,
-                relation: v.beneficiaryRelation
-            } 
-        }
-        setSubmissionData(data)
-        navigate("/health-question")
+  const handleSetData = (v: FormValues) => {
+    const data: SubmissionReq = {
+      ...submission,
+      client: {
+        nik: v.nik,
+        fullName: v.fullName,
+        pob: v.pob,
+        dob: v.dob,
+        maritalStatus: v.married,
+        sex: v.gender,
+        email: v.email,
+        address: v.addressKtp,
+        phone: v.phone,
+        countryCode: "+62",
+        zipCode: v.postalCode,
+        province: v.province,
+        cityName: v.city,
+        districtName: v.district,
+        subdistrictName: v.subdistrict,
+        job: v.jobType,
+        income: v.salary,
+        benefName: v.beneficiaryName,
+        benefPhone: v.beneficiaryPhone,
+        benefCountryCode: "+62",
+        benefAddress: v.beneficiaryAddress,
+        relation: v.beneficiaryRelation
+      } 
     }
+
+    const paramsCheckAvailability = { 
+      productCode: submission.product.productCode ?? '',
+      componentCode: submission.product.package.packageCode ?? '',
+      birthDate: v.dob,
+      email: v.email,
+      ktpId: v.nik,
+      maritalStatus: v.married
+    }
+
+    mutate(paramsCheckAvailability,{
+      onSuccess: () => {
+          setSubmissionData(data)
+          navigate("/health-question")
+      },
+      onError: (err) => console.log(err)
+    })
+  }
 
     const province = form.watch("province")
     const city = form.watch("city")
@@ -156,6 +172,7 @@ export default function RegisterPage() {
     const { data: salaries = [] } = useSalaries()
     const postalCode = form.watch("postalCode")
     const { data: zip } = useZipLookup(postalCode)
+    const { mutate, isSuccess: successCheck, isError: errorCheck } = useCheckAvailability();
 
   // Autofill cascade from ZIP lookup, step-by-step to wait data dependencies
   React.useEffect(() => {
