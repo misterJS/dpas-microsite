@@ -184,3 +184,29 @@ export type PaymentRes = {
   resp_code: number;
   resp_desc: string;
 }
+
+export type CheckAvailabilityReq = { 
+  productCode: string;
+  componentCode: string;
+  birthDate: Date;
+  email: string;
+  ktpId: string;
+  maritalStatus: string;
+}
+
+export type CheckAvailabilityRes = {
+  body: {
+    productCode: string;
+    componentCode: string;
+    birthDate: string;
+    email: string;
+    ktpId: string;
+    maritalStatus: string;
+  },
+  decisions: string;
+  decisionDescription: string;
+  validations: {
+    MaxAllowedPoliciesPerLifeAssuredCheck: string;
+    MaxAllowedPoliciesPerEmailIdentifier: string;
+  }
+}
