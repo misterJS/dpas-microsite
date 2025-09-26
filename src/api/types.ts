@@ -84,7 +84,7 @@ export type DocumentReq = {
   term?: string | number;
 };
 
-export type DucumentRes = {
+export type DocumentRes = {
   docId: string;
   riplayURL: string;
 };

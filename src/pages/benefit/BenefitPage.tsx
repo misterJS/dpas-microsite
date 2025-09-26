@@ -16,7 +16,7 @@ export default function BenefitPage() {
           title={p.productName}
           description={p.desc}
           imageSrc={p.image}
-          href={`/products/${p.productCode}`}
+          href={`/products/${p.productCode}?type=riplay`}
           buttonTitle={t("actions.readMore")}
         />
       ))}

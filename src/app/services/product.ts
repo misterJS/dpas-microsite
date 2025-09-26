@@ -1,5 +1,18 @@
 import { api } from "@/lib/api";
-import type { ApiEnvelope, ProductDetail, ProductListItem, ComputePremiumReq, ComputePremiumRes, CheckAvailabilityReq, CheckAvailabilityRes } from "@/api/types";
+import {
+  mapComputePremium,
+  mapProductDetail,
+  mapProductList,
+} from "@/api/mappers";
+import type {
+  ApiEnvelope,
+  ProductDetail,
+  ProductListItem,
+  ComputePremiumReq,
+  ComputePremiumRes,
+  CheckAvailabilityReq,
+  CheckAvailabilityRes,
+} from "@/api/types";
 
 export const getProducts = async (
   slug: string,
@@ -9,17 +22,17 @@ export const getProducts = async (
     `/microsite/${slug}/products`,
     { params: q }
   );
-  return data.data;
+  return mapProductList(data.data);
 };
 
 export const getProductDetail = async (
   slug: string,
   productCode: string
 ): Promise<ProductDetail | undefined> => {
-  const { data } = await api.get<
-    ApiEnvelope<{ products: ProductDetail[] }>
-  >(`/microsite/${slug}/products/${productCode}`);
-  return data.data.products?.[0];
+  const { data } = await api.get<ApiEnvelope<{ products: ProductDetail[] }>>(
+    `/microsite/${slug}/products/${productCode}`
+  );
+  return mapProductDetail(data.data?.products);
 };
 
 export const computePremium = async (
@@ -30,7 +43,7 @@ export const computePremium = async (
     `/microsite/${slug}/compute-premium`,
     body
   );
-  return data.data;
+  return mapComputePremium(data.data);
 };
 
 export const checkAvailability = async (

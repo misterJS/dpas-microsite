@@ -1,20 +1,42 @@
 import { api } from "@/lib/api";
 import type {
-  ApiEnvelope, ProductListItem, ProductDetail, ComputePremiumReq, ComputePremiumRes,
-  BranchItem, ZipLookupRes, Province, City, District, Subdistrict, HealthQuestion
+  ApiEnvelope,
+  ProductListItem,
+  ProductDetail,
+  ComputePremiumReq,
+  ComputePremiumRes,
+  BranchItem,
+  ZipLookupRes,
+  Province,
+  City,
+  District,
+  Subdistrict,
+  HealthQuestion,
 } from "./types";
+import {
+  mapBranchOptions,
+  mapCityOptions,
+  mapComputePremium,
+  mapDistrictOptions,
+  mapHealthQuestions,
+  mapProductDetail,
+  mapProductList,
+  mapProvinceOptions,
+  mapSubdistrictOptions,
+  mapZipLookup,
+} from "@/api/mappers";
 
 // PRODUCTS
 export async function getProducts(slug: string, q?: { search?: string }) {
   const { data } = await api.get<ApiEnvelope<ProductListItem[]>>(`/microsite/${slug}/products`, { params: q });
-  return data.data;
+  return mapProductList(data.data);
 }
 
 export async function getProductDetail(slug: string, productCode: string) {
   const { data } = await api.get<ApiEnvelope<{ products: ProductDetail[] }>>(
     `/microsite/${slug}/products/${productCode}`
   );
-  return data.data.products?.[0];
+  return mapProductDetail(data.data.products);
 }
 
 // PREMIUM
@@ -23,39 +45,39 @@ export async function computePremium(slug: string, body: ComputePremiumReq) {
     `/microsite/${slug}/compute-premium`,
     body
   );
-  return data.data;
+  return mapComputePremium(data.data);
 }
 
 // BRANCHES
 export async function getBankBranches(slug: string) {
   const { data } = await api.get<ApiEnvelope<BranchItem[]>>(`/microsite/${slug}/bank-branches`);
-  return data.data;
+  return mapBranchOptions(data.data);
 }
 
-// ZIP → ALAMAT
+// ZIP & ALAMAT
 export async function lookupByZip(q: string) {
   const { data } = await api.get<ApiEnvelope<ZipLookupRes>>(`/microsite/address-by-zip`, { params: { q } });
-  return data.data;
+  return mapZipLookup(data.data);
 }
 
 // CHAIN WILAYAH
 export async function getProvinces() {
   const { data } = await api.get<ApiEnvelope<Province[]>>(`/microsite/province`);
-  return data.data;
+  return mapProvinceOptions(data.data);
 }
 export async function getCities(provinceId: string | number) {
   const { data } = await api.get<ApiEnvelope<City[]>>(`/microsite/province/${provinceId}/city`);
-  return data.data;
+  return mapCityOptions(data.data);
 }
 export async function getDistricts(provinceId: string | number, cityId: string | number) {
   const { data } = await api.get<ApiEnvelope<District[]>>(`/microsite/province/${provinceId}/city/${cityId}/district`);
-  return data.data;
+  return mapDistrictOptions(data.data);
 }
 export async function getSubdistricts(provinceId: string | number, cityId: string | number, districtId: string | number) {
   const { data } = await api.get<ApiEnvelope<Subdistrict[]>>(
     `/microsite/province/${provinceId}/city/${cityId}/district/${districtId}/subdistrict`
   );
-  return data.data;
+  return mapSubdistrictOptions(data.data);
 }
 
 // HEALTH QUESTIONNAIRE
@@ -64,7 +86,7 @@ export async function getHealthQuestions(slug: string, productCode: string) {
     `/microsite/${slug}/product/${productCode}/question`,
     { params: { type: "HEALTH_QUESTIONAIRE" } }
   );
-  return data.data;
+  return mapHealthQuestions(data.data);
 }
 
 // payload belum ready
