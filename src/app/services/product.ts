@@ -1,5 +1,16 @@
 import { api } from "@/lib/api";
-import type { ApiEnvelope, ProductDetail, ProductListItem, ComputePremiumReq, ComputePremiumRes } from "@/api/types";
+import type {
+  ApiEnvelope,
+  ProductDetail,
+  ProductListItem,
+  ComputePremiumReq,
+  ComputePremiumRes,
+} from "@/api/types";
+import {
+  mapComputePremium,
+  mapProductDetail,
+  mapProductList,
+} from "@/api/mappers";
 
 export const getProducts = async (
   slug: string,
@@ -9,7 +20,7 @@ export const getProducts = async (
     `/microsite/${slug}/products`,
     { params: q }
   );
-  return data.data;
+  return mapProductList(data.data);
 };
 
 export const getProductDetail = async (
@@ -19,7 +30,7 @@ export const getProductDetail = async (
   const { data } = await api.get<
     ApiEnvelope<{ products: ProductDetail[] }>
   >(`/microsite/${slug}/products/${productCode}`);
-  return data.data.products?.[0];
+  return mapProductDetail(data.data?.products);
 };
 
 export const computePremium = async (
@@ -30,5 +41,5 @@ export const computePremium = async (
     `/microsite/${slug}/compute-premium`,
     body
   );
-  return data.data;
+  return mapComputePremium(data.data);
 };

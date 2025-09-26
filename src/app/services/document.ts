@@ -1,5 +1,6 @@
 import { api } from "@/lib/api";
 import type { ApiEnvelope, DocumentReq, DucumentRes } from "@/api/types";
+import { mapDocumentResponse } from "@/api/mappers";
 
 export const generateRipleyPDF = async (
   slug: string,
@@ -10,5 +11,5 @@ export const generateRipleyPDF = async (
     `/microsite/${slug}/product/${productCode}/generate-riplay`,
     body
   );
-  return data.data;
+  return mapDocumentResponse(data.data);
 };
