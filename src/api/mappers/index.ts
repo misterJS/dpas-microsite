@@ -4,7 +4,7 @@ import type {
   ComputePremiumRes,
   CreateSPAJRes,
   District,
-  DucumentRes,
+  DocumentRes,
   HealthQuestion,
   PaymentRes,
   ProductDetail,
@@ -214,7 +214,7 @@ export const mapHealthQuestionGroups = (
   );
 };
 
-export const mapDocumentResponse = (payload?: DucumentRes | null): DucumentRes => ({
+export const mapDocumentResponse = (payload?: DocumentRes | null): DocumentRes => ({
   docId: toString(payload?.docId),
   riplayURL: toString(payload?.riplayURL),
 });
