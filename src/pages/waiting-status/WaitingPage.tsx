@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { waiting, sucess, failed } from "@/assets";
 import { useTranslation } from "react-i18next";
 import { usePayment, useProposalStatus } from "@/hooks/useProposal";
+import { useSubmissionStore } from "@/lib/store/submissionDataStore";
 
 export default function ContentPdf() {
   const { t } = useTranslation("common")
@@ -17,7 +18,8 @@ export default function ContentPdf() {
 
   const [params] = useSearchParams()
   const spaj_number = params.get("spaj_number") || ""
-  const { data, isLoading, isError } = useProposalStatus(spaj_number)
+  const { submission } = useSubmissionStore();
+  const { data } = useProposalStatus(spaj_number)
   const { mutate, isSuccess: successPayment, isError: errorPayment } = usePayment();
 
   useEffect(() => {
@@ -57,15 +59,15 @@ export default function ContentPdf() {
           prm: 1200000
       },
       cust_no: "972222772222",
-      main_insured_name: "Bambang Sugeng",
-      cust_name: "Bambang Sugeng",
+      main_insured_name: submission.client.benefName,
+      cust_name: submission.client.fullName,
       pay_option: "pruworks",
       source_app: "dpas Microsite",
       currency: "IDR",
-      premium_amount: 51282000,
-      email: "bambangsugeng@gmail.com",
-      mobile_no: "+62878787878787",
-      is_sharia: false,
+      premium_amount: submission.product.package.premiumAmount ?? 0,
+      email: submission.client.email ?? '',
+      mobile_no: `${submission.client.countryCode + submission.client.phone}`,
+      is_sharia: true,
       redirect_url: "https://somesite.net",
       source_bill: "somebill-12344"
     }
