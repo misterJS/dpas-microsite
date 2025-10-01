@@ -14,7 +14,7 @@ export default function ContentPdf() {
   const [shouldFetch, setShouldFetch] = useState(false)
   const [params] = useSearchParams()
   const { submission } = useSubmissionStore();
-  const type = params.get("type") || "check-replay"
+  const type = params.get("type") || "check-riplay"
   const slug = params.get("slug") || "uob"
   const productCode = params.get("product") || "ACC"
 
