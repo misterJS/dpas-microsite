@@ -1,29 +1,30 @@
-import { api } from "@/lib/api"
-import type { ApiEnvelope, Province, City, District, Subdistrict } from "@/api/types"
-
-export type Option = { code: string; name: string }
-
-// Map backend shapes to generic option list
-const mapProvinces = (items: Province[]): Option[] =>
-  items.map((p) => ({ code: String(p.provinceId), name: p.provinceName }))
-const mapCities = (items: City[]): Option[] =>
-  items.map((c) => ({ code: String(c.cityId), name: c.cityName }))
-const mapDistricts = (items: District[]): Option[] =>
-  items.map((d) => ({ code: String(d.districtId), name: d.districtName }))
-const mapSubdistricts = (items: Subdistrict[]): Option[] =>
-  items.map((s) => ({ code: String(s.subdistrictId), name: s.subdistrictName }))
+import { api } from "@/lib/api";
+import type {
+  ApiEnvelope,
+  Province,
+  City,
+  District,
+  Subdistrict,
+} from "@/api/types";
+import {
+  mapProvinceOptions,
+  mapCityOptions,
+  mapDistrictOptions,
+  mapSubdistrictOptions,
+  type Option,
+} from "@/api/mappers";
 
 export const getProvinces = async (): Promise<Option[]> => {
-  const { data } = await api.get<ApiEnvelope<Province[]>>("/microsite/province")
-  return mapProvinces(data.data)
-}
+  const { data } = await api.get<ApiEnvelope<Province[]>>("/microsite/province");
+  return mapProvinceOptions(data.data);
+};
 
 export const getCities = async (provinceId: string): Promise<Option[]> => {
   const { data } = await api.get<ApiEnvelope<City[]>>(
     `/microsite/province/${provinceId}/city`
-  )
-  return mapCities(data.data)
-}
+  );
+  return mapCityOptions(data.data);
+};
 
 export const getDistricts = async (
   provinceId: string,
@@ -31,9 +32,9 @@ export const getDistricts = async (
 ): Promise<Option[]> => {
   const { data } = await api.get<ApiEnvelope<District[]>>(
     `/microsite/province/${provinceId}/city/${cityId}/district`
-  )
-  return mapDistricts(data.data)
-}
+  );
+  return mapDistrictOptions(data.data);
+};
 
 export const getSubdistricts = async (
   provinceId: string,
@@ -42,6 +43,6 @@ export const getSubdistricts = async (
 ): Promise<Option[]> => {
   const { data } = await api.get<ApiEnvelope<Subdistrict[]>>(
     `/microsite/province/${provinceId}/city/${cityId}/district/${districtId}/subdistrict`
-  )
-  return mapSubdistricts(data.data)
-}
+  );
+  return mapSubdistrictOptions(data.data);
+};
