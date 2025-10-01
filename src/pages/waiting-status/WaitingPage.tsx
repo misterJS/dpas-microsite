@@ -15,11 +15,12 @@ export default function ContentPdf() {
     title: t("progressStatus.waiting.title"),
     desc: t("progressStatus.waiting.desc")
   })
+  const [stopPolling, setStopPolling] = useState(true)
 
   const [params] = useSearchParams()
   const spaj_number = params.get("spaj_number") || ""
   const { submission } = useSubmissionStore();
-  const { data } = useProposalStatus(spaj_number)
+  const { data } = useProposalStatus(spaj_number, stopPolling)
   const { mutate, isSuccess: successPayment, isError: errorPayment } = usePayment();
 
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function ContentPdf() {
           desc: t("progressStatus.success.desc"),
         });
         setProgress(t("progressStatus.success.paymentButton"));
+        setStopPolling(false) 
       }
 
       if (--timer < 0 && !data?.success) {
