@@ -15,14 +15,14 @@ export default function BenefitDetailPage () {
             {isError && <div className="p-2 text-red-600">{t("status.loadProductDetailFailed")}</div>}
             {detail && (
                 <BenefitCard
-                    title={detail.productName}
+                    title={detail.product_name}
                     description={detail.desc}
                     imageSrc={undefined}
                     href="/products"
                     buttonTitle={t("actions.changeProtection")}
                 />
             )}
-            <BenefitDetailForm detail={detail} productCode={id} slug="uob" />
+            <BenefitDetailForm detail={detail} product_code={id} slug="uob" />
         </div>
     )
 }

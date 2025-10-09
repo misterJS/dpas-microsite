@@ -12,11 +12,11 @@ export const useSubmissionProposal = () =>
     mutationFn: (body: SubmissionReq) => submissionProposal(body),
   });
 
-export const useProposalStatus = (spaj_number?: string) =>
+export const useProposalStatus = (spaj_number?: string, enabled: boolean = true) =>
   useQuery({
     queryKey: ["proposal-status", spaj_number],
     queryFn: () => getProposalStatus(spaj_number!),
-    enabled: !!spaj_number,
+    enabled: !!spaj_number && enabled, // enabled for refetchInterval when status success false
     refetchInterval: 10_000,
   });
 

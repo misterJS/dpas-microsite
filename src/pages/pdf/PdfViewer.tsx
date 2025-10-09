@@ -4,26 +4,32 @@ import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-    'pdfjs-dist/build/pdf.worker.min.mjs',
-    import.meta.url
+  'pdfjs-dist/build/pdf.worker.min.mjs',
+  import.meta.url
 ).toString();
 
-const PdfViewer = ({ pdfUrl }: {pdfUrl: string}) => {
-  const [numPages, setNumPages] = useState(null);
+const PdfViewer = ({ pdfUrl }: { pdfUrl: string }) => {
+  const [numPages, setNumPages] = useState<number | null>(null);
 
-  const onDocumentLoadSuccess = ({ numPages }: any) => {
+  const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   };
 
   return (
-      <Document
-        file={pdfUrl}
-        onLoadSuccess={onDocumentLoadSuccess}
-      >
-        {Array.from(new Array(numPages), (el, index) => (
-          <Page key={`page_${index + 1}`} pageNumber={index + 1} width={400} />
+    <div className="w-full h-full overflow-y-auto">
+      <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+        {Array.from(new Array(numPages || 0), (_, index) => (
+          <div key={`page_${index + 1}`} className="w-full flex justify-center">
+            <Page
+              pageNumber={index + 1}
+              renderTextLayer={false}
+              renderAnnotationLayer={false}
+              className="pdf-page"
+            />
+          </div>
         ))}
       </Document>
+    </div>
   );
 };
 

@@ -1,17 +1,10 @@
-import React from "react"
 import Logo from "@/assets/logo-pru-uob.png"
 import Family from "@/assets/family.png"
 import { useTranslation } from "react-i18next"
-import { useLocation } from "react-router-dom";
-import { logoPru, logoUob } from "@/assets";
-
 
 export default function HeroHeader(props: { showHeader?: boolean }) {
     const { showHeader } = props
-    const { pathname } = useLocation();    
     const { t } = useTranslation("common")
-
-    const isLandingPage = pathname === '/'
     return (
         <>
             {showHeader &&

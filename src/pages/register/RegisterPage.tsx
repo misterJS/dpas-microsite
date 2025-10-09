@@ -25,7 +25,7 @@ import {
 } from "@/components/form/rhf-fields";
 import { cn } from "@/lib/utils";
 import { Info } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSubmissionStore } from "@/lib/store/submissionDataStore";
 import { SubmissionReq } from "@/api/types";
 import { useCheckAvailability } from "@/hooks/useProducts";
@@ -102,6 +102,7 @@ export default function RegisterPage() {
   );
   const { t } = useTranslation("common");
   const navigate = useNavigate();
+  const { brand } = useParams();
   const { submission, setSubmissionData } = useSubmissionStore();
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -128,12 +129,12 @@ export default function RegisterPage() {
         countryCode: "+62",
         zipCode: v.postalCode,
         province: v.province,
-        cityName: v.city,
-        districtName: v.district,
-        subdistrictName: v.subdistrict,
+        city_name: v.city,
+        district_name: v.district,
+        subdistrict_name: v.subdistrict,
         job: v.jobType,
         income: v.salary,
-        benefName: v.beneficiaryName,
+        benef_name: v.beneficiaryName,
         benefPhone: v.beneficiaryPhone,
         benefCountryCode: "+62",
         benefAddress: v.beneficiaryAddress,
@@ -142,8 +143,8 @@ export default function RegisterPage() {
     }
 
     const paramsCheckAvailability = { 
-      productCode: submission.product.productCode ?? '',
-      componentCode: submission.product.package.packageCode ?? '',
+      product_code: submission.product.product_code ?? '',
+      componentCode: submission.product.package.package_code ?? '',
       birthDate: v.dob,
       email: v.email,
       ktpId: v.nik,
@@ -153,7 +154,7 @@ export default function RegisterPage() {
     mutate(paramsCheckAvailability,{
       onSuccess: () => {
           setSubmissionData(data)
-          navigate("/health-question")
+          navigate(`/${brand}/health-question`)
       },
       onError: (err) => console.log(err)
     })
@@ -177,7 +178,7 @@ export default function RegisterPage() {
   // Autofill cascade from ZIP lookup, step-by-step to wait data dependencies
   React.useEffect(() => {
     if (!zip) return;
-    const p = zip.province?.[0]?.provinceId as Province | undefined;
+    const p = zip.province?.[0]?.province_id as Province | undefined;
     if (!p) return;
     const curr = form.getValues();
     if (curr.province !== p) {
@@ -190,7 +191,7 @@ export default function RegisterPage() {
 
   React.useEffect(() => {
     if (!zip) return;
-    const c = zip.city?.[0]?.cityId as City | undefined;
+    const c = zip.city?.[0]?.city_id as City | undefined;
     if (!c) return;
     // Wait until cities for current province are loaded, then set
     if (cities.length > 0 && cities.some((v) => v.code === c)) {
@@ -206,7 +207,7 @@ export default function RegisterPage() {
 
   React.useEffect(() => {
     if (!zip) return;
-    const d = zip.district?.[0]?.districtId as District | undefined;
+    const d = zip.district?.[0]?.district_id as District | undefined;
     if (!d) return;
     // Wait until districts for current city are loaded, then set
     if (districts.length > 0 && districts.some((v) => v.code === d)) {
@@ -222,7 +223,7 @@ export default function RegisterPage() {
 
   React.useEffect(() => {
     if (!zip) return;
-    const s = zip.subdistrict?.[0]?.subdistrictId as Subdistrict | undefined;
+    const s = zip.subdistrict?.[0]?.subdistrict_id as Subdistrict | undefined;
     if (!s) return;
     // Wait until subdistricts for current district are loaded, then set
     if (subdistricts.length > 0 && subdistricts.some((v) => v.code === s)) {

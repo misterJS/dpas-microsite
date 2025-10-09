@@ -4,11 +4,11 @@ import { mapDocumentResponse } from "@/api/mappers";
 
 export const generateRipleyPDF = async (
   slug: string,
-  productCode: string,
+  product_code: string,
   body: DocumentReq
 ): Promise<DocumentRes> => {
   const { data } = await api.post<ApiEnvelope<DocumentRes>>(
-    `/microsite/${slug}/product/${productCode}/generate-riplay`,
+    `/microsite/${slug}/product/${product_code}/generate-riplay`,
     body
   );
   return mapDocumentResponse(data.data);

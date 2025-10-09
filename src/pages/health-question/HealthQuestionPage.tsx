@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useTranslation } from "react-i18next"
-import { useNavigate, Link, useSearchParams } from "react-router-dom"
+import { useNavigate, Link, useSearchParams, useParams } from "react-router-dom"
 import { Card, CardContent } from "@/components/ui/card"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
@@ -16,14 +16,15 @@ import { useSubmissionStore } from "@/lib/store/submissionDataStore"
 export default function HealthQuestionsPage() {
   const { t } = useTranslation("common")
   const navigate = useNavigate()
+  const { brand } = useParams()
   const [params] = useSearchParams()
   const [rejectOpen, setRejectOpen] = useState(false)
   const { submission, setSubmissionData } = useSubmissionStore()
 
   const slug = params.get("slug") || "uob"
-  const productCode = params.get("product") || "ACC"
+  const product_code = params.get("product") || "ACC"
 
-  const { data, isLoading, isError } = useQuestions(slug, productCode, "HEALTH_QUESTIONAIRE")
+  const { data, isLoading, isError } = useQuestions(slug, product_code, "HEALTH_QUESTIONAIRE")
 
   const questions =
     data && data.length > 0
@@ -78,7 +79,7 @@ export default function HealthQuestionsPage() {
       }
     }
     setSubmissionData(data)
-    navigate("/pdf?type=riplay")
+    navigate(`/${brand}/pdf?type=riplay`)
   }
 
   return (

@@ -1,4 +1,4 @@
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { pdfFileCheckRiplay } from "@/assets";
 import PdfViewer from "./PdfViewer";
@@ -10,13 +10,14 @@ import { useSubmissionStore } from "@/lib/store/submissionDataStore";
 export default function ContentPdf() {
   const { t } = useTranslation("common")
   const navigate = useNavigate()
+  const { brand } = useParams()
   const [pdf, setPdf] = useState('')
   const [shouldFetch, setShouldFetch] = useState(false)
   const [params] = useSearchParams()
   const { submission } = useSubmissionStore();
-  const type = params.get("type") || "check-replay"
+  const type = params.get("type") || "check-riplay"
   const slug = params.get("slug") || "uob"
-  const productCode = params.get("product") || "ACC"
+  const product_code = params.get("product") || "ACC"
 
   const body = {
     nama: submission.client.fullName,
@@ -24,24 +25,24 @@ export default function ContentPdf() {
     gender: submission.client.sex,
     beneficiary: '',
     email: submission.client.email ?? '',
-    packageName: submission.product.package.packageName,
+    package_name: submission.product.package.package_name,
     term: submission.product.package.term.term,
   }
   
-  const { data, isLoading, isError } = useDocument(slug, productCode, body, shouldFetch)
+  const { data, isLoading, isError } = useDocument(slug, product_code, body, shouldFetch)
 
   useEffect(()=>{
     if(type === "check-riplay"){
       setPdf(pdfFileCheckRiplay)
     }else if(type === "riplay"){
       setShouldFetch(true)
-      data && setPdf(`data:application/pdf;base64,${data.riplayURL}`)
+      data && setPdf(`data:application/pdf;base64,${data.riplay_URL}`)
     }
   }, [data])
 
   const handleNextRoute = () => {
     if(type === "riplay"){
-      navigate("/consent")
+      navigate(`/${brand}/consent`)
     }
   }
 

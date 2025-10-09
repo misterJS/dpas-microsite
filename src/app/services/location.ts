@@ -19,30 +19,30 @@ export const getProvinces = async (): Promise<Option[]> => {
   return mapProvinceOptions(data.data);
 };
 
-export const getCities = async (provinceId: string): Promise<Option[]> => {
+export const getCities = async (province_id: string): Promise<Option[]> => {
   const { data } = await api.get<ApiEnvelope<City[]>>(
-    `/microsite/province/${provinceId}/city`
+    `/microsite/province/${province_id}/city`
   );
   return mapCityOptions(data.data);
 };
 
 export const getDistricts = async (
-  provinceId: string,
-  cityId: string
+  province_id: string,
+  city_id: string
 ): Promise<Option[]> => {
   const { data } = await api.get<ApiEnvelope<District[]>>(
-    `/microsite/province/${provinceId}/city/${cityId}/district`
+    `/microsite/province/${province_id}/city/${city_id}/district`
   );
   return mapDistrictOptions(data.data);
 };
 
 export const getSubdistricts = async (
-  provinceId: string,
-  cityId: string,
-  districtId: string
+  province_id: string,
+  city_id: string,
+  district_id: string
 ): Promise<Option[]> => {
   const { data } = await api.get<ApiEnvelope<Subdistrict[]>>(
-    `/microsite/province/${provinceId}/city/${cityId}/district/${districtId}/subdistrict`
+    `/microsite/province/${province_id}/city/${city_id}/district/${district_id}/subdistrict`
   );
   return mapSubdistrictOptions(data.data);
 };

@@ -32,7 +32,7 @@ import {
   SheetDescription,
 } from "@/components/ui/sheet";
 import FixedBottomBar from "@/components/common/FixedBottomBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FloatingSelect } from "@/components/form/floating-select";
 import type { ProductDetail, ProductPackage, SubmissionReq } from "@/api/types";
 import { useComputePremium } from "@/hooks/useProducts";
@@ -47,15 +47,16 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-type Props = { detail?: ProductDetail; productCode?: string; slug?: string };
+type Props = { detail?: ProductDetail; product_code?: string; slug?: string };
 
 export default function BenefitDetailForm({
   detail,
-  productCode,
+  product_code,
   slug = "uob",
 }: Props) {
   const { t } = useTranslation("common");
   const navigate = useNavigate();
+  const { brand } = useParams();
   const { submission, setSubmissionData } = useSubmissionStore();
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -84,7 +85,7 @@ export default function BenefitDetailForm({
   const handleSetData = (v: FormValues) => {
     if (detail) {
       const detailPackage = detail.packages.find(
-        (e) => e.packageName.toLowerCase() === v.planType.toLowerCase()
+        (e) => e.package_name.toLowerCase() === v.planType.toLowerCase()
       );
       const detailTerm = detail.terms.find(
         (e) => Number(e.term) === Number(v.coverage)
@@ -92,25 +93,25 @@ export default function BenefitDetailForm({
       const data: SubmissionReq = {
         ...submission,
         product: {
-          productId: "xxx",
-          productCode: detail.productCode,
-          productName: detail.productName,
+          product_id: "xxx",
+          product_code: detail.product_code,
+          product_name: detail.product_name,
           package: {
-            packageId: detailPackage?.packageId,
-            packageName: detailPackage?.packageName,
-            packageCode: detailPackage?.packageCode,
-            premiumAmount: 32000,
+            package_id: detailPackage?.package_id,
+            package_name: detailPackage?.package_name,
+            package_code: detailPackage?.package_code,
+            premium_amount: 32000,
             term: {
-              termId: detailTerm?.termId,
+              term_id: detailTerm?.term_id,
               term: detailTerm?.term,
-              termUnit: detailTerm?.termUnit,
+              term_unit: detailTerm?.term_unit,
             },
             benefits: detailPackage?.benefits,
           },
         },
       };
       setSubmissionData(data);
-      navigate("/registration-form");
+      navigate(`/${brand}/registration-form`);
     }
   };
 
@@ -144,7 +145,7 @@ export default function BenefitDetailForm({
       platinum: "PLT",
     };
     const pkg = detail?.packages.find(
-      (p) => p.packageCode.toUpperCase() === codeMap[planValue ?? ""]
+      (p) => p.package_code.toUpperCase() === codeMap[planValue ?? ""]
     );
     const termNum = termValue ? Number(termValue) : undefined;
     const term = detail?.terms.find((t) => t.term === termNum);
@@ -153,11 +154,11 @@ export default function BenefitDetailForm({
 
   const { data: premium } = useComputePremium(
     slug,
-    selected.pkg && selected.term && productCode
+    selected.pkg && selected.term && product_code
       ? {
-          productCode: productCode!,
-          packageId: selected.pkg.packageId,
-          policyTermId: selected.term.termId,
+          product_code: product_code!,
+          package_id: selected.pkg.package_id,
+          policyterm_id: selected.term.term_id,
         }
       : undefined
   );
@@ -250,10 +251,10 @@ export default function BenefitDetailForm({
                     {t("content.addonBenefit")}
                   </p>
                   {selected.pkg.benefits.map((b) => (
-                    <p key={b.benefCode}>
-                      {b.benefName}
+                    <p key={b.benef_code}>
+                      {b.benef_name}
                       <br />
-                      {fmtIDR(b.benefAmount)}
+                      {fmtIDR(b.benef_amount)}
                     </p>
                   ))}
                 </>
@@ -266,7 +267,7 @@ export default function BenefitDetailForm({
               <p>
                 {planLabel} ({termLabel}){" "}
                 <span className="text-[#ED1B2E] font-medium">
-                  {fmtIDR(premium?.premiumAmount ?? 0)}
+                  {fmtIDR(premium?.premium_amount ?? 0)}
                 </span>
               </p>
             </div>

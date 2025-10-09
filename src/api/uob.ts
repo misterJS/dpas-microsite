@@ -32,9 +32,9 @@ export async function getProducts(slug: string, q?: { search?: string }) {
   return mapProductList(data.data);
 }
 
-export async function getProductDetail(slug: string, productCode: string) {
+export async function getProductDetail(slug: string, product_code: string) {
   const { data } = await api.get<ApiEnvelope<{ products: ProductDetail[] }>>(
-    `/microsite/${slug}/products/${productCode}`
+    `/microsite/${slug}/products/${product_code}`
   );
   return mapProductDetail(data.data.products);
 }
@@ -65,25 +65,25 @@ export async function getProvinces() {
   const { data } = await api.get<ApiEnvelope<Province[]>>(`/microsite/province`);
   return mapProvinceOptions(data.data);
 }
-export async function getCities(provinceId: string | number) {
-  const { data } = await api.get<ApiEnvelope<City[]>>(`/microsite/province/${provinceId}/city`);
+export async function getCities(province_id: string | number) {
+  const { data } = await api.get<ApiEnvelope<City[]>>(`/microsite/province/${province_id}/city`);
   return mapCityOptions(data.data);
 }
-export async function getDistricts(provinceId: string | number, cityId: string | number) {
-  const { data } = await api.get<ApiEnvelope<District[]>>(`/microsite/province/${provinceId}/city/${cityId}/district`);
+export async function getDistricts(province_id: string | number, city_id: string | number) {
+  const { data } = await api.get<ApiEnvelope<District[]>>(`/microsite/province/${province_id}/city/${city_id}/district`);
   return mapDistrictOptions(data.data);
 }
-export async function getSubdistricts(provinceId: string | number, cityId: string | number, districtId: string | number) {
+export async function getSubdistricts(province_id: string | number, city_id: string | number, district_id: string | number) {
   const { data } = await api.get<ApiEnvelope<Subdistrict[]>>(
-    `/microsite/province/${provinceId}/city/${cityId}/district/${districtId}/subdistrict`
+    `/microsite/province/${province_id}/city/${city_id}/district/${district_id}/subdistrict`
   );
   return mapSubdistrictOptions(data.data);
 }
 
 // HEALTH QUESTIONNAIRE
-export async function getHealthQuestions(slug: string, productCode: string) {
+export async function getHealthQuestions(slug: string, product_code: string) {
   const { data } = await api.get<ApiEnvelope<HealthQuestion[]>>(
-    `/microsite/${slug}/product/${productCode}/question`,
+    `/microsite/${slug}/product/${product_code}/question`,
     { params: { type: "HEALTH_QUESTIONAIRE" } }
   );
   return mapHealthQuestions(data.data);

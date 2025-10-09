@@ -1,65 +1,67 @@
 export type ApiEnvelope<T> = {
-  responseCode: string;
-  responseMessage: string;
+  response_code: string;
+  response_message: string;
   data: T;
 };
 
-export type ProductListItem = {
-  productId: number;
-  productName: string;
-  micrositeId: string;
-  productCode: string;
+
+export type ProductListItem  = {
+  product_id: number;
+  product_name: string;
+  microsite_id: string;
+  product_code: string;
   image: string;
   desc: string;
 };
 
-export type ProductDetailTerm = { termId: number; term: number; termUnit: "M" | string };
+//product detail types
+export type ProductDetailTerm = { term_id: number; term: number; term_unit: "M" | string };
 export type ProductBenefit = {
-  benefCode: string;
-  benefName: string;
-  benefAmount: number;
-  benefType: string;
+  benef_code: string;
+  benef_name: string;
+  benef_amount: number;
+  benef_type: string;
   notes?: string;
 };
-export type ProductPackage = { packageId: number; packageName: string; packageCode: string; benefits: ProductBenefit[] };
-export type ProductDetail = {
-  productCode: string;
-  productName: string;
+export type ProductPackage = { package_id: number; package_name: string; package_code: string; benefits: ProductBenefit[] };
+export type ProductDetail = Pick<ProductListItem, 'product_code' | 'product_name'> & {
   desc: string;
   terms: ProductDetailTerm[];
   packages: ProductPackage[];
 };
 
 export type ComputePremiumReq = {
-  policyTermId: number;
-  productCode: string;
-  packageId: number | string;
+  policyterm_id: number;
+  product_code: string;
+  package_id: number | string;
 };
 export type ComputePremiumRes = {
-  premiumAmount: string | number;
-  ujrohAmount: string | number;
-  tabaruAmount: string | number;
+  premium_amount: string | number;
+  ujroh_amount: string | number;
+  tabaru_amount: string | number;
 };
 
+// register types
 export type BranchItem = {
-  branchId: string;
-  descItem: string;
-  shortDesc: string;
-  longDesc: string;
+  branch_id: string;
+  desc_item: string;
+  short_desc: string;
+  long_desc: string;
 };
 
 export type ZipLookupRes = {
-  province: { provinceId: string; provinceName: string }[];
-  city: { cityId: string; cityName: string }[];
-  district: { districtId: string; districtName: string }[];
-  subdistrict: { subdistrictId: string; subdistrictName: string }[];
+  province: { province_id: string; province_name: string }[];
+  city: { city_id: string; city_name: string }[];
+  district: { district_id: string; district_name: string }[];
+  subdistrict: { subdistrict_id: string; subdistrict_name: string }[];
 };
 
-export type Province = { provinceId: string; provinceName: string };
-export type City = { cityId: string; cityName: string };
-export type District = { districtId: string; districtName: string };
-export type Subdistrict = { subdistrictId: string; subdistrictName: string };
+export type Province = { province_id: string; province_name: string };
+export type City = { city_id: string; city_name: string };
+export type District = { district_id: string; district_name: string };
+export type Subdistrict = { subdistrict_id: string; subdistrict_name: string };
 
+// health question
 export type HealthQuestion = {
   id: string;
   code: string;
@@ -80,61 +82,61 @@ export type DocumentReq = {
   gender: string;
   beneficiary: string;
   email: string;
-  packageName?: string;
+  package_name?: string;
   term?: string | number;
 };
 
 export type DocumentRes = {
-  docId: string;
-  riplayURL: string;
+  doc_id: string;
+  riplay_URL: string;
 };
 
 type TBenefits = {
-  benefCode: string;
-  benefName: string;
-  benefAmount: string | number;
-  benefType: string;
+  benef_code: string;
+  benef_name: string;
+  benef_amount: string | number;
+  benef_type: string;
 };
 
 export type SubmissionReq = {
   product: {
-    productId: string
-    productCode: string
-    productName: string
+    product_id: string
+    product_code: string
+    product_name: string
     package: {
-      packageId?: number | null
-      packageName?: string
-      packageCode?: string
-      premiumAmount?: number
+      package_id?: number | null
+      package_name?: string
+      package_code?: string
+      premium_amount?: number
       term: {
-        termId?: number
+        term_id?: number
         term?: number
-        termUnit?: string
+        term_unit?: string
       }
       benefits?: TBenefits[]
     }
   }
   client: {
     nik: string
-    fullName: string
+    full_name: string
     pob: string
     dob: Date
-    maritalStatus: string
+    marital_status: string
     sex: string
     email?: string
     address: string
     phone: string
-    countryCode: string
-    zipCode: string
+    country_code: string
+    zip_code: string
     province: string
-    cityName: string
-    districtName: string
-    subdistrictName: string
+    city_name: string
+    district_name: string
+    subdistrict_name: string
     job: string
     income: string
-    benefName: string
-    benefPhone: string
-    benefCountryCode: string
+    benef_name: string
+    benef_phone: string
+    benef_country_code: string
     benefAddress: string
     relation: string
   }
@@ -143,21 +145,21 @@ export type SubmissionReq = {
 
 type TQuestionaire = {
   consent: TQuestionnaireItem | unknown
-  healthQuestionnaire: TQuestionnaireItem | unknown
+  health_questionnaire: TQuestionnaireItem | unknown
 }
 
 type TQuestionnaireItem = {
   answer: string
-  questionAnswerType: string
-  questionCode: string
-  questionId: string
-  questionText: string
+  question_answer_type: string
+  question_code: string
+  question_id: string
+  question_text: string
   type: string
 }
 
 export type CreateSPAJRes = {
   id: string;
-  spajNumber: string;
+  spaj_number: string;
 }
 
 export type PaymentReq = {
@@ -186,22 +188,22 @@ export type PaymentRes = {
 }
 
 export type CheckAvailabilityReq = { 
-  productCode: string;
-  componentCode: string;
-  birthDate: Date;
+  product_code: string;
+  component_code: string;
+  birth_date: Date;
   email: string;
-  ktpId: string;
-  maritalStatus: string;
+  ktp_id: string;
+  marital_status: string;
 }
 
 export type CheckAvailabilityRes = {
   body: {
-    productCode: string;
-    componentCode: string;
-    birthDate: string;
+    product_code: string;
+    component_code: string;
+    birth_date: string;
     email: string;
-    ktpId: string;
-    maritalStatus: string;
+    ktp_id: string;
+    marital_status: string;
   },
   decisions: string;
   decisionDescription: string;

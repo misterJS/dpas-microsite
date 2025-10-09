@@ -2,11 +2,12 @@ import { bannerLanding, itemLanding } from "@/assets"
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button"
 import { IoArrowForwardOutline } from "react-icons/io5"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 
 export default function HomePage() {
   const navigate = useNavigate()
+  const { brand } = useParams()
   const { t } = useTranslation("common")
   const title = t("landing.title").split(" ")
   
@@ -37,7 +38,7 @@ export default function HomePage() {
             <div className="text-base leading-7 text-foreground/80">{t("landing.subTittle")}</div>
             <Button
               className={cn("text-white bg-red-600 font-medium rounded-full text-lg px-5 py-2.5 text-center me-2 mb-2 mt-5")}
-              onClick={() => navigate("/products")}
+              onClick={() => navigate(`/${brand}/products`)}
               id="registerNow"
             >
               {t("landing.registerNow")}
@@ -65,7 +66,7 @@ export default function HomePage() {
 
           <Button
             className={cn("pl-0 inline-flex items-center gap-2 font-semibold text-black bg-transparent shadow-none text-base")}
-            onClick={() => navigate("/pdf?type=check-riplay")}
+            onClick={() => navigate(`/${brand}/pdf?type=check-riplay`)}
             id="checkRiplay"
           >
             <span>{t("landing.checkRiplay")}</span>

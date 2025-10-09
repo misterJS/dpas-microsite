@@ -15,7 +15,7 @@ export default function DocsBody() {
   const { submission } = useSubmissionStore();
   const type = params.get("type") || "check-replay";
   const slug = params.get("slug") || "uob";
-  const productCode = params.get("product") || "ACC";
+  const product_code = params.get("product") || "ACC";
 
   const body = {
     nama: submission.client.fullName,
@@ -23,13 +23,13 @@ export default function DocsBody() {
     gender: submission.client.sex,
     beneficiary: "",
     email: submission.client.email ?? "",
-    packageName: submission.product.package.packageName,
+    package_name: submission.product.package.package_name,
     term: submission.product.package.term.term,
   };
 
   const { data, isLoading, isError } = useDocument(
     slug,
-    productCode,
+    product_code,
     body,
     shouldFetch
   );
@@ -39,7 +39,7 @@ export default function DocsBody() {
       setPdf(pdfFileCheckRiplay);
     } else if (type === "riplay") {
       setShouldFetch(true);
-      data && setPdf(`data:application/pdf;base64,${data.riplayURL}`);
+      data && setPdf(`data:application/pdf;base64,${data.riplay_URL}`);
     }
   }, [data]);
 

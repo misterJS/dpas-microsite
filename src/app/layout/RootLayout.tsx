@@ -1,10 +1,11 @@
 import Footer from "@/components/common/Footer"
 import HeroHeader from "@/components/common/HeroHeader"
-import { Outlet, useLocation } from "react-router-dom"
+import { Outlet, useLocation, useParams } from "react-router-dom"
 
 export default function RootLayout() {
   const { pathname } = useLocation();
-  const isLandingPage = pathname === '/'
+  const { brand } = useParams()
+  const isLandingPage = pathname.replace(`${brand}`,'') === '/'
   const isWaiting = pathname.includes('waiting-status')
 
   const getShowHeader = () => {

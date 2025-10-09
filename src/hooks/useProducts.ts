@@ -9,11 +9,11 @@ export const useProducts = (slug?: string, q?: { search?: string }) =>
     enabled: !!slug,
   });
 
-export const useProductDetail = (slug?: string, productCode?: string) =>
+export const useProductDetail = (slug?: string, product_code?: string) =>
   useQuery({
-    queryKey: ["product-detail", slug, productCode],
-    queryFn: () => getProductDetail(slug!, productCode!),
-    enabled: !!slug && !!productCode,
+    queryKey: ["product-detail", slug, product_code],
+    queryFn: () => getProductDetail(slug!, product_code!),
+    enabled: !!slug && !!product_code,
   });
 
 export const useComputePremium = (slug?: string, body?: ComputePremiumReq) =>
@@ -21,12 +21,12 @@ export const useComputePremium = (slug?: string, body?: ComputePremiumReq) =>
     queryKey: [
       "compute-premium",
       slug,
-      body?.productCode,
-      body?.packageId,
-      body?.policyTermId,
+      body?.product_code,
+      body?.package_id,
+      body?.policyterm_id,
     ],
     queryFn: () => computePremium(slug!, body!),
-    enabled: !!slug && !!body?.productCode && !!body?.packageId && !!body?.policyTermId,
+    enabled: !!slug && !!body?.product_code && !!body?.package_id && !!body?.policyterm_id,
   });
 
 export const useCheckAvailability = () =>

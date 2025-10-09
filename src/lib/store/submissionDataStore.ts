@@ -10,18 +10,18 @@ type TActionClient = {
 
 const initalState: SubmissionReq = {
   product: {
-    productId: "",
-    productCode: "",
-    productName: "",
+    product_id: "",
+    product_code: "",
+    product_name: "",
     package: {
-      packageId: null,
-      packageName: "",
-      packageCode: "",
-      premiumAmount: 0,
+      package_id: null,
+      package_name: "",
+      package_code: "",
+      premium_amount: 0,
       term: {
-        termId: 0,
+        term_id: 0,
         term: 0,
-        termUnit: ""
+        term_unit: ""
       },
       benefits: []
     }
@@ -38,12 +38,12 @@ const initalState: SubmissionReq = {
     countryCode: "",
     zipCode: "",
     province: "",
-    cityName: "",
-    districtName: "",
-    subdistrictName: "",
+    city_name: "",
+    district_name: "",
+    subdistrict_name: "",
     job: "",
     income: "",
-    benefName: "",
+    benef_name: "",
     benefPhone: "",
     benefCountryCode: "",
     benefAddress: "",

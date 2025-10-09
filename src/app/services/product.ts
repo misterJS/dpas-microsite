@@ -27,10 +27,10 @@ export const getProducts = async (
 
 export const getProductDetail = async (
   slug: string,
-  productCode: string
+  product_code: string
 ): Promise<ProductDetail | undefined> => {
   const { data } = await api.get<ApiEnvelope<{ products: ProductDetail[] }>>(
-    `/microsite/${slug}/products/${productCode}`
+    `/microsite/${slug}/products/${product_code}`
   );
   return mapProductDetail(data.data?.products);
 };

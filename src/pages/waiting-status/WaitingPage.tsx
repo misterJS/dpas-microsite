@@ -15,11 +15,12 @@ export default function ContentPdf() {
     title: t("progressStatus.waiting.title"),
     desc: t("progressStatus.waiting.desc")
   })
+  const [stopPolling, setStopPolling] = useState(true)
 
   const [params] = useSearchParams()
   const spaj_number = params.get("spaj_number") || ""
   const { submission } = useSubmissionStore();
-  const { data } = useProposalStatus(spaj_number)
+  const { data } = useProposalStatus(spaj_number, stopPolling)
   const { mutate, isSuccess: successPayment, isError: errorPayment } = usePayment();
 
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function ContentPdf() {
           desc: t("progressStatus.success.desc"),
         });
         setProgress(t("progressStatus.success.paymentButton"));
+        setStopPolling(false) 
       }
 
       if (--timer < 0 && !data?.success) {
@@ -59,12 +61,12 @@ export default function ContentPdf() {
           prm: 1200000
       },
       cust_no: "972222772222",
-      main_insured_name: submission.client.benefName,
+      main_insured_name: submission.client.benef_name,
       cust_name: submission.client.fullName,
       pay_option: "pruworks",
       source_app: "dpas Microsite",
       currency: "IDR",
-      premium_amount: submission.product.package.premiumAmount ?? 0,
+      premium_amount: submission.product.package.premium_amount ?? 0,
       email: submission.client.email ?? '',
       mobile_no: `${submission.client.countryCode + submission.client.phone}`,
       is_sharia: true,

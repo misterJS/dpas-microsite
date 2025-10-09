@@ -41,8 +41,8 @@ describe("BenefitPage", () => {
       isLoading: false,
       isError: false,
       data: [
-        { productCode: "ACC", productName: "Accident", desc: "Desc A", image: "/img/a.png", productId: 1, micrositeId: "uob" },
-        { productCode: "CTAK", productName: "CTAK", desc: "Desc B", image: "/img/b.png", productId: 2, micrositeId: "uob" },
+        { product_code: "ACC", product_name: "Accident", desc: "Desc A", image: "/img/a.png", product_id: 1, microsite_id: "uob" },
+        { product_code: "CTAK", product_name: "CTAK", desc: "Desc B", image: "/img/b.png", product_id: 2, microsite_id: "uob" },
       ],
     })
     renderPage()

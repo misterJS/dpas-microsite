@@ -45,7 +45,7 @@ jest.mock("@/lib/store/submissionDataStore", () => ({
       },
       product: {
         package: {
-          packageName: "Silver Plan",
+          package_name: "Silver Plan",
           term: { term: 12 },
         },
       },

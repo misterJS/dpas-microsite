@@ -35,10 +35,10 @@ const ensureArray = <T>(value?: T[] | null): T[] => (Array.isArray(value) ? valu
 
 export const mapProductList = (items?: ProductListItem[] | null): ProductListItem[] =>
   ensureArray(items).map((item) => ({
-    productId: toNumber(item.productId),
-    productName: toString(item.productName),
-    micrositeId: toString(item.micrositeId),
-    productCode: toString(item.productCode),
+    product_id: toNumber(item.product_id),
+    product_name: toString(item.product_name),
+    microsite_id: toString(item.microsite_id),
+    product_code: toString(item.product_code),
     image: toString(item.image),
     desc: toString(item.desc),
   }));
@@ -48,23 +48,23 @@ export const mapProductDetail = (items?: ProductDetail[] | null): ProductDetail 
   if (!detail) return undefined;
 
   return {
-    productCode: toString(detail.productCode),
-    productName: toString(detail.productName),
+    product_code: toString(detail.product_code),
+    product_name: toString(detail.product_name),
     desc: toString(detail.desc),
     terms: ensureArray(detail.terms).map((term) => ({
-      termId: toNumber(term.termId),
+      term_id: toNumber(term.term_id),
       term: toNumber(term.term),
-      termUnit: toString(term.termUnit),
+      term_unit: toString(term.term_unit),
     })),
     packages: ensureArray(detail.packages).map((pkg) => ({
-      packageId: toNumber(pkg.packageId),
-      packageName: toString(pkg.packageName),
-      packageCode: toString(pkg.packageCode),
+      package_id: toNumber(pkg.package_id),
+      package_name: toString(pkg.package_name),
+      package_code: toString(pkg.package_code),
       benefits: ensureArray(pkg.benefits).map((benefit) => ({
-        benefCode: toString(benefit.benefCode),
-        benefName: toString(benefit.benefName),
-        benefAmount: toNumber(benefit.benefAmount),
-        benefType: toString(benefit.benefType),
+        benef_code: toString(benefit.benef_code),
+        benef_name: toString(benefit.benef_name),
+        benef_amount: toNumber(benefit.benef_amount),
+        benef_type: toString(benefit.benef_type),
         ...(benefit.notes ? { notes: toString(benefit.notes) } : {}),
       })),
     })),
@@ -72,9 +72,9 @@ export const mapProductDetail = (items?: ProductDetail[] | null): ProductDetail 
 };
 
 export const mapComputePremium = (payload?: ComputePremiumRes | null): ComputePremiumRes => ({
-  premiumAmount: toNumber(payload?.premiumAmount),
-  ujrohAmount: toNumber(payload?.ujrohAmount),
-  tabaruAmount: toNumber(payload?.tabaruAmount),
+  premium_amount: toNumber(payload?.premium_amount),
+  ujroh_amount: toNumber(payload?.ujroh_amount),
+  tabaru_amount: toNumber(payload?.tabaru_amount),
 });
 
 const toOption = (code: unknown, name: unknown): Option | null => {
@@ -88,8 +88,8 @@ export const mapBranchOptions = (items?: BranchItem[] | null): Option[] =>
   ensureArray(items)
     .map((branch) =>
       toOption(
-        branch.branchId,
-        branch.descItem || branch.shortDesc || branch.longDesc
+        branch.branch_id,
+        branch.desc_item || branch.short_desc || branch.long_desc
       )
     )
     .filter((opt): opt is Option => Boolean(opt));
@@ -104,54 +104,54 @@ export const mapOptionList = (items?: OptionInput[] | null): Option[] =>
 
 export const mapProvinceOptions = (items?: Province[] | null): Option[] =>
   ensureArray(items)
-    .map((province) => toOption(province.provinceId, province.provinceName))
+    .map((province) => toOption(province.province_id, province.province_name))
     .filter((opt): opt is Option => Boolean(opt));
 
 export const mapCityOptions = (items?: City[] | null): Option[] =>
   ensureArray(items)
-    .map((city) => toOption(city.cityId, city.cityName))
+    .map((city) => toOption(city.city_id, city.city_name))
     .filter((opt): opt is Option => Boolean(opt));
 
 export const mapDistrictOptions = (items?: District[] | null): Option[] =>
   ensureArray(items)
-    .map((district) => toOption(district.districtId, district.districtName))
+    .map((district) => toOption(district.district_id, district.district_name))
     .filter((opt): opt is Option => Boolean(opt));
 
 export const mapSubdistrictOptions = (items?: Subdistrict[] | null): Option[] =>
   ensureArray(items)
-    .map((subdistrict) => toOption(subdistrict.subdistrictId, subdistrict.subdistrictName))
+    .map((subdistrict) => toOption(subdistrict.subdistrict_id, subdistrict.subdistrict_name))
     .filter((opt): opt is Option => Boolean(opt));
 
 const sanitizeProvinceEntry = (
   items?: ZipLookupRes["province"] | null
 ): ZipLookupRes["province"] =>
   ensureArray(items).map((province) => ({
-    provinceId: toString(province.provinceId),
-    provinceName: toString(province.provinceName),
+    province_id: toString(province.province_id),
+    province_name: toString(province.province_name),
   }));
 
 const sanitizeCityEntry = (
   items?: ZipLookupRes["city"] | null
 ): ZipLookupRes["city"] =>
   ensureArray(items).map((city) => ({
-    cityId: toString(city.cityId),
-    cityName: toString(city.cityName),
+    city_id: toString(city.city_id),
+    city_name: toString(city.city_name),
   }));
 
 const sanitizeDistrictEntry = (
   items?: ZipLookupRes["district"] | null
 ): ZipLookupRes["district"] =>
   ensureArray(items).map((district) => ({
-    districtId: toString(district.districtId),
-    districtName: toString(district.districtName),
+    district_id: toString(district.district_id),
+    district_name: toString(district.district_name),
   }));
 
 const sanitizeSubdistrictEntry = (
   items?: ZipLookupRes["subdistrict"] | null
 ): ZipLookupRes["subdistrict"] =>
   ensureArray(items).map((subdistrict) => ({
-    subdistrictId: toString(subdistrict.subdistrictId),
-    subdistrictName: toString(subdistrict.subdistrictName),
+    subdistrict_id: toString(subdistrict.subdistrict_id),
+    subdistrict_name: toString(subdistrict.subdistrict_name),
   }));
 
 export const mapZipLookup = (payload?: ZipLookupRes | null): ZipLookupRes => ({
@@ -215,13 +215,13 @@ export const mapHealthQuestionGroups = (
 };
 
 export const mapDocumentResponse = (payload?: DocumentRes | null): DocumentRes => ({
-  docId: toString(payload?.docId),
-  riplayURL: toString(payload?.riplayURL),
+  doc_id: toString(payload?.doc_id),
+  riplay_URL: toString(payload?.riplay_URL),
 });
 
 export const mapCreateSpajResponse = (payload?: CreateSPAJRes | null): CreateSPAJRes => ({
   id: toString(payload?.id),
-  spajNumber: toString(payload?.spajNumber),
+  spaj_number: toString(payload?.spaj_number),
 });
 
 export const mapProposalStatus = (payload?: { status?: string } | null): { success: boolean } => ({

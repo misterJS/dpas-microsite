@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom"
+import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -39,13 +39,14 @@ export default function ConsentPage() {
 
   const [params] = useSearchParams()
   const slug = params.get("slug") || "uob"
-  const productCode = params.get("product") || "ACC"
+  const product_code = params.get("product") || "ACC"
 
   const { mutate : mutateSubmit, isSuccess: successSubmit, isError: errorSubmit } = useSubmissionProposal();
   const { mutate : mutateCreateSPAJ, isSuccess: successCreateSPAJ, isError: errorCreateSPAJ } = useCreateSPAJ();
-  const { data: questions = [], isLoading, isError } = useQuestions(slug, productCode, 'CONSENT')
+  const { data: questions = [], isLoading, isError } = useQuestions(slug, product_code, 'CONSENT')
 
   const navigate = useNavigate()
+  const { brand } = useParams()
   const location = useLocation() as { state?: Partial<SummaryData> }
 
   const data: SummaryData = {
@@ -126,7 +127,7 @@ export default function ConsentPage() {
             mutateSubmit(paramsSubmit,{
                 onSuccess: () => { 
                     setSubmissionData(paramsSubmit)
-                    navigate(`/waiting-status?spaj_number=${response.spajNumber}`)
+                    navigate(`/${brand}/waiting-status?spaj_number=${response.spajNumber}`)
                 },
                 onError: (err) => setRejectOpen(true)
             }
@@ -163,7 +164,7 @@ export default function ConsentPage() {
         <div className="flex items-center bg-[#69C8C3] overflow-hidden">
             <div className="p-4 w-full bg-[#69C8C3] text-white">
                 <div className="font-bold text-lg">{t("consent.accident")}</div>
-                <div className="font-bold">{t("consent.summaryTitle")} {submission.product.package.packageName} ({submission.product.package.term.term} {t("consent.monthsSuffix")})</div>
+                <div className="font-bold">{t("consent.summaryTitle")} {submission.product.package.package_name} ({submission.product.package.term.term} {t("consent.monthsSuffix")})</div>
                 <div className="">Rp 32,000</div>
             </div>
 

@@ -9,11 +9,11 @@ export type TQuestion = QuestionGroup;
 
 export const getQuestions = async (
   slug: string,
-  productCode: string,
+  product_code: string,
   type: string
 ): Promise<TQuestion[]> => {
   const { data } = await api.get<ApiEnvelope<HealthQuestion[]>>(
-    `/microsite/${slug}/product/${productCode}/question`,
+    `/microsite/${slug}/product/${product_code}/question`,
     { params: { type } }
   );
   return mapHealthQuestionGroups(data?.data);
