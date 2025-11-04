@@ -33,6 +33,7 @@ import { CITY_VALUES, DISTRICT_VALUES, GENDER_VALUES, JOBS, MARITAL_VALUES, PLAN
 import { DialogComponent } from "@/components/common/DialogComponent";
 import { LoadingComponent } from "@/components/common/LoadingComponent";
 import { Checkbox } from "@/components/ui/checkbox";
+import { toSearchableOptions } from "@/helper/searchable-options";
 
 type Province = (typeof PROVINCE_VALUES)[number];
 type City = (typeof CITY_VALUES)[number];
@@ -162,8 +163,8 @@ export default function RegisterPage() {
     const cityName = cities.find(c => c.code === v.city)?.name ?? v.city;
     const districtName = districts.find(d => d.code === v.district)?.name ?? v.district;
     const subdistrictName = subdistricts.find(s => s.code === v.subdistrict)?.name ?? v.subdistrict;
-    const selectedSalary = SALARIES.find(s => v.salary === s.code );
-    
+    const selectedSalary = SALARIES.find(s => v.salary === s.code);
+
     const data: SubmissionReq = {
       ...submission,
       client: {
@@ -321,19 +322,32 @@ export default function RegisterPage() {
 
   const relationSearchableOptions = React.useMemo(
     () =>
-      RELATION_VALUES.map((v) => {
-        const translated = t(`menu.options.relations.${v.code}`);
-        return {
-          value: v.code ?? "",
-          label: translated,
-          keywords: [
-            v.code ?? "",
-            translated,
-            v.name ?? "",
-          ].filter((keyword) => Boolean(keyword)) as string[],
-        };
+      toSearchableOptions(RELATION_VALUES, {
+        getValue: (item) => item.code,
+        getLabel: (item) => t(`menu.options.relations.${item.code}`),
+        getKeywords: (item) => [item.code, t(`menu.options.relation.${item.code}`), item.name],
       }),
     [t]
+  );
+
+  const branchSearchableOptions = React.useMemo(
+    () =>
+      toSearchableOptions(branches, {
+        getValue: (item) => item.code,
+        getLabel: (item) => item.name,
+        getKeywords: (item) => [item.code, item.name],
+      }),
+    [branches]
+  );
+
+  const provinceSearchableOptions = React.useMemo(
+    () =>
+      toSearchableOptions(provinces, {
+        getValue: (item) => item.code,
+        getLabel: (item) => item.name,
+        getKeywords: (item) => [item.code, item.name],
+      }),
+    [provinces]
   );
 
   return (
@@ -355,16 +369,9 @@ export default function RegisterPage() {
                 name="branch"
                 label={t("menu.fields.branch")}
                 requiredMark
-              >
-                {branches?.map((b, i) => (
-                  <React.Fragment key={b.code}>
-                    <SelectItem value={b.code ?? ""}>{b.name}</SelectItem>
-                    {i < branches.length - 1 && (
-                      <SelectSeparator className="mx-3" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </RHFSelectField>
+                onValue={(v: TDropdown) => v}
+                searchableOptions={branchSearchableOptions}
+              />
 
               <hr />
 
@@ -524,17 +531,9 @@ export default function RegisterPage() {
                 name="province"
                 label={t("menu.fields.province")}
                 requiredMark
-                onValue={(v: Province) => v}
-              >
-                {provinces.map((v, i) => (
-                  <React.Fragment key={v.code}>
-                    <SelectItem value={v.code ?? ""}>{v.name}</SelectItem>
-                    {i < provinces.length - 1 && (
-                      <SelectSeparator className="mx-3" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </RHFSelectField>
+                onValue={(v: TDropdown) => v}
+                searchableOptions={provinceSearchableOptions}
+              />
 
               <RHFSelectField
                 name="city"
