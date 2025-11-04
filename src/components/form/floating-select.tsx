@@ -25,13 +25,13 @@ export function FloatingSelect({
 }: Props) {
   return (
     <FormItem className="space-y-0">
-      <div className={cn("relative rounded-sm border px-4 pt-3 pb-[2px]", wrapperClassName)}>
+      <div className={cn("relative rounded-sm border px-5 p-[10px] shadow-xl bg-white", wrapperClassName)}>
         <Select {...selectProps}>
           <FormControl>
             <SelectTrigger
               className={cn(
-                "peer h-7 border-none shadow-none p-0 text-sm bg-transparent",
-                "focus:outline-none focus:ring-0 focus:ring-offset-0",
+                "peer h-full border-none shadow-none font-thin p-0 items-end text-lg bg-transparent",
+                "focus:outline-none focus:ring-0 focus:ring-offset-0 mt-1",
                 triggerClassName
               )}
             >
@@ -51,10 +51,10 @@ export function FloatingSelect({
 
         <FormLabel
           className={cn(
-            "absolute left-3 top-[2px] bg-background px-1 text-[10px] transition-all",
-            "text-teal-400",
-            "peer-data-[placeholder]:top-3 peer-data-[placeholder]:text-xs peer-data-[placeholder]:text-[#737373] peer-data-[placeholder]:font-normal",
-            "peer-focus:top-[2px] peer-focus:text-[10px]"
+            "absolute top-[5px] bg-[transparent] text-[14px] transition-all",
+            "text-black",
+            "peer-data-[placeholder]:top-[28%] peer-data-[placeholder]:text-lg peer-data-[placeholder]:text-black peer-data-[placeholder]:font-thin",
+            "peer-focus:top-[5px] peer-focus:text-[14px]"
           )}
         >
           {label}

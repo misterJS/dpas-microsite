@@ -9,6 +9,7 @@ import type {
   PaymentRes,
   ProductDetail,
   ProductListItem,
+  ProposaStatusRes,
   Province,
   Subdistrict,
   ZipLookupRes,
@@ -35,7 +36,7 @@ const ensureArray = <T>(value?: T[] | null): T[] => (Array.isArray(value) ? valu
 
 export const mapProductList = (items?: ProductListItem[] | null): ProductListItem[] =>
   ensureArray(items).map((item) => ({
-    product_id: toNumber(item.product_id),
+    product_id: toString(item.product_id),
     product_name: toString(item.product_name),
     microsite_id: toString(item.microsite_id),
     product_code: toString(item.product_code),
@@ -43,21 +44,21 @@ export const mapProductList = (items?: ProductListItem[] | null): ProductListIte
     desc: toString(item.desc),
   }));
 
-export const mapProductDetail = (items?: ProductDetail[] | null): ProductDetail | undefined => {
-  const detail = ensureArray(items)[0];
-  if (!detail) return undefined;
+export const mapProductDetail = (item?: ProductDetail | null): ProductDetail | undefined => {
+  if (!item) return undefined;
 
   return {
-    product_code: toString(detail.product_code),
-    product_name: toString(detail.product_name),
-    desc: toString(detail.desc),
-    terms: ensureArray(detail.terms).map((term) => ({
-      term_id: toNumber(term.term_id),
+    product_id: toString(item.product_id),
+    product_code: toString(item.product_code),
+    product_name: toString(item.product_name),
+    desc: toString(item.desc),
+    terms: ensureArray(item.terms).map((term) => ({
+      term_id: toString(term.term_id),
       term: toNumber(term.term),
       term_unit: toString(term.term_unit),
     })),
-    packages: ensureArray(detail.packages).map((pkg) => ({
-      package_id: toNumber(pkg.package_id),
+    packages: ensureArray(item.packages).map((pkg) => ({
+      package_id: toString(pkg.package_id),
       package_name: toString(pkg.package_name),
       package_code: toString(pkg.package_code),
       benefits: ensureArray(pkg.benefits).map((benefit) => ({
@@ -89,7 +90,7 @@ export const mapBranchOptions = (items?: BranchItem[] | null): Option[] =>
     .map((branch) =>
       toOption(
         branch.branch_id,
-        branch.desc_item || branch.short_desc || branch.long_desc
+        branch.long_desc
       )
     )
     .filter((opt): opt is Option => Boolean(opt));
@@ -122,43 +123,18 @@ export const mapSubdistrictOptions = (items?: Subdistrict[] | null): Option[] =>
     .map((subdistrict) => toOption(subdistrict.subdistrict_id, subdistrict.subdistrict_name))
     .filter((opt): opt is Option => Boolean(opt));
 
-const sanitizeProvinceEntry = (
-  items?: ZipLookupRes["province"] | null
-): ZipLookupRes["province"] =>
-  ensureArray(items).map((province) => ({
-    province_id: toString(province.province_id),
-    province_name: toString(province.province_name),
-  }));
-
-const sanitizeCityEntry = (
-  items?: ZipLookupRes["city"] | null
-): ZipLookupRes["city"] =>
-  ensureArray(items).map((city) => ({
-    city_id: toString(city.city_id),
-    city_name: toString(city.city_name),
-  }));
-
-const sanitizeDistrictEntry = (
-  items?: ZipLookupRes["district"] | null
-): ZipLookupRes["district"] =>
-  ensureArray(items).map((district) => ({
-    district_id: toString(district.district_id),
-    district_name: toString(district.district_name),
-  }));
-
-const sanitizeSubdistrictEntry = (
-  items?: ZipLookupRes["subdistrict"] | null
-): ZipLookupRes["subdistrict"] =>
-  ensureArray(items).map((subdistrict) => ({
-    subdistrict_id: toString(subdistrict.subdistrict_id),
-    subdistrict_name: toString(subdistrict.subdistrict_name),
-  }));
-
-export const mapZipLookup = (payload?: ZipLookupRes | null): ZipLookupRes => ({
-  province: sanitizeProvinceEntry(payload?.province),
-  city: sanitizeCityEntry(payload?.city),
-  district: sanitizeDistrictEntry(payload?.district),
-  subdistrict: sanitizeSubdistrictEntry(payload?.subdistrict),
+export const mapZipLookup = (payload: ZipLookupRes) => ({
+  id: payload.id,
+  zip_code: payload.zip_code,
+  subdistrict_id: payload.subdistrict_id,
+  subdistrict_name: payload.subdistrict_name,
+  district_id: payload.district_id,
+  district_name: payload.district_name,
+  city_id: payload.city_id,
+  city_name: payload.city_name,
+  province_id: payload.province_id,
+  province_name: payload.province_name,
+  province_las_code: payload.province_las_code,
 });
 
 const sanitizeHealthQuestion = (question: HealthQuestion): HealthQuestion => ({
@@ -216,7 +192,7 @@ export const mapHealthQuestionGroups = (
 
 export const mapDocumentResponse = (payload?: DocumentRes | null): DocumentRes => ({
   doc_id: toString(payload?.doc_id),
-  riplay_URL: toString(payload?.riplay_URL),
+  fileBase64: toString(payload?.fileBase64),
 });
 
 export const mapCreateSpajResponse = (payload?: CreateSPAJRes | null): CreateSPAJRes => ({
@@ -224,8 +200,10 @@ export const mapCreateSpajResponse = (payload?: CreateSPAJRes | null): CreateSPA
   spaj_number: toString(payload?.spaj_number),
 });
 
-export const mapProposalStatus = (payload?: { status?: string } | null): { success: boolean } => ({
+export const mapProposalStatus = (payload?: { status?: string } | null): ProposaStatusRes => ({
   success: toString(payload?.status).toUpperCase() === "CLEAN",
+  inforce: toString(payload?.status).toUpperCase() === "INFORCE",
+  failed: toString(payload?.status).toUpperCase() === "NOT_CLEAN",
 });
 
 export const mapPaymentResponse = (payload?: PaymentRes | null): PaymentRes => ({

@@ -14,7 +14,6 @@ type Props = {
   onChange?: (d?: Date) => void
   wrapperClassName?: string
   requiredMark?: boolean
-  // Pass-through configuration for the calendar (month/year dropdowns, limits, etc.)
   captionLayout?: DayPickerProps["captionLayout"]
   fromYear?: DayPickerProps["fromYear"]
   toYear?: DayPickerProps["toYear"]
@@ -25,9 +24,9 @@ type Props = {
 export function DateField({
   label,
   value,
-  onChange,
   wrapperClassName,
   requiredMark,
+  onChange,
   captionLayout,
   fromYear,
   toYear,
@@ -36,18 +35,23 @@ export function DateField({
 }: Props) {
   const [open, setOpen] = React.useState(false)
   useFormField()
-
   const now = React.useMemo(() => new Date(), [])
   const finalToYear = toYear ?? now.getFullYear()
   const finalFromYear = fromYear ?? finalToYear - 100
   const finalDefaultMonth = defaultMonth ?? value ?? new Date(finalToYear - 30, 0, 1)
   const finalDisabled = disabled ?? { after: now }
+  const [month, setMonth] = React.useState<Date>(value || finalDefaultMonth);
+  React.useEffect(() => {
+    if (value) {
+      setMonth(value);
+    }
+  }, [value]);
 
   return (
     <FormItem className="space-y-0">
-      <div className={cn("flex items-stretch rounded-[12px] border overflow-hidden", wrapperClassName)}>
-        <div className="w-16 shrink-0 bg-[#6AC3BE] flex items-center justify-center">
-          <CalendarIcon className="h-5 w-5 text-[#006660]" aria-hidden />
+      <div className={cn("flex items-stretch rounded-[12px] border overflow-hidden shadow-xl bg-white", wrapperClassName)}>
+        <div className="w-16 shrink-0 flex items-center justify-center">
+          <CalendarIcon className="h-6 w-6 text-[#006660]" aria-hidden />
         </div>
 
         <FormControl>
@@ -57,7 +61,7 @@ export function DateField({
                 type="button"
                 variant="ghost"
                 className={cn(
-                  "flex-1 justify-start rounded-none px-4 text-left h-12",
+                  "flex-1 justify-start text-lg font-thin rounded-none p-0 text-left h-full",
                   !value && "text-muted-foreground"
                 )}
               >
@@ -76,6 +80,8 @@ export function DateField({
                   onChange?.(d)
                   if (d) setOpen(false)
                 }}
+                month={month}
+                onMonthChange={setMonth}
                 captionLayout={captionLayout ?? "dropdown"}
                 fromYear={finalFromYear}
                 toYear={finalToYear}

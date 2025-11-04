@@ -10,8 +10,6 @@ import type {
   ProductListItem,
   ComputePremiumReq,
   ComputePremiumRes,
-  CheckAvailabilityReq,
-  CheckAvailabilityRes,
 } from "@/api/types";
 
 export const getProducts = async (
@@ -29,10 +27,10 @@ export const getProductDetail = async (
   slug: string,
   product_code: string
 ): Promise<ProductDetail | undefined> => {
-  const { data } = await api.get<ApiEnvelope<{ products: ProductDetail[] }>>(
+  const { data } = await api.get<ApiEnvelope<ProductDetail>>(
     `/microsite/${slug}/products/${product_code}`
   );
-  return mapProductDetail(data.data?.products);
+  return mapProductDetail(data.data);
 };
 
 export const computePremium = async (
@@ -44,14 +42,4 @@ export const computePremium = async (
     body
   );
   return mapComputePremium(data.data);
-};
-
-export const checkAvailability = async (
-  body: CheckAvailabilityReq
-): Promise<CheckAvailabilityRes> => {
-  const { data } = await api.post<ApiEnvelope<CheckAvailabilityRes>>(
-    `/microsite/check-availability`,
-    body
-  );
-  return data.data;
 };

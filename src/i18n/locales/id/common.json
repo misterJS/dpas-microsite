@@ -11,6 +11,7 @@
     }
   },
   "content": {
+    "contribution": "Kontribusi",
     "products": "Pilih jenis perlindungan",
     "protectKind": "Jenis perlindungan",
     "planTerm": "Masa perlindungan",
@@ -23,7 +24,10 @@
     "deathBenefit": "Manfaat meninggal dunia",
     "addonBenefit": "Manfaat tambahan",
     "totalDisabilityAccident": "Manfaat cacat total akibat kecelakaan",
-    "deathAccident": "Manfaat meninggal dunia akibat kecelakaan"
+    "deathAccident": "Manfaat meninggal dunia akibat kecelakaan",
+    "titleNotFound": "Oops!",
+    "descNotFound": "404 — Page Not found",
+    "FailedToLoad": "Gagal memuat pertanyaan"
   },
   "form": {
     "success": "Form berhasil dikirim.",
@@ -38,7 +42,7 @@
     "exceptional_protect": "Pengecualian Proteksi",
     "snk": "Cara & Ketentuan Klaim",
     "applied_claim_document": "Dokumen Pengajuan Klaim",
-    "contributeTotal": "Total Kontribusi",
+    "contributeTotal": "Kontribusi yang dipilih",
     "plan_desc": "Pilih paket perlindungan yang sesuai.",
     "coverage": "Coverage",
     "coverage_6months": "6 bulan",
@@ -46,20 +50,23 @@
     "existingPolicy": "Sudah punya polis Prudential?",
     "existingPolicy_desc": "Aktifkan jika Anda saat ini memiliki polis aktif.",
     "notes": "Catatan",
-    "notes_ph": "Informasi tambahan",
+    "notes_ph": "Informasi Tambahan",
     "benefit_desc": "Ringkasan Manfaat",
-    "basicBenefit": "Manfaat Dasar",
+    "basicBenefit": "Manfaat Dasar:",
+    "aditionalBenefit": "Manfaat Tambahan:",
     "totalContributionPayable": "Total Kontribusi yang dibayarkan",
     "next": "Lanjutkan",
     "benefit_summary": "Ringkasan Manfaat",
-    "benefit_hint": "Lihat detail manfaat yang Anda dapatkan."
+    "benefit_hint": "Lihat detail manfaat yang Anda dapatkan.",
+    "title_form_registration": "Form registrasi"
   },
   "footer": {
     "title": "Customer Line",
     "hours": "Senin – Sabtu: 08.00 – 17.00 WIB",
     "phone": "(021)-1500577",
     "email": "customer.idn@prudentialsyariah.co.id",
-    "website": "www.prudentialsyariah.co.id"
+    "website": "www.prudentialsyariah.co.id",
+    "copyright": "Copyright © 2025 Prudential Syariah Life Assurance. All Rights Reserved."
   },
   "status": {
     "loading": "Memuat…",
@@ -77,7 +84,7 @@
     "required": "Wajib dipilih",
     "reject": {
       "title": "Terimakasih! Tapi...",
-      "body": "Mohon maaf Anda belum memenuhi persyaratan pembelian Produk Asuransi PRULindungi Syariah. Terima kasih.",
+      "body": "Pengajuan Asuransi Anda tidak dapat kami lanjutkan karena tidak memenuhi kriteria penilaian risiko pada Prudential Syariah untuk produk ini.",
       "close": "Tutup",
       "home": "Kembali ke homepage"
     }
@@ -91,6 +98,7 @@
     },
     "hints": {
       "requiredNote": "*Wajib diisi",
+      "realData": "Pemegang Polis, Peserta yang Diasuransikan dan Pembayar Kontribusi adalah diri sendiri.",
       "ktpHint": "Harap mengisi data sesuai dengan KTP"
     },
     "fields": {
@@ -99,7 +107,9 @@
       "fullName": "Masukkan nama lengkap sesuai KTP",
       "pob": "Tempat Lahir",
       "birthDate": "Tanggal lahir (dd/mm/yyyy)",
+      "benefPhoneNumber": "nomor ponsel penerima manfaat",
       "phoneNumber": "Nomor ponsel anda",
+      "phoneInputHint": "Contoh format: 0812XXXXXX",
       "gender": "Jenis Kelamin",
       "married": "Status pernikahan",
       "email": "Alamat Email",
@@ -125,23 +135,21 @@
         "pondok_indah": "UOB Pondok Indah"
       },
       "genders": {
-        "pria": "Pria",
-        "wanita": "Wanita"
+        "M": "Pria",
+        "F": "Wanita"
       },
       "marital": {
-        "menikah": "Menikah",
-        "belum": "Belum Menikah",
-        "bercerai": "Bercerai"
+        "M": "Menikah",
+        "S": "Belum Menikah",
+        "W": "Duda/Janda"
       },
       "jobs": {
-        "ob": "Office Boy",
-        "manager": "Manager",
-        "staff": "Staff"
-      },
-      "salary": {
-        "gol1": "Rp5 - 10 Juta",
-        "gol2": "Rp10 - 20 Juta",
-        "gol3": "Rp50 Juta >"
+        "CIVS": "Pegawai Negeri Sipil",
+        "STDN": "Pelajar/mahasiswa",
+        "SELF": "Wiraswasta",
+        "RETI": "Pensiunan",
+        "HSWF": "Ibu Rumah Tangga",
+        "OTHR": "Lainnya"
       },
       "provinces": {
         "dki": "DKI Jakarta",
@@ -162,17 +170,73 @@
         "kramat_pela": "Kel. Kramat Pela"
       },
       "relations": {
-        "istri": "Istri",
-        "suami": "Suami",
-        "anak": "Anak"
+        "HU": "Suami",
+        "WI": "Istri",
+        "FA": "Ayah",
+        "MO": "Ibu",
+        "UA": "Paman/bibi",
+        "GP": "Kakek/nenek",
+        "SO": "Anak laki-laki",
+        "DA": "Anak perempuan",
+        "BA": "Saudara Kandung"
+      },
+      "salaries": {
+        "A": "Tidak Berpenghasilan",
+        "B": "Rp. 2,5 Juta s/d < Rp. 5 Juta",
+        "C": "Rp. 5 Juta s/d < Rp. 7,5 Juta",
+        "D": "Rp. 7,5 Juta s/d < Rp. 10 Juta",
+        "E": "Rp. 10 Juta s/d < Rp. 25 Juta",
+        "F": "Rp. 25 Juta s/d < Rp. 50 Juta",
+        "G": "Rp. 50 Juta s/d < Rp. 100 Juta",
+        "H": "Rp. 100 Juta s/d < Rp. 250 Juta",
+        "I": "Rp. 250 Juta s/d < Rp. 500 Juta",
+        "J": "Rp. 500 Juta s/d < Rp. Rp. 1 Miliar",
+        "K": "Rp. 1 Miliar s/d < Rp. 1,5 Miliar",
+        "L": "Rp. 1,5 Miliar s/d < Rp. 2 Miliar",
+        "M": "Rp. 2 Miliar s/d < Rp. 3 Miliar",
+        "N": "Rp. 3 Miliar s/d < Rp. 4 Miliar",
+        "O": "Rp. 4 Miliar s/d < Rp. 5 Miliar",
+        "P": "Rp. >/= Rp. 5 Miliar"
       }
+    },
+    "schema": {
+      "coverage": "Pilih coverage",
+      "branch": "Pilih kantor cabang",
+      "planType": "Pilih paket",
+      "gender": "Pilih Jenis Kelamin",
+      "married": "Pilih Status Pernikahan",
+      "nik": "NIK harus 16 digit angka",
+      "fullName": "Isi nama sesuai KTP",
+      "pob": "Masukkan tempat lahir",
+      "phone": "Nomor ponsel tidak valid",
+      "beneficiaryPhone": "Nomor ponsel tidak valid",
+      "dob": "Pilih tanggal lahir",
+      "dob2": "Tanggal lahir tidak boleh di masa depan",
+      "email": "Email tidak valid",
+      "postalCode": "Kode POS harus 5 digit",
+      "province": "Pilih provinsi",
+      "city": "Pilih kota",
+      "district": "Pilih kecamatan",
+      "subdistrict": "Pilih kelurahan",
+      "addressKtp": "Alamat minimal 10 karakter",
+      "jobType": "Pilih Pekerjaan",
+      "salary": "Pilih pendapatan",
+      "beneficiaryName": "Nama minimal 2 karakter",
+      "beneficiaryAddress": "Masukkan alamat penerima manfaat",
+      "beneficiaryRelation": "Pilih relasi",
+      "requiredOption": "Wajib dipilih",
+      "requiredText": "Wajib diisi",
+      "regexFullname": "Nama lengkap tidak boleh angka atau simbol",
+      "regexPob": "Tempat Lahir tidak boleh angka atau simbol",
+      "regexBeneficiary": "Nama Penerima Manfaat tidak boleh angka atau simbol"
     }
   },
   "actions": {
     "continue": "Lanjutkan",
     "back": "Kembali",
     "close": "Tutup",
-    "readMore": "Selengkapnya",
+    "readMore": "Pilih perlindungan",
+    "change": "Ubah",
     "changeProtection": "Ubah jenis perlindungan"
   },
   "riplay": {
@@ -184,6 +248,7 @@
     "accidentInsurance": "Asuransi Kecelakaan Syariah",
     "accident": "Kecelakaan",
     "monthsSuffix": "Bulan",
+    "yearsSuffix": "Tahun",
     "priceSample": "RpXX.XXX",
     "tncTitle": "Terms & Condition",
     "ripleyHeading": "Ringkasan Informasi Produk dan Layanan Personal",
@@ -193,6 +258,7 @@
     "accessLinkShort": "https://bit.ly",
     "accessLinkText": "RIPLAYPersonalPRULindungiSyariahUOB",
     "sendNote": "RIPLAY Personal akan dikirimkan melalui e-mail Anda yang terdaftar.",
+    "ctaDownload": "Unduh Dokumen",
     "ctaAgree": "Lanjutkan",
     "ctaBack": "Kembali",
     "fields": {
@@ -298,10 +364,15 @@
       "desc": "Silakan memulai pembayaran",
       "paymentButton": "Mulai pembayaran"
     },
+    "inforce": {
+      "title": "Verifikasi selesai",
+      "desc": "Silakan memulai pembayaran",
+      "paymentButton": "Ke halaman utama"
+    },
     "failed": {
       "title": "Terimakasih telah menunggu",
       "desc": "Namun sayangnya, anda belum dapat melanjutkan pembelian karena belum memenuhi kriteria dari kami",
-      "paymentButton": "Mulai pembayaran"
+      "paymentButton": "Ke halaman utama"
     }
   },
   "docs": {
@@ -311,51 +382,51 @@
       "basicAmount": "Rp 3.000.000",
       "addonTitle": "Manfaat tambahan",
       "addons": [
-        { "label": "Manfaat cacat total akibat kecelakaan", "amount": "Rp 6.000.000" },
-        { "label": "Manfaat meninggal dunia akibat kecelakaan", "amount": "Rp 18.000.000" }
+        {
+          "label": "Manfaat cacat total akibat kecelakaan",
+          "amount": "Rp 6.000.000"
+        },
+        {
+          "label": "Manfaat meninggal dunia akibat kecelakaan",
+          "amount": "Rp 18.000.000"
+        }
       ]
     },
     "exceptional_protect": {
       "title": "PENGECUALIAN PROTEKSI",
-      "lead": "Pengelola tidak akan membayar klaim Manfaat Asuransi PRUTeC Care yang disebabkan oleh:",
+      "lead": "Pengelola tidak akan membayar klaim Manfaat Asuransi PRUTect Care yang disebabkan oleh:",
       "items": [
-        "Bunuh diri, percobaan bunuh diri, atau dugaan bunuh diri oleh Peserta Yang Diasuransikan.",
-        "Tindak pidana atau pelanggaran hukum yang dilakukan oleh Peserta Yang Diasuransikan.",
-        "Perkelahian atau tindakan kekerasan, kecuali dalam pembelaan diri yang wajar.",
-        "Kegiatan atau perlombaan yang berbahaya termasuk balap, panjat tebing, atau olahraga ekstrem.",
-        "HIV/AIDS atau penyakit menular seksual tertentu.",
-        "Kehamilan, melahirkan, atau komplikasinya, kecuali akibat kecelakaan yang dijamin.",
-        "Perang, huru-hara, terorisme, atau keadaan sejenisnya.",
-        "Radiasi nuklir, kontaminasi radioaktif, atau reaksi nuklir.",
-        "Kondisi yang telah ada sebelumnya yang tidak diungkapkan sesuai ketentuan polis.",
-        "Keracunan akibat alkohol, narkotika, atau obat terlarang tanpa resep.",
-        "Tindakan medis yang tidak sesuai dengan anjuran dokter berwenang."
+        "Bunuh diri, percobaan bunuh diri atau dugaan bunuh diri atau melukai diri sendiri oleh orang yang dijamin, kejahatan atau percobaan pelanggaran hukum atau percobaan pelanggaran hukum dan undang-undang oleh Peserta Yang Diasuransikan atau perlawanan yang dibuat oleh Peserta Yang Diasuransikan pada saat penahanan seseorang yang dijalankan oleh pihak yang berwenang, kecuali dibuktikan sebaliknya oleh keputusan pengadilan;",
+        "terlibat dalam penugasan dinas militer atau kepolisian atau penerbangan non-komersial atau aktivitas olahraga berbahaya (bungee jumping, diving, balapan jenis apapun, olahraga udara termasuk gantole, balon udara, terjun payung dan sky diving atau kegiatan serta olahraga berbahaya lainnya kecuali yang disetui sebelumnya secara tertulis);",
+        "biaya rawat inap terkait dengan kehamilan atau melahirkan atau kesuburan atau mempercantik diri sendiri atau cacat yang sudah diderita sebelumnya atau operasi katarak atau biaya non-medis;",
+        "klaim yang timbul dalam Masa Tunggu, kecuali karena kecelakaan;",
+        "penyakit yang disebabkan oleh HIV/AIDS atau semua jenis kanker atau terkait penyalahgunaan narkotika dan sejenisnya;",
+        "penyakit yang telah ditentukan oleh Pengelola selama periode waktu menunggu 180 (seratus delapan puluh) hari dari Tanggal Mulai Kepesertaan, antara lain, TBC (Tuberculosis) dan Asma; radang empedu, batu empedu, penyakit yang berhubungan dengan ginjal, kencing manis (Diabetes Melitus), liver, tekanan darah tinggi atau penyakit jantung dan pembuluh darah; epilepsi, tumor pada permukaan kulit, semua jenis tumor jinak, haemorrhoids (wasir), Anal Fistulae, usus buntu, semua bentuk hernia, amandel dengan tindakan operasi, Penyakit peningkatan fungsi kelenjar gondok, kelainan sekat rongga hidung yang memerlukan pembedahan, sinusitis, penyakit yang berhubungan dengan sistem reproduksi, Hallux Valgus."
       ]
+      
     },
     "snk": {
       "title": "CARA & KETENTUAN KLAIM",
       "how": {
         "title": "Cara Pengajuan Klaim",
         "steps": [
-          "Pengajuan oleh Penerima Manfaat yang ditunjuk melalui aplikasi Pulse atau kantor pusat/cabang sesuai ketentuan.",
-          "Pastikan aplikasi Pulse telah diperbarui.",
-          "Pengajuan klaim selain meninggal dunia dilakukan melalui aplikasi Pulse oleh Peserta Yang Diasuransikan.",
-          "Isi formulir klaim, lengkapi dokumen, lalu klik kirim di aplikasi.",
-          "Pilih polis yang akan diajukan klaimnya.",
-          "Ikuti petunjuk dan lengkapi data sesuai kebutuhan.",
-          "Unggah semua dokumen pendukung.",
-          "Tindak lanjut klaim akan diinformasikan melalui kontak yang terdaftar."
+          "Pengajuan klaim manfaat meninggal dunia, hanya dapat dilakukan oleh Penerima Manfaat yang ditunjuk, melalui layanan tatap muka di kantor pusat dan kantor perwakilan PT Prudential Sharia Life Assurance dengan membawa dokumen yang diperlukan sesuai Ketentuan Polis.",
+          "Pengajuan klaim selain manfaat meninggal, hanya dapat diajukan melalui aplikasi Pulse. Pastikan aplikasi Pulse Anda sudah menggunakan versi terbaru.",
+          "Cara pengajuan klaim melalui Pulse dapat dilakukan dengan langkah sebagai berikut: \na. Klik PRUShoppe (ikon tas belanja) di sisi kanan bawah aplikasi Pulse, lalu pilih PRUServices.\nb. Pilih Polis yang akan Anda ajukan klaim, lalu klik fitur “Registrasi Klaim”.\nc. Pilih tipe klaim, kemudian lengkapi detail klaim.\nd. Tambahkan informasi akun bank a.n. Peserta Yang Diasuransikan untuk pembayaran klaim lalu klik “Kirim”.\ne. Unggah semua dokumen yang dibutuhkan untuk pengajuan klaim Anda.\nf. Pastikan foto diri (selfie) dengan KTP diambil langsung dari kamera, setujui Syarat dan Ketentuan dan klik “Ajukan Klaim”.\ng. Pengajuan klaim Anda berhasil.",
+          "Informasi lebih lanjut kunjungi www.prudentialsyariah.co.id"
         ]
       },
       "terms": {
         "title": "Ketentuan Pengajuan Klaim",
         "items": [
-          "Penerima Manfaat yang berhak menerima pembayaran sesuai penunjukan pada polis.",
-          "Dokumen identitas resmi (KTP) dan bukti hubungan keluarga jika diperlukan.",
-          "Dokumen pendukung sesuai jenis klaim harus lengkap dan sah.",
-          "Klaim diajukan dalam jangka waktu yang ditentukan pada polis.",
-          "Pengelola berhak meminta dokumen tambahan untuk verifikasi.",
-          "Pembayaran klaim dilakukan setelah verifikasi dan persetujuan selesai."
+          "Yang berhak mengajukan dan menerima pembayaran Manfaat Asuransi dalam hal Peserta Yang Diasuransikan masih hidup adalah Peserta Yang Diasuransikan.",
+          "Dalam hal Peserta Yang Diasuransikan meninggal dunia, maka yang berhak mengajukan dan menerima pembayaran Manfaat Asuransi adalah Penerima Manfaat.",
+          "Apabila Peserta Yang Diasuransikan dan Penerima Manfaat meninggal dunia, maka yang berhak mengajukan dan menerima pembayaran Manfaat Asuransi adalah ahli waris dari Peserta Yang Diasuransikan.",
+          "Pengajuan klaim Santunan Asuransi atas diri Peserta Yang Diasuransikan dilakukan selambat-lambatnya 3 (tiga) bulan setelah Peserta Yang Diasuransikan mengalami kondisi yang akan diajukan klaimnya.",
+          "Dokumen Pengajuan Klaim harus dibuat dalam Bahasa Indonesia atau Bahasa Inggris. Apabila dokumen sebagaimana dimaksud perlu diterjemahkan, maka penerjemahan harus dilakukan oleh penerjemah di bawah sumpah.",
+          "Pengelola berhak untuk menunjuk seorang Dokter untuk menentukan validitas diagnosis kecelakaan sebagai penyebab utama dari klaim yang diajukan oleh Peserta Yang Diasuransikan atau Penerima Manfaat.",
+          "Semua biaya yang timbul dari pengajuan klaim Santunan Asuransi merupakan beban dan wajib dibayar Peserta Yang Diasuransikan atau Penerima Manfaat.",
+          "Pengelola berhak menolak untuk membayar Santunan Asuransi, apabila syarat sebagaimana dimaksud pada poin 1 (satu) sampai dengan poin 7 (tujuh) dan syarat lain sebagaimana dimaksud dalam Sertifikat Asuransi tidak dipenuhi."
         ]
       }
     },
@@ -364,24 +435,26 @@
       "disability": {
         "title": "Dokumen Pengajuan Klaim Manfaat Cacat Total Akibat Kecelakaan",
         "items": [
-          "Formulir pengajuan klaim elektronik yang telah diisi dengan benar.",
-          "KTP atau tanda kenal diri Peserta Yang Diasuransikan.",
-          "Wajib foto selfie dengan KTP, lengkap dari kamera; foto surat penggantian/pembaruan ganti nama jika ada.",
-          "Surat Keterangan Medis sesuai jenis kecelakaan dari fasilitas kesehatan yang berwenang.",
-          "Surat keterangan dokter mengenai kondisi medis peserta.",
-          "Dokumen pendukung lain yang relevan."
+          "Formulir pengajuan klaim elektronik yang telah diisi dengan benar dan lengkap;",
+          "foto KTP atau tAnda kenal diri Peserta Yang Diasuransikan;",
+          "wajib foto selfie dengan KTP, langsung dari kamera;",
+          "fotokopi surat pengubahan/penetapan ganti nama Peserta Yang Diasuransikan (jika pengubahan nama pernah dilakukan);",
+          "foto Surat Izin Mengemudi (asli) sesuai dengan jenis kendaraan jika Peserta Yang Diasuransikan adalah sopir atau pengendara saat terjadinya kecelakaan;",
+          "foto surat keterangan Dokter yang membuktikan jika Peserta Yang Diasuransikan cacat total akibat kecelakaan;",
+          "foto surat berita acara kepolisian (asli) yang membuktikan jika Peserta Yang Diasuransikan cacat total akibat kecelakaan yang diproses oleh pihak kepolisian.",
+          "dokumen lain yang dipandang perlu oleh Pengelola."
         ]
       },
       "death": {
         "title": "Dokumen Pengajuan Klaim Manfaat Meninggal Dunia",
         "items": [
-          "Formulir pengajuan klaim elektronik yang telah diisi dengan benar.",
-          "KTP dan data kenal diri Peserta Yang Diasuransikan.",
-          "Akta kematian atau surat keterangan kematian dari instansi berwenang.",
-          "Surat keterangan dokter/rumah sakit mengenai sebab kematian.",
-          "Dokumen hubungan ahli waris dengan Peserta Yang Diasuransikan.",
-          "Dokumen pendukung tambahan sesuai penyebab kematian (mis. kepolisian bila kecelakaan).",
-          "Dokumen lain yang diminta Pengelola."
+          "Formulir pengajuan klaim elektronik yang telah diisi dengan benar dan lengkap;",
+          "foto KTP atau tAnda kenal diri Peserta Yang Diasuransikan dan/atau Penerima Manfaat (asli);",
+          "fotokopi surat pengubahan/penetapan ganti nama Peserta Yang Diasuransikan (jika pengubahan nama pernah dilakukan);",
+          "foto dokumen bukti keterikatan asuransi antara Penerima Manfaat atau pihak yang mengajukan klaim dengan Peserta Yang Diasuransikan apabila klaim diajukan oleh Penerima Manfaat atau pihak yang berhak mengajukan klaim berdasarkan Polis Induk atau Sertifikat Asuransi (asli);",
+          "foto Surat Izin Mengemudi (asli) sesuai dengan jenis kendaraan jika Peserta Yang Diasuransikan adalah sopir atau pengendara saat terjadinya kecelakaan;",
+          "Pengajuan klaim Manfaat Meninggal Dunia: \na. Foto resume medis/form A1 dari Rumah Sakit atau Dinas Kesehatan/Surat keterangan dokter (asli) yang telah diisi lengkap dan jelas oleh Dokter yang merawat Peserta Yang Diasuransikan;\nb. Surat keterangan kematian Peserta Yang Diasuransikan yang diterbitkan oleh instansi yang berwenang (asli) dan Berita Acara Kepolisian (jika Peserta Yang Diasuransikan meninggal dunia akibat kecelakaan yang diproses oleh kepolisian, asli);",
+          "dokumen lain yang dipandang perlu oleh Pengelola."
         ]
       }
     }

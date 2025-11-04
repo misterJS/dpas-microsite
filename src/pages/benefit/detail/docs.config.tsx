@@ -1,5 +1,4 @@
 import { useTArray } from "@/helper/useTArray";
-import PdfViewer from "@/pages/pdf/PdfViewer";
 import { useTranslation } from "react-i18next";
 import DocsBody from "./docs-body";
 
@@ -53,9 +52,21 @@ export function useDocItems() {
           <div className="space-y-3 text-sm leading-6">
             <h4 className="font-medium">{t("docs.snk.how.title")}</h4>
             <ol className="list-decimal ml-5 space-y-2">
-              {steps?.map((s, i) => (
-                <li key={i}>{s}</li>
-              ))}
+              {steps?.map((s, i) => {
+                const subItem = s.split('\n');
+                const mainText = subItem[0];
+                const hasSubItem = subItem.length > 1;
+                return (
+                  <li key={i}>
+                    {mainText}
+                    {hasSubItem && (
+                      <ul>
+                        {subItem.slice(1).map((sub, subI) => <li key={subI}>{sub}</li>)}
+                      </ul>
+                    )}
+                  </li>
+                )
+              })}
             </ol>
             <h4 className="font-medium mt-3">{t("docs.snk.terms.title")}</h4>
             <ol className="list-decimal ml-5 space-y-2">
@@ -95,9 +106,21 @@ export function useDocItems() {
                 {t("docs.applied_claim_document.death.title")}
               </p>
               <ol className="list-decimal ml-5 space-y-2">
-                {deathItems?.map((s, i) => (
-                  <li key={i}>{s}</li>
-                ))}
+                {deathItems?.map((s, i) => {
+                  const subItem = s.split('\n');
+                  const mainText = subItem[0];
+                  const hasSubItem = subItem.length > 1;
+                  return (
+                    <li key={i}>
+                      {mainText}
+                      {hasSubItem && (
+                        <ul>
+                          {subItem.slice(1).map((sub, subI)=> <li key={subI}>{sub}</li>)}
+                        </ul>
+                      )}
+                    </li>
+                  )
+                })}
               </ol>
             </section>
           </div>

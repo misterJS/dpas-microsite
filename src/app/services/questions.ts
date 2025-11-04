@@ -13,7 +13,7 @@ export const getQuestions = async (
   type: string
 ): Promise<TQuestion[]> => {
   const { data } = await api.get<ApiEnvelope<HealthQuestion[]>>(
-    `/microsite/${slug}/product/${product_code}/question`,
+    `/microsite/${slug}/products/${product_code}/question`,
     { params: { type } }
   );
   return mapHealthQuestionGroups(data?.data);

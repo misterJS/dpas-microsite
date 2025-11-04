@@ -7,23 +7,28 @@ import { encryptedSessionStorage } from "./encrypt-storage";
 interface TActionIdempotency {
   idempotencyKey: string | null;
   getIdempotencyKey: () => string;
+  resetIdempotencyKey: () => void
 }
 
 export const useIdempotencyStore = create<TActionIdempotency>()(
   persist((set, get) => ({
-    idempotencyKey: '',
-    getIdempotencyKey: () => {
+      idempotencyKey: "",
+      getIdempotencyKey: () => {
         let key = get().idempotencyKey;
         if (!key) {
-        key = uuidv4();
-        sessionStorage.setItem("idempotencyKey", key);
-        set({ idempotencyKey: key });
+          key = uuidv4();
+          sessionStorage.setItem("idempotencyKey", key);
+          set({ idempotencyKey: key });
         }
         return key;
-    }
-  }),
-  {
-    name: "idempotencyKey",
-    storage: createJSONStorage(() => encryptedSessionStorage)
-  })
+      },
+      resetIdempotencyKey: () => {
+        set({ idempotencyKey: "" });
+        sessionStorage.removeItem("idempotencyKey");
+      },
+    }),
+    {
+      name: "idempotencyKey",
+      storage: createJSONStorage(() => encryptedSessionStorage)
+    })
 );

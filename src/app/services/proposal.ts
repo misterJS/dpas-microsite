@@ -1,9 +1,11 @@
 import { api } from "@/lib/api";
 import type {
   ApiEnvelope,
+  CheckAvailabilityReq,
+  CheckAvailabilityRes,
   CreateSPAJRes,
-  PaymentReq,
   PaymentRes,
+  ProposaStatusRes,
   SubmissionReq,
 } from "@/api/types";
 import {
@@ -14,8 +16,8 @@ import {
 } from "@/api/mappers";
 
 export const createSPAJ = async (): Promise<CreateSPAJRes> => {
-  const { data } = await api.post<ApiEnvelope<CreateSPAJRes>>(
-    `/microsite/proposal/create-spaj`
+  const { data } = await api.get<ApiEnvelope<CreateSPAJRes>>(
+    `/proposal/create-spaj`
   );
   return mapCreateSpajResponse(data.data);
 };
@@ -24,7 +26,7 @@ export const submissionProposal = async (
   body: SubmissionReq
 ): Promise<Record<string, unknown>> => {
   const { data } = await api.post<ApiEnvelope<Record<string, unknown>>>(
-    `/microsite/proposal/submit`,
+    `/proposal/submit`,
     body
   );
   return mapUnknownData(data.data, {});
@@ -32,19 +34,34 @@ export const submissionProposal = async (
 
 export const getProposalStatus = async (
   spaj_number: string
-): Promise<{ success: boolean }> => {
+): Promise<ProposaStatusRes> => {
   const { data } = await api.get<ApiEnvelope<{ status: string }>>(
-    `/microsite/proposal/${spaj_number}/status`
+    `/proposal/${spaj_number}/status`
   );
   return mapProposalStatus(data?.data);
 };
 
 export const getPayment = async (
-  body: PaymentReq
+  spaj_number: string
 ): Promise<PaymentRes> => {
-  const { data } = await api.post<ApiEnvelope<PaymentRes>>(
-    `/microsite/payment`,
-    body
+  const { data } = await api.get<ApiEnvelope<PaymentRes>>(
+    `/payment/${spaj_number}`,    
   );
   return mapPaymentResponse(data.data);
+};
+
+export const checkAvailability = async (
+  body: CheckAvailabilityReq
+): Promise<CheckAvailabilityRes> => {
+  try {
+    const { data } = await api.post<ApiEnvelope<CheckAvailabilityRes>>(
+      `/check-availability`,
+      body
+    );
+    return data.data;
+  }
+  catch (error: any) {
+    const errorMessage = error.response?.data.data || 'Terjadi kesalahan';
+    return Promise.reject(errorMessage);
+  }
 };

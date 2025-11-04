@@ -8,7 +8,7 @@ import { queryClient } from "@/lib/queryClient"
 import { router } from "./router"
 import "@/index.css"
 
-if (import.meta.env.VITE_MOCK === "true") {
+if (import.meta.env.VITE_ENABLE_MOCK_API === "true") {
   const { worker } = await import("@/mocks/browser")
   await worker.start({ onUnhandledRequest: "bypass" })
 }

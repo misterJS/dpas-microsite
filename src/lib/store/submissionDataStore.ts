@@ -6,20 +6,23 @@ import { SubmissionReq } from "@/api/types";
 type TActionClient = {
   submission: SubmissionReq
   setSubmissionData: (data: SubmissionReq) => void
+  resetSubmission: () => void
 }
 
 const initalState: SubmissionReq = {
+  spaj_number: "",
   product: {
     product_id: "",
     product_code: "",
     product_name: "",
+    product_image: "",
     package: {
       package_id: null,
       package_name: "",
       package_code: "",
       premium_amount: 0,
       term: {
-        term_id: 0,
+        term_id: "",
         term: 0,
         term_unit: ""
       },
@@ -27,31 +30,37 @@ const initalState: SubmissionReq = {
     }
   },
   client: {
+    branch: "",
     nik: "",
-    fullName: "",
+    full_name: "",
     pob: "",
-    dob: new Date(),
-    maritalStatus: "",
+    dob: null,
+    marital_status: "",
     sex: "",
     address: "",
     phone: "",
-    countryCode: "",
-    zipCode: "",
+    country_code: "",
+    zip_code: "",
     province: "",
+    province_id: "",
+    city_id: "",
+    district_id: "",
+    subdistrict_id: "",
     city_name: "",
     district_name: "",
     subdistrict_name: "",
     job: "",
+    income_code: "",
     income: "",
     benef_name: "",
-    benefPhone: "",
-    benefCountryCode: "",
-    benefAddress: "",
+    benef_phone: "",
+    benef_country_code: "",
+    benef_address: "",
     relation: ""
   },
   questionaire: {
     consent: [],
-    healthQuestionnaire: []
+    health_questionnaire: []
   }
 }
 
@@ -64,9 +73,14 @@ export const useSubmissionStore = create<TActionClient>()(
         submission: data
       }))
     },
+    resetSubmission: () => {
+      set(() => ({
+        submission: initalState,
+      }))
+    },
   }),
-  {
-    name: "submission-data-storage",
-    storage: createJSONStorage(() => encryptedSessionStorage)
-  })
+    {
+      name: "submission-data-storage",
+      storage: createJSONStorage(() => encryptedSessionStorage)
+    })
 );

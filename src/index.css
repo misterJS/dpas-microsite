@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .self-anchor-center {
+    align-self: anchor-center;
+  }
+}
+
+@layer components {
+  .custom-benef-name > input {
+    @apply p-0 mt-[19px];
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -10,7 +22,7 @@
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --primary: 177, 46%, 60%, 1;
     --primary-foreground: 0 0% 98%;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
@@ -30,6 +42,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem
   }
+
   .dark {
     --background: 0 0% 3.9%;
     --foreground: 0 0% 98%;
@@ -37,7 +50,7 @@
     --card-foreground: 0 0% 98%;
     --popover: 0 0% 3.9%;
     --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
+    --primary: #69C8C3;
     --primary-foreground: 0 0% 9%;
     --secondary: 0 0% 14.9%;
     --secondary-foreground: 0 0% 98%;
@@ -62,6 +75,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -70,4 +84,9 @@
 .pdf-page canvas {
   width: 100% !important;
   height: auto !important;
+}
+
+
+.consent-body a {
+  color: red
 }

@@ -1,16 +1,33 @@
 import BenefitCard from "@/components/cards/BenefitCards"
 import { useTranslation } from "react-i18next"
 import { useProducts } from "@/hooks/useProducts"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
+import { LoadingComponent } from "@/components/common/LoadingComponent"
+import { useSubmissionStore } from "@/lib/store/submissionDataStore"
+import { ProductListItem, SubmissionReq } from "@/api/types"
 
 export default function BenefitPage() {
   const { brand } = useParams()
   const { t } = useTranslation("common")
   const { data: products, isLoading, isError } = useProducts("uob")
+  const { submission, setSubmissionData } = useSubmissionStore();
+  const navigate = useNavigate();
+
+  const handleNavigation = (productItem: ProductListItem) => {
+    const data: SubmissionReq = {
+      ...submission,
+      product: {
+        ...submission.product,
+        product_image: productItem.image
+      }
+    };
+    setSubmissionData(data);
+    navigate(`/${brand}/products/${productItem.product_code}?type=check-riplay`);
+  };
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl">{t("content.products")}</h1>
-      {isLoading && <div className="p-2">{t("status.loading")}</div>}
       {isError && <div className="p-2 text-red-600">{t("status.loadProductsFailed")}</div>}
       {products?.map((p) => (
         <BenefitCard
@@ -18,10 +35,12 @@ export default function BenefitPage() {
           title={p.product_name}
           description={p.desc}
           imageSrc={p.image}
-          href={`/${brand}/products/${p.product_code}?type=riplay`}
+          onClick={() => handleNavigation(p)}
           buttonTitle={t("actions.readMore")}
+          className="border-none"
         />
       ))}
+      <LoadingComponent open={isLoading} />
     </div>
   )
 }

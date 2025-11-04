@@ -14,7 +14,7 @@ export function RHFTextField({
   name,
   label,
   requiredMark,
-  wrapperClassName = "rounded-[12px]",
+  wrapperClassName = "rounded-[8px] h-[70px]",
   ...props
 }: Omit<React.ComponentProps<typeof FloatingField>, "value" | "onChange"> &
   WithRequiredMark & { name: string }) {
@@ -45,7 +45,7 @@ export function RHFSelectField({
   label,
   requiredMark,
   onValue,
-  wrapperClassName = "rounded-[12px]",
+  wrapperClassName = "rounded-[8px] h-[70px]",
   children,
   ...rest
 }: Omit<React.ComponentProps<typeof FloatingSelect>, "value" | "onValueChange" | "children"> &
@@ -57,7 +57,7 @@ export function RHFSelectField({
       name={name as any}
       render={({ field }) => (
         <FloatingSelect
-          value={field.value}
+          value={field.value ?? ""}
           onValueChange={(v) => field.onChange(onValue ? onValue(v) : v)}
           label={
             <>
@@ -79,8 +79,8 @@ export function RHFPhoneField({
   name,
   label,
   requiredMark,
-  wrapperClassName = "rounded-[12px]",
-  ...rest
+  wrapperClassName = "rounded-[8px] h-[70px]",
+  ...props
 }: Omit<React.ComponentProps<typeof PhoneField>, "value" | "onChange"> &
   WithRequiredMark & { name: string }) {
   const { control } = useFormContext();
@@ -99,7 +99,7 @@ export function RHFPhoneField({
             </>
           }
           wrapperClassName={wrapperClassName}
-          {...rest}
+          {...props}
         />
       )}
     />
@@ -110,7 +110,7 @@ export function RHFDateField({
   name,
   label,
   requiredMark,
-  wrapperClassName,
+  wrapperClassName = "mt-2 rounded-[8px] h-[70px]",
   ...rest
 }: Omit<React.ComponentProps<typeof DateField>, "value" | "onChange"> &
   WithRequiredMark & { name: string }) {

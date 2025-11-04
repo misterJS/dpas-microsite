@@ -5,8 +5,8 @@ export type ApiEnvelope<T> = {
 };
 
 
-export type ProductListItem  = {
-  product_id: number;
+export type ProductListItem = {
+  product_id: string;
   product_name: string;
   microsite_id: string;
   product_code: string;
@@ -15,7 +15,7 @@ export type ProductListItem  = {
 };
 
 //product detail types
-export type ProductDetailTerm = { term_id: number; term: number; term_unit: "M" | string };
+export type ProductDetailTerm = { term_id: string; term: number; term_unit: "M" | string };
 export type ProductBenefit = {
   benef_code: string;
   benef_name: string;
@@ -23,17 +23,17 @@ export type ProductBenefit = {
   benef_type: string;
   notes?: string;
 };
-export type ProductPackage = { package_id: number; package_name: string; package_code: string; benefits: ProductBenefit[] };
-export type ProductDetail = Pick<ProductListItem, 'product_code' | 'product_name'> & {
+export type ProductPackage = { package_id: string; package_name: string; package_code: string; benefits: ProductBenefit[] };
+export type ProductDetail = Pick<ProductListItem, 'product_id' | 'product_code' | 'product_name'> & {
   desc: string;
   terms: ProductDetailTerm[];
   packages: ProductPackage[];
 };
 
 export type ComputePremiumReq = {
-  policyterm_id: number;
+  policy_term_id: string;
   product_code: string;
-  package_id: number | string;
+  package_id: string;
 };
 export type ComputePremiumRes = {
   premium_amount: string | number;
@@ -50,10 +50,17 @@ export type BranchItem = {
 };
 
 export type ZipLookupRes = {
-  province: { province_id: string; province_name: string }[];
-  city: { city_id: string; city_name: string }[];
-  district: { district_id: string; district_name: string }[];
-  subdistrict: { subdistrict_id: string; subdistrict_name: string }[];
+  id: number;
+  zip_code: string;
+  subdistrict_id: number;
+  subdistrict_name: string;
+  district_id: number;
+  district_name: string;
+  city_id: number;
+  city_name: string;
+  province_id: number;
+  province_name: string;
+  province_las_code: string;
 };
 
 export type Province = { province_id: string; province_name: string };
@@ -77,18 +84,21 @@ export type HealthQuestion = {
 };
 
 export type DocumentReq = {
-  nama: string;
-  dob: Date;
-  gender: string;
-  beneficiary: string;
+  full_name: string;
+  dob: string;
+  pob: string;
+  sex: string;
+  benef_name: string;
   email: string;
-  package_name?: string;
-  term?: string | number;
+  package_code: string | undefined;
+  product_code: string;
+  term: number | undefined;
+  term_unit: string | undefined;
 };
 
 export type DocumentRes = {
   doc_id: string;
-  riplay_URL: string;
+  fileBase64: string;
 };
 
 type TBenefits = {
@@ -99,17 +109,19 @@ type TBenefits = {
 };
 
 export type SubmissionReq = {
+  spaj_number?: string,
   product: {
     product_id: string
     product_code: string
     product_name: string
+    product_image?: string
     package: {
-      package_id?: number | null
+      package_id?: string | null
       package_name?: string
       package_code?: string
       premium_amount?: number
       term: {
-        term_id?: number
+        term_id?: string
         term?: number
         term_unit?: string
       }
@@ -117,10 +129,11 @@ export type SubmissionReq = {
     }
   }
   client: {
+    branch: string
     nik: string
     full_name: string
     pob: string
-    dob: Date
+    dob: Date | string |null
     marital_status: string
     sex: string
     email?: string
@@ -128,24 +141,29 @@ export type SubmissionReq = {
     phone: string
     country_code: string
     zip_code: string
+    province_id: string
+    city_id: string
+    district_id: string
+    subdistrict_id: string
     province: string
     city_name: string
     district_name: string
     subdistrict_name: string
     job: string
+    income_code: string
     income: string
     benef_name: string
     benef_phone: string
     benef_country_code: string
-    benefAddress: string
+    benef_address: string
     relation: string
   }
   questionaire: TQuestionaire
 }
 
 type TQuestionaire = {
-  consent: TQuestionnaireItem | unknown
-  health_questionnaire: TQuestionnaireItem | unknown
+  consent: TQuestionnaireItem[] | unknown
+  health_questionnaire: TQuestionnaireItem[] | unknown
 }
 
 type TQuestionnaireItem = {
@@ -187,16 +205,26 @@ export type PaymentRes = {
   resp_desc: string;
 }
 
-export type CheckAvailabilityReq = { 
+export type CheckAvailabilityReq = {
   product_code: string;
   component_code: string;
-  birth_date: Date;
+  birth_date: string;
   email: string;
   ktp_id: string;
   marital_status: string;
 }
 
+type TErrors = {
+  code: string;
+  message: string;
+}
+
 export type CheckAvailabilityRes = {
+  status?: {
+    code: string;
+    message: string;
+    errors: TErrors[];
+  }
   body: {
     product_code: string;
     component_code: string;
@@ -206,9 +234,11 @@ export type CheckAvailabilityRes = {
     marital_status: string;
   },
   decisions: string;
-  decisionDescription: string;
+  decision_description: string;
   validations: {
-    MaxAllowedPoliciesPerLifeAssuredCheck: string;
-    MaxAllowedPoliciesPerEmailIdentifier: string;
+    max_allowed_policies_per_email_identifier: string;
+    max_allowed_policies_per_life_assured_check: string;
   }
 }
+
+export type ProposaStatusRes = { success: boolean; failed: boolean, inforce: boolean }

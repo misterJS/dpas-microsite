@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -12,6 +12,7 @@ import { DialogComponent } from "@/components/common/DialogComponent"
 import { useQuestions } from "@/hooks/useQuestions"
 import { SubmissionReq } from "@/api/types"
 import { useSubmissionStore } from "@/lib/store/submissionDataStore"
+import { LoadingComponent } from "@/components/common/LoadingComponent"
 
 export default function HealthQuestionsPage() {
   const { t } = useTranslation("common")
@@ -21,29 +22,16 @@ export default function HealthQuestionsPage() {
   const [rejectOpen, setRejectOpen] = useState(false)
   const { submission, setSubmissionData } = useSubmissionStore()
 
-  const slug = params.get("slug") || "uob"
   const product_code = params.get("product") || "ACC"
-
-  const { data, isLoading, isError } = useQuestions(slug, product_code, "HEALTH_QUESTIONAIRE")
+  const { data, isLoading, isError } = useQuestions(brand, product_code, "HEALTH_QUESTIONNAIRE")
 
   const questions =
     data && data.length > 0
       ? data.flatMap((group) => group.question)
-      : [
-          {
-            id: "",
-            code: "",
-            question_order: 1,
-            question_text: "",
-            type: "",
-            answer_type: "",
-            yes_label: "",
-            no_label: "",
-          }
-        ]
+      : []
 
   const schema = useMemo(() => {
-    const AnswerEnum = z.enum(["ya", "tidak"] as const, { message: t("health.required") })
+    const AnswerEnum = z.enum(["yes", "no"] as const, { message: t("menu.schema.requiredOption") })
     const shape: Record<string, typeof AnswerEnum> = {}
     for (const q of questions) shape[q.id] = AnswerEnum
     return z.object(shape)
@@ -56,18 +44,18 @@ export default function HealthQuestionsPage() {
   })
 
   const onSubmit = (v: z.infer<typeof schema>) => {
-    const notQualified = Object.values(v as Record<string, string>).some((ans) => ans === "ya")
+    const notQualified = Object.values(v as Record<string, string>).some((ans) => ans === "yes")
     if (notQualified) setRejectOpen(true)
     else handleSetData(v)
   }
 
   const handleSetData = (v: Record<string, string>) => {
     const dataQuestions = questions.map((value) => ({
-        questionId: value.id,
-        questionCode: value.code,
-        questionText: value.question_text,
-        questionType: value.type,
-        questionAnswerType: value.answer_type,
+        question_id: value.id,
+        question_code: value.code,
+        question_text: value.question_text,
+        question_type: value.type,
+        question_answer_type: value.answer_type,
         answer: v[value.id]
     }))
 
@@ -75,13 +63,35 @@ export default function HealthQuestionsPage() {
       ...submission,
       questionaire: {
         ...submission.questionaire,
-        healthQuestionnaire: dataQuestions,
+        health_questionnaire: dataQuestions,
       }
     }
     setSubmissionData(data)
-    navigate(`/${brand}/pdf?type=riplay`)
+    navigate(`/${brand}/pdf?type=riplay&product=${submission.product.product_code}`)
   }
 
+  useEffect(() => {
+    const healthAnswers = submission?.questionaire?.health_questionnaire;
+    if (!Array.isArray(healthAnswers) || !questions.length) return;
+
+    const defaults: Record<string, "yes" | "no"> = {};
+    questions.forEach((q) => {
+      const answerObj = healthAnswers.find(a => a.question_id === q.id);
+      if (answerObj && (answerObj.answer === "yes" || answerObj.answer === "no")) {
+        defaults[q.id] = answerObj.answer;
+      }
+    });
+
+    const currentValues = form.getValues();
+    const isDifferent = Object.keys(defaults).some(
+      key => currentValues[key] !== defaults[key]
+    );
+
+    if (isDifferent) {
+      form.reset(defaults);
+    }
+  }, [submission, questions]);
+  
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex flex-col">
       <div className="pt-4 pb-6">
@@ -91,12 +101,7 @@ export default function HealthQuestionsPage() {
 
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
-                {isLoading && (
-                  <p className="text-sm text-muted-foreground">Loading...</p>
-                )}
-                {isError && (
-                  <p className="text-sm text-red-500">Gagal memuat pertanyaan</p>
-                )}
+                {isError && <p className="text-sm text-red-500">{t("content.FailedToLoad")}</p>}
                 {!isLoading && !isError && questions.map((q, idx) => (
                     <div key={q.id} className="relative">
                       <span className="absolute right-1 top-0 text-red-500 text-lg">*</span>
@@ -111,12 +116,12 @@ export default function HealthQuestionsPage() {
                             <FormControl>
                               <RadioGroup className="space-y-3" value={field.value} onValueChange={field.onChange}>
                                 <label className="flex items-center gap-2">
-                                  <RadioGroupItem value="ya" id={`${q.id}-ya`} />
-                                  <span className="text-[14px] text-[#4B4B4B]">{t("health.yes")}</span>
+                                  <RadioGroupItem value="yes" id={`${q.id}-yes`} />
+                                  <span className="text-[14px] text-[#4B4B4B] font-bold">{t("health.yes")}</span>
                                 </label>
                                 <label className="flex items-center gap-2">
-                                  <RadioGroupItem value="tidak" id={`${q.id}-tidak`}/>
-                                  <span className="text-[14px] text-[#4B4B4B]">{t("health.no")}</span>
+                                  <RadioGroupItem value="no" id={`${q.id}-no`}/>
+                                  <span className="text-[14px] text-[#4B4B4B] font-bold">{t("health.no")}</span>
                                 </label>
                               </RadioGroup>
                             </FormControl>
@@ -154,8 +159,9 @@ export default function HealthQuestionsPage() {
         primaryLabel={t("health.reject.close")}
         onPrimary={() => setRejectOpen(false)}
         secondaryLabel={t("health.reject.home")}
-        secondaryTo="/"
+        secondaryTo={`/${brand}?reset_session=true`}
       />
+      <LoadingComponent open={isLoading} />
     </div>
   )
 }

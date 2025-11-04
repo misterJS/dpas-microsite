@@ -3,6 +3,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { cn } from "@/lib/utils"
+import { useTranslation } from "react-i18next";
 
 type Props = {
   open: boolean
@@ -31,15 +32,19 @@ export function DialogComponent({
   onSecondary,
   contentClassName,
 }: Props) {
+  const { t } = useTranslation("common");
+  const defaultMessage = t("health.reject.body");
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className={cn("rounded-[20px] p-0 gap-0 max-w-sm", contentClassName)}>
         <div className="px-5 pt-5">
-          <DialogHeader className="text-left">
+          <DialogHeader className="text-left mb-3">
             <DialogTitle className="text-[22px] font-semibold text-[#3C3C3C]">{title}</DialogTitle>
             {description ? (
               <DialogDescription className="text-[14px] leading-6 text-[#6B6B6B] mt-2">{description}</DialogDescription>
-            ) : null}
+            ) : (
+              <DialogDescription className="text-[14px] leading-6 text-[#6B6B6B] mt-2">{defaultMessage}</DialogDescription>
+            )}
           </DialogHeader>
         </div>
         <div className="px-5 pb-5 space-y-4">

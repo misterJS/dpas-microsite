@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import moment from "moment";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
@@ -9,7 +10,7 @@ import {
   useDistricts,
   useSubdistricts,
 } from "@/hooks/useLocation";
-import { useBranches, useJobs, useSalaries } from "@/hooks/useOptions";
+import { useBranches } from "@/hooks/useOptions";
 import { useZipLookup } from "@/hooks/useZip";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -23,70 +24,33 @@ import {
   RHFPhoneField,
   RHFDateField,
 } from "@/components/form/rhf-fields";
-import { cn } from "@/lib/utils";
 import { Info } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSubmissionStore } from "@/lib/store/submissionDataStore";
 import { SubmissionReq } from "@/api/types";
 import { useCheckAvailability } from "@/hooks/useProducts";
+import { CITY_VALUES, DISTRICT_VALUES, GENDER_VALUES, JOBS, MARITAL_VALUES, PLAN_VALUES, PROVINCE_VALUES, RELATION_VALUES, SALARIES, SUBDISTRICT_VALUES } from "@/lib/store/data";
+import { DialogComponent } from "@/components/common/DialogComponent";
+import { LoadingComponent } from "@/components/common/LoadingComponent";
+import { Checkbox } from "@/components/ui/checkbox";
 
-const PLAN_VALUES = ["silver", "gold", "platinum"] as const;
-const GENDER_VALUES = ["pria", "wanita"] as const;
-type Gender = (typeof GENDER_VALUES)[number];
-
-const MARITAL_VALUES = ["menikah", "belum", "bercerai"] as const;
-type Married = (typeof MARITAL_VALUES)[number];
-
-const PROVINCE_VALUES = ["dki", "jabar", "jateng"] as const;
 type Province = (typeof PROVINCE_VALUES)[number];
-
-const CITY_VALUES = ["jaksel", "jakpus", "depok"] as const;
 type City = (typeof CITY_VALUES)[number];
-
-const DISTRICT_VALUES = ["keb_baru", "tebet"] as const;
 type District = (typeof DISTRICT_VALUES)[number];
-
-const SUBDISTRICT_VALUES = ["gunung", "kramat_pela"] as const;
 type Subdistrict = (typeof SUBDISTRICT_VALUES)[number];
-
-const RELATION_VALUES = ["istri", "suami", "anak"] as const
-type Relation = (typeof RELATION_VALUES)[number]
-
-type Branch = { code: string; name: string }
-
-const schema = z.object({
-  branch: z.string().min(1, "Pilih kantor cabang"),
-  planType: z.enum(PLAN_VALUES, { message: "Pilih paket" }).optional(),
-  gender: z.enum(GENDER_VALUES, { message: "Pilih Jenis Kelamin" }),
-  married: z.enum(MARITAL_VALUES, { message: "Pilih Status Pernikahan" }),
-  nik: z.string().regex(/^\d{16}$/, "NIK harus 16 digit angka"),
-  fullName: z.string().min(2, "Isi nama sesuai KTP"),
-  pob: z.string().min(2, "Masukkan tempat lahir"),
-  phone: z.string().regex(/^\d{9,13}$/, "Nomor ponsel tidak valid"),
-  beneficiaryPhone: z.string().regex(/^\d{9,13}$/, "Nomor ponsel tidak valid"),
-  dob: z
-    .date({ message: "Pilih tanggal lahir" })
-    .refine((d) => d <= new Date(), {
-      message: "Tanggal lahir tidak boleh di masa depan",
-    }),
-  email: z.string().email("Email tidak valid"),
-  postalCode: z.string().regex(/^\d{5}$/, "Kode POS harus 5 digit"),
-  province: z.enum(PROVINCE_VALUES, { message: "Pilih provinsi" }),
-  city: z.enum(CITY_VALUES, { message: "Pilih kota" }),
-  district: z.enum(DISTRICT_VALUES, { message: "Pilih kecamatan" }),
-  subdistrict: z.enum(SUBDISTRICT_VALUES, { message: "Pilih kelurahan" }),
-  addressKtp: z.string().min(10, "Alamat minimal 10 karakter"),
-  jobType: z.string().min(1, "Pilih Pekerjaan"),
-  salary: z.string().min(1, "Pilih Salary"),
-  beneficiaryName: z.string().min(2, "Nama minimal 2 karakter"),
-  beneficiaryAddress: z.string().min(2, "Masukkan tempat lahir"),
-  beneficiaryRelation: z.enum(RELATION_VALUES, { message: "Pilih Relasi" }),
-});
-type FormValues = z.infer<typeof schema>;
+type TDropdown = { code: string; name: string }
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <h2 className="text-base text-[#006660] font-semibold">{children}</h2>
 );
+
+const stripLeadingZero = (s: string) =>
+  (s || "").replace(/[^\d]/g, "").replace(/^0+/, "");
+const ensureLeadingZero = (s: string) => {
+  const digits = (s || "").replace(/[^\d]/g, "");
+  if (!digits) return "";
+  return digits.startsWith("0") ? digits : "0" + digits;
+};
 
 export default function RegisterPage() {
   const today = new Date();
@@ -100,89 +64,178 @@ export default function RegisterPage() {
     today.getMonth(),
     today.getDate()
   );
-  const { t } = useTranslation("common");
   const navigate = useNavigate();
   const { brand } = useParams();
+  const [rejectOpen, setRejectOpen] = useState(false)
+  const [decisionDesc, setDecisionDesc] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
   const { submission, setSubmissionData } = useSubmissionStore();
+
+  const { t } = useTranslation("common");
+
+  const schema = z.object({
+    branch: z.string().min(1, t("menu.schema.branch")),
+    planType: z.enum(PLAN_VALUES, { message: t("menu.schema.planType") }).optional(),
+    gender: z.string().min(1, t("menu.schema.gender")),
+    married: z.string().min(1, t("menu.schema.married")),
+    nik: z.string().regex(/^\d{16}$/, t("menu.schema.nik")),
+    fullName: z.string().min(2, t("menu.schema.fullName")).regex(/^[A-Za-z\s]+$/, t("menu.schema.regexFullname")),
+    pob: z.string().min(2, t("menu.schema.pob")).regex(/^[A-Za-z\s]+$/, t("menu.schema.regexPob")),
+    phone: z.string().regex(/^\d{9,13}$/, t("menu.schema.phone")),
+    beneficiaryPhone: z.string().regex(/^\d{9,13}$/, t("menu.schema.beneficiaryPhone")),
+    dob: z
+      .date({ message: t("menu.schema.dob") })
+      .refine((d) => d <= new Date(), {
+        message: t("menu.schema.dob2"),
+      }),
+    email: z.string().email(t("menu.schema.email")),
+    postalCode: z.string().min(5, t("menu.schema.postalCode")).or(z.literal('')),
+    province: z.string().min(1, t("menu.schema.province")),
+    city: z.string().min(1, t("menu.schema.city")),
+    district: z.string().min(1, t("menu.schema.district")),
+    subdistrict: z.string().min(1, t("menu.schema.subdistrict")),
+    addressKtp: z.string().min(10, t("menu.schema.addressKtp")),
+    jobType: z.string().min(1, t("menu.schema.jobType")),
+    salaryCode: z.string(),
+    salary: z.string().min(1, t("menu.schema.salary")),
+    beneficiaryName: z.string().min(2, t("menu.schema.beneficiaryName")).regex(/^[A-Za-z\s]+$/, t("menu.schema.regexBeneficiary")),
+    beneficiaryAddress: z.string().min(2, t("menu.schema.beneficiaryAddress")),
+    beneficiaryRelation: z.string().min(1, t("menu.schema.beneficiaryRelation")),
+    agreeRealData: z.boolean().refine((v) => v === true, {
+      message: t("menu.schema.mustAgree") || "Anda harus menyetujui data sebenarnya.",
+    }),
+  });
+  type FormValues = z.infer<typeof schema>;
+
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: {} as Partial<FormValues>,
+    defaultValues: submission?.client ? {
+      branch: submission.client.branch ?? "",
+      gender: submission.client.sex ?? "",
+      married: submission.client.marital_status ?? "",
+      nik: submission.client.nik ?? "",
+      fullName: submission.client.full_name ?? "",
+      pob: submission.client.pob ?? "",
+      phone: ensureLeadingZero(submission.client.phone ?? ""),
+      beneficiaryPhone: ensureLeadingZero(submission.client.benef_phone ?? ""),
+      dob: submission.client.dob ? new Date(submission.client.dob) : undefined,
+      email: submission.client.email ?? "",
+      postalCode: submission.client.zip_code ?? "",
+      province: submission.client.province_id ?? "",
+      city: submission.client.city_id ?? "",
+      district: submission.client.district_id ?? "",
+      subdistrict: submission.client.subdistrict_id ?? "",
+      addressKtp: submission.client.address ?? "",
+      jobType: submission.client.job ?? "",
+      salaryCode: submission.client.income_code ?? "",
+      salary: submission.client.income_code ?? "",
+      beneficiaryName: submission.client.benef_name ?? "",
+      beneficiaryAddress: submission.client.benef_address ?? "",
+      beneficiaryRelation: submission.client.relation ?? "",
+      agreeRealData: true,
+    } : {
+      agreeRealData: false,
+    } as any
   });
 
   const onSubmit = (values: FormValues) => {
     handleSetData(values);
   };
 
+  const province = form.watch("province")
+  const city = form.watch("city")
+  const district = form.watch("district")
+
+  const { data: provinces = [] } = useProvinces()
+  const { data: cities = [] } = useCities(province)
+  const { data: districts = [] } = useDistricts(province, city)
+  const { data: subdistricts = [] } = useSubdistricts(province, city, district)
+  const { data: branches = [], isLoading: loadingBranch } = useBranches() as { data?: TDropdown[]; isLoading: boolean }
+  const postalCode = form.watch("postalCode")
+  const { data: zip, isLoading: loadingZip } = useZipLookup(postalCode)
+  const { mutate } = useCheckAvailability();
+
   const handleSetData = (v: FormValues) => {
+    setIsLoading(true)
+
+    const provinceName = provinces.find(p => p.code === v.province)?.name ?? v.province;
+    const cityName = cities.find(c => c.code === v.city)?.name ?? v.city;
+    const districtName = districts.find(d => d.code === v.district)?.name ?? v.district;
+    const subdistrictName = subdistricts.find(s => s.code === v.subdistrict)?.name ?? v.subdistrict;
+    const selectedSalary = SALARIES.find(s => v.salary === s.code );
+    
     const data: SubmissionReq = {
       ...submission,
       client: {
+        branch: v.branch,
         nik: v.nik,
-        fullName: v.fullName,
+        full_name: v.fullName,
         pob: v.pob,
-        dob: v.dob,
-        maritalStatus: v.married,
+        dob: new Date(v.dob),
+        marital_status: v.married,
         sex: v.gender,
         email: v.email,
         address: v.addressKtp,
-        phone: v.phone,
-        countryCode: "+62",
-        zipCode: v.postalCode,
-        province: v.province,
-        city_name: v.city,
-        district_name: v.district,
-        subdistrict_name: v.subdistrict,
+        phone: stripLeadingZero(v.phone),
+        country_code: "+62",
+        zip_code: v.postalCode,
+        province_id: v.province,
+        city_id: v.city,
+        district_id: v.district,
+        subdistrict_id: v.subdistrict,
+        province: provinceName,
+        city_name: cityName,
+        district_name: districtName,
+        subdistrict_name: subdistrictName,
         job: v.jobType,
-        income: v.salary,
+        income_code: selectedSalary?.code ?? "",
+        income: selectedSalary?.value ?? "",
         benef_name: v.beneficiaryName,
-        benefPhone: v.beneficiaryPhone,
-        benefCountryCode: "+62",
-        benefAddress: v.beneficiaryAddress,
+        benef_phone: stripLeadingZero(v.beneficiaryPhone),
+        benef_country_code: "+62",
+        benef_address: v.beneficiaryAddress,
         relation: v.beneficiaryRelation
-      } 
+      }
     }
 
-    const paramsCheckAvailability = { 
-      product_code: submission.product.product_code ?? '',
-      componentCode: submission.product.package.package_code ?? '',
-      birthDate: v.dob,
+    const paramsCheckAvailability = {
+      product_code: submission?.product?.product_code ?? '',
+      component_code: submission?.product?.package?.package_code ?? '',
+      birth_date: moment(v.dob).format('YYYYMMDD'),
       email: v.email,
-      ktpId: v.nik,
-      maritalStatus: v.married
+      ktp_id: v.nik,
+      marital_status: v.married
     }
 
-    mutate(paramsCheckAvailability,{
-      onSuccess: () => {
+    mutate(paramsCheckAvailability, {
+      onSuccess: (response) => {
+        setIsLoading(false)
+        if (response.decisions == 'Y') {
           setSubmissionData(data)
-          navigate(`/${brand}/health-question`)
+          navigate(`/${brand}/health-question?product=${submission?.product?.product_code}`)
+        }
       },
-      onError: (err) => console.log(err)
+      onError: (err: any) => {
+        setIsLoading(false)
+        setRejectOpen(true)
+        err.status && setDecisionDesc(err.status.errors[0].message)
+      }
     })
   }
 
-    const province = form.watch("province")
-    const city = form.watch("city")
-    const district = form.watch("district")
+  const { isLoading: loadingProvince } = useProvinces()
+  const { isLoading: loadingCity } = useCities(province)
+  const { isLoading: loadingDistrict } = useDistricts(province, city)
+  const { isLoading: loadingSubdistrict } = useSubdistricts(province, city, district)
 
-    const { data: provinces = [] } = useProvinces()
-    const { data: cities = [] } = useCities(province)
-    const { data: districts = [] } = useDistricts(province, city)
-    const { data: subdistricts = [] } = useSubdistricts(province, city, district)
-    const { data: branches = [] } = useBranches() as { data?: Branch[] }
-    const { data: jobs = [] } = useJobs()
-    const { data: salaries = [] } = useSalaries()
-    const postalCode = form.watch("postalCode")
-    const { data: zip } = useZipLookup(postalCode)
-    const { mutate, isSuccess: successCheck, isError: errorCheck } = useCheckAvailability();
 
-  // Autofill cascade from ZIP lookup, step-by-step to wait data dependencies
   React.useEffect(() => {
     if (!zip) return;
-    const p = zip.province?.[0]?.province_id as Province | undefined;
+    const p = zip?.province_id as number | undefined;
     if (!p) return;
     const curr = form.getValues();
-    if (curr.province !== p) {
-      form.setValue("province", p as Province, {
+    if (curr.province !== p.toString()) {
+      form.setValue("province", p.toString() as Province, {
         shouldDirty: true,
         shouldTouch: true,
       });
@@ -191,13 +244,12 @@ export default function RegisterPage() {
 
   React.useEffect(() => {
     if (!zip) return;
-    const c = zip.city?.[0]?.city_id as City | undefined;
+    const c = zip?.city_id as number | undefined;
     if (!c) return;
-    // Wait until cities for current province are loaded, then set
-    if (cities.length > 0 && cities.some((v) => v.code === c)) {
+    if (cities.length > 0 && cities.some((v) => v.code === c.toString())) {
       const curr = form.getValues();
-      if (curr.city !== c) {
-        form.setValue("city", c as City, {
+      if (curr.city !== c.toString()) {
+        form.setValue("city", c.toString() as City, {
           shouldDirty: true,
           shouldTouch: true,
         });
@@ -207,13 +259,12 @@ export default function RegisterPage() {
 
   React.useEffect(() => {
     if (!zip) return;
-    const d = zip.district?.[0]?.district_id as District | undefined;
+    const d = zip?.district_id as number | undefined;
     if (!d) return;
-    // Wait until districts for current city are loaded, then set
-    if (districts.length > 0 && districts.some((v) => v.code === d)) {
+    if (districts.length > 0 && districts.some((v) => v.code === d.toString())) {
       const curr = form.getValues();
-      if (curr.district !== d) {
-        form.setValue("district", d as District, {
+      if (curr.district !== d.toString()) {
+        form.setValue("district", d.toString() as District, {
           shouldDirty: true,
           shouldTouch: true,
         });
@@ -223,13 +274,12 @@ export default function RegisterPage() {
 
   React.useEffect(() => {
     if (!zip) return;
-    const s = zip.subdistrict?.[0]?.subdistrict_id as Subdistrict | undefined;
+    const s = zip?.subdistrict_id as number | undefined;
     if (!s) return;
-    // Wait until subdistricts for current district are loaded, then set
-    if (subdistricts.length > 0 && subdistricts.some((v) => v.code === s)) {
+    if (subdistricts.length > 0 && subdistricts.some((v) => v.code === s.toString())) {
       const curr = form.getValues();
-      if (curr.subdistrict !== s) {
-        form.setValue("subdistrict", s as Subdistrict, {
+      if (curr.subdistrict !== s.toString()) {
+        form.setValue("subdistrict", s.toString() as Subdistrict, {
           shouldDirty: true,
           shouldTouch: true,
         });
@@ -237,17 +287,45 @@ export default function RegisterPage() {
     }
   }, [zip, subdistricts]);
 
+  React.useEffect(() => {
+    if (!submission?.client) return;
+    const c = submission.client;
+    form.reset({
+      branch: c.branch ?? "",
+      gender: c.sex as FormValues["gender"],
+      married: c.marital_status as FormValues["married"],
+      nik: c.nik ?? "",
+      fullName: c.full_name ?? "",
+      pob: c.pob ?? "",
+      phone: ensureLeadingZero(c.phone ?? ""),
+      beneficiaryPhone: ensureLeadingZero(c.benef_phone ?? ""),
+      dob: c.dob ? new Date(c.dob) : undefined,
+      email: c.email ?? "",
+      postalCode: c.zip_code ?? "",
+      province: c.province_id as FormValues["province"],
+      city: c.city_id as FormValues["city"],
+      district: c.district_id as FormValues["district"],
+      subdistrict: c.subdistrict_id as FormValues["subdistrict"],
+      addressKtp: c.address ?? "",
+      jobType: c.job ?? "",
+      salaryCode: c.income_code ?? "",
+      salary: c.income_code ?? "",
+      beneficiaryName: c.benef_name ?? "",
+      beneficiaryAddress: c.benef_address ?? "",
+      beneficiaryRelation: c.relation as FormValues["beneficiaryRelation"],
+      agreeRealData: true,
+    });
+  }, [submission]);
+
+  const agree = form.watch("agreeRealData");
+
   return (
     <div className="space-y-6">
-      <Card
-        className={cn(
-          "overflow-hidden rounded-[20px] border bg-card text-card-foreground transition-shadow",
-          "shadow-[0_18.54px_21.4px_0_rgba(0,0,0,0.05)] hover:shadow-[0_22px_26px_0_rgba(0,0,0,0.08)]"
-        )}
+      <div
       >
-        <CardContent className="p-6">
+        <CardContent className="p-4">
           <h1 className="mb-4 text-2xl text-[#6AC3BE] font-semibold">
-            {t("menu.fields.submit")}
+            {t("form.title_form_registration")}
           </h1>
 
           <Form {...form}>
@@ -263,7 +341,7 @@ export default function RegisterPage() {
               >
                 {branches?.map((b, i) => (
                   <React.Fragment key={b.code}>
-                    <SelectItem value={b.code}>{b.name}</SelectItem>
+                    <SelectItem value={b.code ?? ""}>{b.name}</SelectItem>
                     {i < branches.length - 1 && (
                       <SelectSeparator className="mx-3" />
                     )}
@@ -277,6 +355,29 @@ export default function RegisterPage() {
               <p className="text-[10px] text-[#ED1B2E]">
                 {t("menu.hints.requiredNote")}
               </p>
+
+              <FormField
+                control={form.control}
+                name="agreeRealData"
+                render={({ field }) => (
+                  <div className="flex gap-2 items-start">
+                    <div className="flex items-start">
+                      <Checkbox
+                        id="real-data-checkbox"
+                        checked={field.value ?? false}
+                        onCheckedChange={(v) => field.onChange(Boolean(v))}
+                        aria-describedby="real-data-hint"
+                      />
+                    </div>
+                    <div className="flex gap-1">
+                      <label htmlFor="real-data-checkbox" className="-mt-1 cursor-pointer">
+                        {t("menu.hints.realData")}
+                      </label>
+                      <span className="text-[#ED1B2E] text-xl">*</span>
+                    </div>
+                  </div>
+                )}
+              />
 
               <Card className="overflow-hidden rounded-xl border bg-[#C5F2F0] shadow-none">
                 <CardContent className="py-3 px-3 flex gap-2 items-center">
@@ -294,24 +395,31 @@ export default function RegisterPage() {
                 pattern="[0-9]*"
                 maxLength={16}
                 label={t("menu.fields.nik")}
+                onInput={(e) => {
+                  const target = e.target as HTMLInputElement;
+                  target.value = target.value.replace(/[^0-9]/g, '');
+                }}
                 requiredMark
               />
 
               <RHFTextField
                 name="fullName"
+                type="text"
+                maxLength={80}
                 label={t("menu.fields.fullName")}
                 requiredMark
               />
 
               <RHFTextField
                 name="pob"
+                maxLength={20}
                 label={t("menu.fields.pob")}
                 requiredMark
               />
 
               <RHFDateField
                 name="dob"
-                label={"Tanggal lahir (dd/mm/yyyy)"}
+                label={t("menu.fields.birthDate")}
                 disabled={[
                   { before: fiftyYearsAgo },
                   { after: eighteenYearsAgo },
@@ -320,19 +428,18 @@ export default function RegisterPage() {
                 toYear={eighteenYearsAgo.getFullYear()}
                 defaultMonth={eighteenYearsAgo}
                 requiredMark
-                wrapperClassName="mt-2"
               />
 
               <RHFSelectField
                 name="married"
                 label={t("menu.fields.married")}
                 requiredMark
-                onValue={(v: Married) => v}
+                onValue={(v: TDropdown) => v}
               >
                 {MARITAL_VALUES.map((v, i) => (
-                  <React.Fragment key={v}>
-                    <SelectItem value={v}>
-                      {t(`menu.options.marital.${v}`)}
+                  <React.Fragment key={v.code}>
+                    <SelectItem value={v.code ?? ""}>
+                      {t(`menu.options.marital.${v.code}`)}
                     </SelectItem>
                     {i < MARITAL_VALUES.length - 1 && (
                       <SelectSeparator className="mx-3" />
@@ -346,20 +453,20 @@ export default function RegisterPage() {
                 name="gender"
                 render={({ field }) => (
                   <div>
-                    <Label className="text-xs text-[#989898] font-medium">
+                    <Label className="text-xs text-[#000] font-medium">
                       {t("menu.fields.gender")}
                       <span className="text-red-500"> *</span>
                     </Label>
                     <RadioGroup
                       className="mt-2 grid gap-3 md:grid-cols-2"
-                      value={field.value}
-                      onValueChange={(v: Gender) => field.onChange(v)}
+                      value={field.value ?? ""}
+                      onValueChange={(v) => field.onChange(v)}
                     >
                       {GENDER_VALUES.map((g) => (
-                        <label key={g} className="flex items-center space-x-2">
-                          <RadioGroupItem value={g} id={`g-${g}`} />
-                          <span className="cursor-pointer text-xs text-[#989898]">
-                            {t(`menu.options.genders.${g}`)}
+                        <label key={g.code} className="flex items-center space-x-2">
+                          <RadioGroupItem value={g.code} id={`g-${g.code}`} />
+                          <span className="cursor-pointer text-xs text-[#000]">
+                            {t(`menu.options.genders.${g.code}`)}
                           </span>
                         </label>
                       ))}
@@ -380,7 +487,8 @@ export default function RegisterPage() {
 
               <RHFPhoneField
                 name="phone"
-                label={"nomor ponsel anda"}
+                hint={t("menu.fields.phoneInputHint")}
+                label={t("menu.fields.phoneNumber")}
                 requiredMark
               />
 
@@ -403,7 +511,7 @@ export default function RegisterPage() {
               >
                 {provinces.map((v, i) => (
                   <React.Fragment key={v.code}>
-                    <SelectItem value={v.code}>{v.name}</SelectItem>
+                    <SelectItem value={v.code ?? ""}>{v.name}</SelectItem>
                     {i < provinces.length - 1 && (
                       <SelectSeparator className="mx-3" />
                     )}
@@ -419,7 +527,7 @@ export default function RegisterPage() {
               >
                 {cities.map((v, i) => (
                   <React.Fragment key={v.code}>
-                    <SelectItem value={v.code}>{v.name}</SelectItem>
+                    <SelectItem value={v.code ?? ""}>{v.name}</SelectItem>
                     {i < cities.length - 1 && (
                       <SelectSeparator className="mx-3" />
                     )}
@@ -435,7 +543,7 @@ export default function RegisterPage() {
               >
                 {districts.map((v, i) => (
                   <React.Fragment key={v.code}>
-                    <SelectItem value={v.code}>{v.name}</SelectItem>
+                    <SelectItem value={v.code ?? ""}>{v.name}</SelectItem>
                     {i < districts.length - 1 && (
                       <SelectSeparator className="mx-3" />
                     )}
@@ -451,7 +559,7 @@ export default function RegisterPage() {
               >
                 {subdistricts.map((v, i) => (
                   <React.Fragment key={v.code}>
-                    <SelectItem value={v.code}>{v.name}</SelectItem>
+                    <SelectItem value={v.code ?? ""}>{v.name}</SelectItem>
                     {i < subdistricts.length - 1 && (
                       <SelectSeparator className="mx-3" />
                     )}
@@ -461,6 +569,7 @@ export default function RegisterPage() {
 
               <RHFTextField
                 name="addressKtp"
+                maxLength={120}
                 label={t("menu.fields.addressKtp")}
                 requiredMark
               />
@@ -472,10 +581,12 @@ export default function RegisterPage() {
                 label={t("menu.fields.jobType")}
                 requiredMark
               >
-                {jobs.map((v, i) => (
+                {JOBS.map((v, i) => (
                   <React.Fragment key={v.code}>
-                    <SelectItem value={v.code}>{v.name}</SelectItem>
-                    {i < jobs.length - 1 && (
+                    <SelectItem value={v.code ?? ""}>
+                      {t(`menu.options.jobs.${v.code}`)}
+                    </SelectItem>
+                    {i < JOBS.length - 1 && (
                       <SelectSeparator className="mx-3" />
                     )}
                   </React.Fragment>
@@ -487,32 +598,39 @@ export default function RegisterPage() {
                 label={t("menu.fields.salary")}
                 requiredMark
               >
-                {salaries.map((v, i) => (
-                  <React.Fragment key={v.code}>
-                    <SelectItem value={v.code}>{v.name}</SelectItem>
-                    {i < salaries.length - 1 && (
-                      <SelectSeparator className="mx-3" />
-                    )}
-                  </React.Fragment>
-                ))}
+                {SALARIES.map((v, i) => {
+                  return (
+                    <React.Fragment key={v.code}>
+                      <SelectItem value={v.code ?? ""}>{t(`menu.options.salaries.${v.code}`)}</SelectItem>
+                      {i < SALARIES.length - 1 && (
+                        <SelectSeparator className="mx-3" />
+                      )}
+                    </React.Fragment>
+                  )
+                })}
               </RHFSelectField>
 
               <SectionTitle>{t("menu.sections.beneficiary")}</SectionTitle>
 
               <RHFTextField
                 name="beneficiaryName"
+                type="text"
+                maxLength={80}
+                wrapperClassName="p-2 custom-benef-name rounded-[8px] h-[70px]"
                 label={t("menu.fields.beneficiaryName")}
                 requiredMark
               />
 
               <RHFPhoneField
                 name="beneficiaryPhone"
-                label={"nomor ponsel penerima manfaat"}
+                label={t("menu.fields.benefPhoneNumber")}
+                hint={t("menu.fields.phoneInputHint")}
                 requiredMark
               />
 
               <RHFTextField
                 name="beneficiaryAddress"
+                maxLength={120}
                 label={t("menu.fields.beneficiaryAddress")}
                 requiredMark
               />
@@ -521,12 +639,12 @@ export default function RegisterPage() {
                 name="beneficiaryRelation"
                 label={t("menu.fields.beneficiaryRelation")}
                 requiredMark
-                onValue={(v: Relation) => v}
+                onValue={(v: TDropdown) => v}
               >
                 {RELATION_VALUES.map((v, i) => (
-                  <React.Fragment key={v}>
-                    <SelectItem value={v}>
-                      {t(`menu.options.relations.${v}`)}
+                  <React.Fragment key={v.code}>
+                    <SelectItem value={v.code ?? ""}>
+                      {t(`menu.options.relations.${v.code}`)}
                     </SelectItem>
                     {i < RELATION_VALUES.length - 1 && (
                       <SelectSeparator className="mx-3" />
@@ -535,12 +653,16 @@ export default function RegisterPage() {
                 ))}
               </RHFSelectField>
 
-              <Button type="submit" className="bg-[#2A504E] w-full py-5">
+              <Button
+                type="submit"
+                disabled={!agree}
+                className={`bg-[#2A504E] w-full py-5 ${!agree ? "opacity-50 cursor-not-allowed" : ""}`}
+              >
                 {t("menu.fields.submit")}
               </Button>
 
               <Link
-                to={"/products"}
+                to={`/${brand}/products`}
                 className="text-center items-center font-semibold"
                 aria-label={"backward-page"}
               >
@@ -549,7 +671,18 @@ export default function RegisterPage() {
             </form>
           </Form>
         </CardContent>
-      </Card>
+      </div>
+      <DialogComponent
+        open={rejectOpen}
+        onOpenChange={setRejectOpen}
+        title={t("health.reject.title")}
+        description={decisionDesc}
+        primaryLabel={t("health.reject.close")}
+        onPrimary={() => setRejectOpen(false)}
+        secondaryLabel={t("health.reject.home")}
+        secondaryTo={`/${brand}?reset_session=true`}
+      />
+      <LoadingComponent open={isLoading || loadingBranch || loadingProvince || loadingCity || loadingDistrict || loadingSubdistrict || loadingZip} />
     </div>
   );
 }

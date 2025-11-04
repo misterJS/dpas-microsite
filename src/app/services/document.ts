@@ -8,7 +8,7 @@ export const generateRipleyPDF = async (
   body: DocumentReq
 ): Promise<DocumentRes> => {
   const { data } = await api.post<ApiEnvelope<DocumentRes>>(
-    `/microsite/${slug}/product/${product_code}/generate-riplay`,
+    `/microsite/${slug}/products/${product_code}/generate-riplay`,
     body
   );
   return mapDocumentResponse(data.data);

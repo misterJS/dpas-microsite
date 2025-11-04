@@ -26,7 +26,7 @@ export default function RootLayout() {
     <div>
       <main className="flex flex-col min-h-screen">
         <HeroHeader showHeader={showHeader} />
-        <div className={isLandingPage || isWaiting ? "p-0 flex-grow" : "p-4"}><Outlet /></div>
+        <div className={isLandingPage || isWaiting ? "p-0 flex-grow" : "p-4 bg-[#F7F7F7]"}><Outlet /></div>
         <Footer showFooter={showFooter} />
       </main>
     </div>

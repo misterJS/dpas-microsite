@@ -12,23 +12,23 @@ export function FloatingField({ label, className, wrapperClassName, ...props }: 
 
   return (
     <FormItem className="space-y-0">
-      <div className={cn("relative rounded-sm border px-4 pt-3 pb-[2px]", wrapperClassName)}>
+      <div className={cn("relative rounded-sm border px-5 p-[10px] shadow-xl bg-white", wrapperClassName)}>
         <FormControl>
           <Input
             {...props}
             placeholder=" "
             className={cn(
-              "peer h-7 border-none shadow-none p-0 text-sm bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0",
+              "peer h-full font-thin border-none mt-2 shadow-none p-0 text-lg items-end bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0",
               className
             )}
           />
         </FormControl>
         <FormLabel
           className="
-            absolute left-3 top-[2px] text-teal-400 transition-all bg-background px-1
-            peer-placeholder-shown:top-3 peer-placeholder-shown:text-xs peer-placeholder-shown:text-[#737373] peer-placeholder-shown:font-normal peer-placeholder-shown:bg-transparent
-            peer-focus:top-[2px] peer-focus:text-[10px] peer-focus:text-teal-400
-            peer-[&:not(:placeholder-shown)]:top-[3px] peer-[&:not(:placeholder-shown)]:text-[10px]
+            absolute text-black text-[14px] transition-all bg-transparent leading-none
+            peer-placeholder-shown:self-anchor-center peer-placeholder-shown:text-lg peer-placeholder-shown:text-black peer-placeholder-shown:font-thin peer-placeholder-shown:bg-transparent
+            peer-focus:top-[5px] peer-focus:self-auto peer-focus:text-[14px] peer-focus:text-black peer-focus:font-medium
+            peer-[&:not(:placeholder-shown)]:top-[5px] peer-[&:not(:placeholder-shown)]:text-[14px]
           "
         >
           {label}

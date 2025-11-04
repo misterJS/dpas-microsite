@@ -1,11 +1,10 @@
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { waiting, sucess, failed } from "@/assets";
 import { useTranslation } from "react-i18next";
 import { usePayment, useProposalStatus } from "@/hooks/useProposal";
-import { useSubmissionStore } from "@/lib/store/submissionDataStore";
 
-export default function ContentPdf() {
+export default function WaitingPage() {
   const { t } = useTranslation("common")
   const navigate = useNavigate()
   const [progress, setProgress] = useState('2:00')
@@ -18,10 +17,10 @@ export default function ContentPdf() {
   const [stopPolling, setStopPolling] = useState(true)
 
   const [params] = useSearchParams()
+  const { brand } = useParams();
   const spaj_number = params.get("spaj_number") || ""
-  const { submission } = useSubmissionStore();
   const { data } = useProposalStatus(spaj_number, stopPolling)
-  const { mutate, isSuccess: successPayment, isError: errorPayment } = usePayment();
+  const { mutate } = usePayment();
 
   useEffect(() => {
     let timer = 120;
@@ -43,6 +42,30 @@ export default function ContentPdf() {
         setStopPolling(false) 
       }
 
+      if (data?.inforce) {
+        clearInterval(countdownInterval);
+        setStatus("inforce");
+        setImages(sucess);
+        setWording({
+          title: t("progressStatus.inforce.title"),
+          desc: t("progressStatus.inforce.desc"),
+        });
+        setProgress(t("progressStatus.inforce.paymentButton"));
+        setStopPolling(false) 
+      }
+
+      if (data?.failed) {
+        clearInterval(countdownInterval);
+        setStatus("failed");
+        setImages(failed);
+        setWording({
+          title: t("progressStatus.failed.title"),
+          desc: t("progressStatus.failed.desc"),
+        });
+        setProgress(t("progressStatus.failed.paymentButton"));
+        setStopPolling(false) 
+      }
+
       if (--timer < 0 && !data?.success) {
         timer = 120; // reset jadi 2 menit lagi
         setProgress("2:00");
@@ -50,36 +73,17 @@ export default function ContentPdf() {
     }, 1000);
 
     return () => clearInterval(countdownInterval);
-  }, [data?.success]);
+  }, [data?.success, data?.failed, data?.inforce]);
 
   const handleNextRoute = () => {
-
-    const paramsPayment = {
-      allow_reg: false,
-      allow_pay: true,
-      cart: {
-          prm: 1200000
-      },
-      cust_no: "972222772222",
-      main_insured_name: submission.client.benef_name,
-      cust_name: submission.client.fullName,
-      pay_option: "pruworks",
-      source_app: "dpas Microsite",
-      currency: "IDR",
-      premium_amount: submission.product.package.premium_amount ?? 0,
-      email: submission.client.email ?? '',
-      mobile_no: `${submission.client.countryCode + submission.client.phone}`,
-      is_sharia: true,
-      redirect_url: "https://somesite.net",
-      source_bill: "somebill-12344"
-    }
+    if (status === "waiting") return;
     if(status === "success"){
-      mutate(paramsPayment, {
+      mutate(spaj_number, {
         onSuccess: (res) => { window.location.href = res.url },
         onError: (err) => console.log(err)
       });
     }else{
-      navigate("/")
+      navigate(`/${brand}?reset_session=true`)
     }
   }
 

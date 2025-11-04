@@ -1,6 +1,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getProducts, getProductDetail, computePremium, checkAvailability } from "@/app/services/product";
+import { getProducts, getProductDetail, computePremium } from "@/app/services/product";
 import type { CheckAvailabilityReq, ComputePremiumReq } from "@/api/types";
+import { checkAvailability } from "@/app/services/proposal";
 
 export const useProducts = (slug?: string, q?: { search?: string }) =>
   useQuery({
@@ -23,10 +24,10 @@ export const useComputePremium = (slug?: string, body?: ComputePremiumReq) =>
       slug,
       body?.product_code,
       body?.package_id,
-      body?.policyterm_id,
+      body?.policy_term_id,
     ],
     queryFn: () => computePremium(slug!, body!),
-    enabled: !!slug && !!body?.product_code && !!body?.package_id && !!body?.policyterm_id,
+    enabled: !!slug && !!body?.product_code && !!body?.package_id && !!body?.policy_term_id,
   });
 
 export const useCheckAvailability = () =>

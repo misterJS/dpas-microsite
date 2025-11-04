@@ -5,7 +5,10 @@ import PdfViewer from "./PdfViewer";
 import { useDocument } from "@/hooks/useDocument";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
+import { IoMdDownload } from "react-icons/io"
 import { useSubmissionStore } from "@/lib/store/submissionDataStore";
+import moment from "moment";
+import { LoadingComponent } from "@/components/common/LoadingComponent";
 
 export default function ContentPdf() {
   const { t } = useTranslation("common")
@@ -16,66 +19,73 @@ export default function ContentPdf() {
   const [params] = useSearchParams()
   const { submission } = useSubmissionStore();
   const type = params.get("type") || "check-riplay"
-  const slug = params.get("slug") || "uob"
   const product_code = params.get("product") || "ACC"
 
   const body = {
-    nama: submission.client.fullName,
-    dob: submission.client.dob,
-    gender: submission.client.sex,
-    beneficiary: '',
-    email: submission.client.email ?? '',
-    package_name: submission.product.package.package_name,
-    term: submission.product.package.term.term,
+    full_name: submission.client.full_name,
+    dob: moment(submission.client.dob).format('YYYY-MM-DD'),
+    pob: submission.client.pob,
+    sex: submission.client.sex === "M" ? "MEN" : submission.client.sex === "F" ? "WOMEN" : "",
+    benef_name: submission.client.benef_name,
+    email: submission.client.email ?? "",
+    package_code: submission.product.package.package_code ?? "",
+    product_code: submission.product.product_code ?? "",
+    term: submission.product.package.term.term ?? 0,
+    term_unit: submission.product.package.term.term_unit ?? "",
   }
-  
-  const { data, isLoading, isError } = useDocument(slug, product_code, body, shouldFetch)
 
-  useEffect(()=>{
-    if(type === "check-riplay"){
+  const { data, isLoading, isError } = useDocument(brand, product_code, body, shouldFetch)
+  const filename = "riplay-personal.pdf"
+  
+  useEffect(() => {
+    if (type === "check-riplay") {
       setPdf(pdfFileCheckRiplay)
-    }else if(type === "riplay"){
+    } else if (type === "riplay") {
       setShouldFetch(true)
-      data && setPdf(`data:application/pdf;base64,${data.riplay_URL}`)
+      data && setPdf(`data:application/pdf;base64,${data.fileBase64}`)
     }
   }, [data])
 
   const handleNextRoute = () => {
-    if(type === "riplay"){
-      navigate(`/${brand}/consent`)
+    if (type === "riplay") {
+      navigate(`/${brand}/consent?product=${submission.product.product_code}`)
     }
   }
 
   return (
     <div className="flex flex-col min-h-screen">
-    {isLoading && <div className="p-2">{t("status.loading")}</div>}
-    {isError && <div className="p-2 text-red-600">{t("status.loadFailed")}</div>}
-
-    {!isLoading && !isError && (
-      <>
-        <div className="flex-1">
-          <PdfViewer pdfUrl={pdf} />
-        </div>
-
-        {type !== "check-riplay" && (
-          <div className="p-4 mt-auto">
-            <Button
-              disabled={false}
-              className="w-full h-12 rounded-[14px] text-base font-semibold disabled:bg-[#BDBDBD] bg-[#69C8C3] text-white"
-              onClick={() => handleNextRoute()}
-            >
-              {t("form.next")}
-            </Button>
-
-            <div className="text-center text-[#4B4B4B] mt-5">
-              <Link to={-1 as unknown as string} className="font-medium">
-                {t("health.back")}
-              </Link>
-            </div>
+      {isError && <div className="p-2 text-red-600">{t("status.loadFailed")}</div>}
+      {!isLoading && !isError && (
+        <>
+          <div className="flex-1">
+            <PdfViewer pdfUrl={pdf} />
           </div>
-        )}
-      </>
-    )}
-  </div>
+
+          {type !== "check-riplay" && (
+            <div className="p-4 mt-auto">
+              <a href={pdf} download={filename}>
+                <Button variant={"ghost"} className="w-full py-8">
+                  <span className="text-black">{t("consent.ctaDownload")} </span><IoMdDownload className="text-red-600" />
+                </Button>
+              </a>
+              <Button
+                disabled={false}
+                className="w-full h-12 rounded-[14px] text-base font-semibold disabled:bg-[#BDBDBD] bg-[#2A504E] text-white"
+                onClick={() => handleNextRoute()}
+              >
+                {t("form.next")}
+              </Button>
+
+              <div className="text-center text-[#4B4B4B] mt-5">
+                <Link to={-1 as unknown as string} className="font-medium">
+                  {t("health.back")}
+                </Link>
+              </div>
+            </div>
+          )}
+        </>
+      )}
+      <LoadingComponent open={isLoading} />
+    </div>
   );
 }

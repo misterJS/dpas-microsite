@@ -2,14 +2,21 @@ import { bannerLanding, itemLanding } from "@/assets"
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button"
 import { IoArrowForwardOutline } from "react-icons/io5"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
+import { useEffect } from "react";
+import { useSubmissionStore } from "@/lib/store/submissionDataStore";
+import { useIdempotencyStore } from "@/lib/store/idempotencyDataStore";
 
 export default function HomePage() {
   const navigate = useNavigate()
   const { brand } = useParams()
   const { t } = useTranslation("common")
   const title = t("landing.title").split(" ")
+  const [params] = useSearchParams()
+  const reset_session = params.get("reset_session")
+  const resetSubmission = useSubmissionStore(state => state.resetSubmission)
+  const resetIdempotencyKey = useIdempotencyStore((state) => state.resetIdempotencyKey);
   
   const Tittle = (props: { color?: string }) => {
     return (
@@ -20,6 +27,11 @@ export default function HomePage() {
       </div>
     );
   };
+
+  useEffect(() => {
+    resetIdempotencyKey();
+    resetSubmission()
+  }, []);
 
   return (
     <div>
