@@ -40,6 +40,8 @@ export function RHFTextField({
   );
 }
 
+type FloatingSelectProps = React.ComponentProps<typeof FloatingSelect>;
+
 export function RHFSelectField({
   name,
   label,
@@ -47,9 +49,18 @@ export function RHFSelectField({
   onValue,
   wrapperClassName = "rounded-[8px] h-[70px]",
   children,
+  searchableOptions,
+  searchPlaceholder,
+  emptyText,
+  renderSearchOption,
+  renderSearchTriggerValue,
   ...rest
-}: Omit<React.ComponentProps<typeof FloatingSelect>, "value" | "onValueChange" | "children"> &
-  WithRequiredMark & { name: string; children: React.ReactNode; onValue?: (v: any) => any }) {
+}: Omit<FloatingSelectProps, "value" | "onValueChange"> &
+  WithRequiredMark & {
+    name: string
+    children?: React.ReactNode
+    onValue?: (v: any) => any
+  }) {
   const { control } = useFormContext();
   return (
     <FormField
@@ -66,6 +77,11 @@ export function RHFSelectField({
             </>
           }
           wrapperClassName={wrapperClassName}
+          searchableOptions={searchableOptions}
+          searchPlaceholder={searchPlaceholder}
+          emptyText={emptyText}
+          renderSearchOption={renderSearchOption}
+          renderSearchTriggerValue={renderSearchTriggerValue}
           {...rest}
         >
           {children}

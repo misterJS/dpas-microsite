@@ -319,6 +319,23 @@ export default function RegisterPage() {
 
   const agree = form.watch("agreeRealData");
 
+  const relationSearchableOptions = React.useMemo(
+    () =>
+      RELATION_VALUES.map((v) => {
+        const translated = t(`menu.options.relations.${v.code}`);
+        return {
+          value: v.code ?? "",
+          label: translated,
+          keywords: [
+            v.code ?? "",
+            translated,
+            v.name ?? "",
+          ].filter((keyword) => Boolean(keyword)) as string[],
+        };
+      }),
+    [t]
+  );
+
   return (
     <div className="space-y-6">
       <div
@@ -640,18 +657,8 @@ export default function RegisterPage() {
                 label={t("menu.fields.beneficiaryRelation")}
                 requiredMark
                 onValue={(v: TDropdown) => v}
-              >
-                {RELATION_VALUES.map((v, i) => (
-                  <React.Fragment key={v.code}>
-                    <SelectItem value={v.code ?? ""}>
-                      {t(`menu.options.relations.${v.code}`)}
-                    </SelectItem>
-                    {i < RELATION_VALUES.length - 1 && (
-                      <SelectSeparator className="mx-3" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </RHFSelectField>
+                searchableOptions={relationSearchableOptions}
+              />
 
               <Button
                 type="submit"
