@@ -69,6 +69,8 @@ export type District = { district_id: string; district_name: string };
 export type Subdistrict = { subdistrict_id: string; subdistrict_name: string };
 
 // health question
+export type ValidationRule = "REQUIRED_YES" | "REQUIRED_NO" | "REQUIRED_ANY";
+
 export type HealthQuestion = {
   id: string;
   code: string;
@@ -81,6 +83,7 @@ export type HealthQuestion = {
   group_type: string;
   group_label: string;
   group_order: number;
+  validation_rule?: ValidationRule;
 };
 
 export type DocumentReq = {

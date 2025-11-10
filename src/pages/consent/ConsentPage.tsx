@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useLocation, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useForm } from "react-hook-form"
@@ -20,6 +20,7 @@ import { DialogComponent } from "@/components/common/DialogComponent"
 import MarkdownRenderer from "@/components/ui/markdown"
 import { LoadingComponent } from "@/components/common/LoadingComponent"
 import { getImageUrl } from "@/helper/useDynamicFiles"
+import { isAnswerValidForQuestion } from "@/helper/questionnaire-validation"
 
 type SummaryData = {
     nik: string
@@ -51,6 +52,10 @@ export default function ConsentPage() {
     const { mutate: mutateSubmit } = useSubmissionProposal();
     const { mutate: mutateCreateSPAJ } = useCreateSPAJ<undefined, unknown, unknown, CreateSPAJResponse>();
     const { data: questions = [], isLoading: loadingConsent, isError } = useQuestions(brand, product_code, 'CONSENT')
+    const flatQuestions = useMemo(
+        () => questions.flatMap(group => group.question),
+        [questions]
+    )
 
 
     const data: SummaryData = {
@@ -69,7 +74,7 @@ export default function ConsentPage() {
 
 
     const schema = z.object(
-        questions.flatMap(group => group.question).reduce((acc, q) => {
+        flatQuestions.reduce((acc, q) => {
             if (q.answer_type === "YES_NO") {
                 acc[q.code] = z.enum(["yes", "no"], { message: t("menu.schema.requiredOption") });
             } else {
@@ -89,27 +94,41 @@ export default function ConsentPage() {
 
     useEffect(() => {
         const consentAnswers = submission?.questionaire?.consent;
-        if (!Array.isArray(consentAnswers) || !questions.length) return;
+        if (!Array.isArray(consentAnswers) || !flatQuestions.length) return;
         const defaults: Record<string, string> = {};
-        questions.flatMap(group => group.question).forEach(q => {
+
+        flatQuestions.forEach(q => {
             const answerObj = consentAnswers.find(a => a.question_code === q.code);
             if (answerObj) defaults[q.code] = answerObj.answer;
         });
 
         form.reset(defaults);
-    }, [submission, questions, form]);
+    }, [submission, flatQuestions, form]);
 
-    const watchAllField = form.watch()
+    const watchAllField = form.watch() as Record<string, string | undefined>
+    const answeredCount = flatQuestions.filter(question => watchAllField[question.code] !== undefined).length
+    const hasQuestions = flatQuestions.length > 0
+    const allAnswered = !hasQuestions || answeredCount === flatQuestions.length
+    const hasRuleViolation = flatQuestions.some((question) => {
+        const answer = watchAllField[question.code]
+        if (answer === undefined) return false
+        return !isAnswerValidForQuestion(question, answer)
+    })
+    const canSubmit = !hasQuestions || (allAnswered && !hasRuleViolation)
 
     const onSubmit = (v: z.infer<typeof schema>) => {
-        const allQualified = Object.values(v as Record<string, string>).every((ans) => ans === "yes");
-        if (allQualified) handleSetData()
-        else setRejectOpen(true)
+        const values = v as Record<string, string | undefined>
+        const hasInvalidAnswer = flatQuestions.some((question) =>
+            !isAnswerValidForQuestion(question, values[question.code])
+        )
+
+        if (hasInvalidAnswer) setRejectOpen(true)
+        else handleSetData()
     }
 
     const handleSetData = () => {
         setIsLoading(true)
-        const dataQuestions = questions.flatMap(group => group.question).map(item => ({
+        const dataQuestions = flatQuestions.map(item => ({
             question_id: item.id,
             question_code: item.code,
             question_text: item.question_text,
@@ -158,10 +177,6 @@ export default function ConsentPage() {
             onError: (err) => { setIsLoading(false); setRejectOpen(true) }
         });
     }
-
-    const canSubmit =
-        Object.values(watchAllField).length > 0 &&
-        Object.values(watchAllField).every(v => v !== undefined);
 
     const FORM_ID = "consent-form"
 

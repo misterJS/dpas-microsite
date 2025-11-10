@@ -13,6 +13,7 @@ import { useQuestions } from "@/hooks/useQuestions"
 import { SubmissionReq } from "@/api/types"
 import { useSubmissionStore } from "@/lib/store/submissionDataStore"
 import { LoadingComponent } from "@/components/common/LoadingComponent"
+import { isAnswerValidForQuestion } from "@/helper/questionnaire-validation"
 
 export default function HealthQuestionsPage() {
   const { t } = useTranslation("common")
@@ -44,8 +45,10 @@ export default function HealthQuestionsPage() {
   })
 
   const onSubmit = (v: z.infer<typeof schema>) => {
-    const notQualified = Object.values(v as Record<string, string>).some((ans) => ans === "yes")
-    if (notQualified) setRejectOpen(true)
+    const values = v as Record<string, string | undefined>
+    const hasInvalidAnswer = questions.some((question) => !isAnswerValidForQuestion(question, values[question.id]))
+
+    if (hasInvalidAnswer) setRejectOpen(true)
     else handleSetData(v)
   }
 
@@ -90,7 +93,7 @@ export default function HealthQuestionsPage() {
     if (isDifferent) {
       form.reset(defaults);
     }
-  }, [submission, questions]);
+  }, [submission, questions, form]);
 
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex flex-col">

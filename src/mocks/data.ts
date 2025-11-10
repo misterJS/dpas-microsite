@@ -12754,9 +12754,9 @@ export const productDetails: Record<string, ProductDetail> = {
     ]
   },
 }
-import { CheckAvailabilityRes, CreateSPAJRes, DocumentRes, HealthQuestion, PaymentRes } from "@/api/types";
+import { CheckAvailabilityRes, CreateSPAJRes, DocumentRes, HealthQuestion, PaymentRes, ValidationRule } from "@/api/types";
 
-export const questionList: HealthQuestion[] = [
+const rawQuestionList: HealthQuestion[] = [
   {
     id: "1",
     code: "HQ1",
@@ -12862,6 +12862,25 @@ export const questionList: HealthQuestion[] = [
     group_order: 3
   },
 ]
+
+const questionValidationRules: Record<string, ValidationRule> = {
+  HQ1: "REQUIRED_NO",
+  HQ2: "REQUIRED_NO",
+  EX1: "REQUIRED_YES",
+  CS1: "REQUIRED_YES",
+  CS2: "REQUIRED_YES",
+  CS3: "REQUIRED_ANY",
+  CS4: "REQUIRED_YES",
+  CS5: "REQUIRED_YES",
+  CS6: "REQUIRED_YES",
+}
+
+export const questionList: HealthQuestion[] = rawQuestionList.map((question) => ({
+  ...question,
+  validation_rule:
+    questionValidationRules[question.code] ??
+    (question.type === "HEALTH_QUESTIONNAIRE" ? "REQUIRED_NO" : "REQUIRED_YES"),
+}))
 
 export const generateRiplay: DocumentRes = {
   doc_id: "000001",

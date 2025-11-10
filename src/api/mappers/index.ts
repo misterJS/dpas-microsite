@@ -12,6 +12,7 @@ import type {
   ProposaStatusRes,
   Province,
   Subdistrict,
+  ValidationRule,
   ZipLookupRes,
 } from "@/api/types";
 
@@ -147,6 +148,13 @@ export const mapZipLookup = (payload: ZipLookupRes) => ({
   province_las_code: payload.province_las_code,
 });
 
+const VALIDATION_RULE_VALUES: ValidationRule[] = ["REQUIRED_YES", "REQUIRED_NO", "REQUIRED_ANY"];
+
+const toValidationRule = (value: unknown): ValidationRule | undefined => {
+  const normalized = toString(value).toUpperCase() as ValidationRule;
+  return VALIDATION_RULE_VALUES.includes(normalized) ? normalized : undefined;
+};
+
 const sanitizeHealthQuestion = (question: HealthQuestion): HealthQuestion => ({
   id: toString(question.id),
   code: toString(question.code),
@@ -159,6 +167,7 @@ const sanitizeHealthQuestion = (question: HealthQuestion): HealthQuestion => ({
   group_type: toString(question.group_type),
   group_label: toString(question.group_label),
   group_order: toNumber(question.group_order),
+  validation_rule: toValidationRule(question.validation_rule),
 });
 
 export type QuestionGroup = {
