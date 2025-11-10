@@ -22,6 +22,16 @@ jest.mock("react-i18next", () => ({
 const mockNavigate = jest.fn()
 jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
+  useSearchParams: () => [
+    new URLSearchParams({
+      type: "check-riplay",
+      slug: "uob",
+      product: "ACC",
+    }),
+  ],
+  useParams: () => ({
+    brand: "uob",
+  }),
 }))
 
 // mock assets
@@ -29,6 +39,11 @@ jest.mock("@/assets", () => ({
   bannerLanding: "banner.png",
   itemLanding: "item.png",
 }))
+
+jest.mock("uuid", () => ({
+  v4: () => "mocked-uuid",
+}))
+
 
 describe("HomePage", () => {
   beforeEach(() => {
@@ -47,8 +62,8 @@ describe("HomePage", () => {
 
     const button = screen.getByRole("button", { name: "Register Now" })
     fireEvent.click(button)
-
-    expect(mockNavigate).toHaveBeenCalledWith("/products")
+    const brand = 'uob'
+    expect(mockNavigate).toHaveBeenCalledWith(`/${brand}/products`)
   })
 
   it("navigates to /pdf?type=check-riplay when Check Riplay clicked", () => {
@@ -56,7 +71,7 @@ describe("HomePage", () => {
 
     const button = screen.getByRole("button", { name: /Check Riplay/i })
     fireEvent.click(button)
-
-    expect(mockNavigate).toHaveBeenCalledWith("/pdf?type=check-riplay")
+    const brand = 'uob'
+    expect(mockNavigate).toHaveBeenCalledWith(`/${brand}/pdf?type=check-riplay`)
   })
 })

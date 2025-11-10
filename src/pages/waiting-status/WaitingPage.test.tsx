@@ -13,6 +13,9 @@ const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
   useNavigate: () => mockNavigate,
   useSearchParams: () => [new URLSearchParams({ spaj_number: "12345" })],
+  useParams: () => ({
+    brand: "uob",
+  }),
 }));
 
 jest.mock("react-i18next", () => ({
@@ -26,8 +29,8 @@ jest.mock("react-i18next", () => ({
         "progressStatus.sucess.paymentButton": "Pay Now",
         "progressStatus.header.preparation": "Preparation",
         "progressStatus.header.payment": "Payment",
-      }
-      return dict[key] || key
+      };
+      return dict[key] || key;
     },
   }),
 }))
@@ -65,10 +68,20 @@ describe("WaitingPage", () => {
   });
 
   test("navigates to home if status not success", () => {
+    (useProposalStatus as jest.Mock).mockReturnValue({
+      data: { failed: true },
+      isLoading: false,
+      isError: false,
+    });
+
     render(<WaitingPage />);
+    act(() => {
+      jest.advanceTimersByTime(1000);
+    });
     const button = screen.getByRole("button");
     fireEvent.click(button);
-
-    expect(mockNavigate).toHaveBeenCalledWith("/");
+    const brand = 'uob'
+    expect(mockNavigate).toHaveBeenCalledWith(`/${brand}?reset_session=true`);
   });
+
 });

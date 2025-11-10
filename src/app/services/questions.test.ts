@@ -98,7 +98,6 @@ describe('getQuestions - negative case', () => {
     mockedMapper.mockReturnValue([]);
 
     const result = await getQuestions('UOB', 'T4A', 'CONSENT');
-
     expect(mockedApiGet).toHaveBeenCalled();
     expect(mockedMapper).toHaveBeenCalledWith(null);
     expect(result).toEqual([]);

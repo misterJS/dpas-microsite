@@ -1,6 +1,6 @@
 import bannerLanding from './landing/banner.png'
 import itemLanding from './landing/item.png'
-import pdfFileCheckRiplay from './pdf/riplay-umum-(22082025).pdf'
+import pdfFileCheckRiplay from './pdf/Full Launch PRULindungi Syariah UOB - RIPLAY Umum (06112025).pdf'
 import waiting from './waiting.png'
 import sucess from './icon/sucess.png'
 import failed from './icon/failed.png'

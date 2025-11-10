@@ -15,7 +15,7 @@ export type ProductListItem = {
 };
 
 //product detail types
-export type ProductDetailTerm = { term_id: string; term: number; term_unit: "M" | string };
+export type ProductDetailTerm = { term_id: string; term: number;term_description: string; term_unit: "M" | string };
 export type ProductBenefit = {
   benef_code: string;
   benef_name: string;
@@ -63,7 +63,7 @@ export type ZipLookupRes = {
   province_las_code: string;
 };
 
-export type Province = { province_id: string; province_name: string };
+export type Province = { province_id: string; province_name: string; province_las_code: string };
 export type City = { city_id: string; city_name: string };
 export type District = { district_id: string; district_name: string };
 export type Subdistrict = { subdistrict_id: string; subdistrict_name: string };
@@ -142,6 +142,7 @@ export type SubmissionReq = {
     country_code: string
     zip_code: string
     province_id: string
+    province_las_code: string
     city_id: string
     district_id: string
     subdistrict_id: string

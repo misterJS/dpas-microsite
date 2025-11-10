@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { LoadingComponent } from "@/components/common/LoadingComponent"
 import { useSubmissionStore } from "@/lib/store/submissionDataStore"
 import { ProductListItem, SubmissionReq } from "@/api/types"
+import { IoArrowForwardOutline } from "react-icons/io5"
 
 export default function BenefitPage() {
   const { brand } = useParams()
@@ -38,6 +39,10 @@ export default function BenefitPage() {
           onClick={() => handleNavigation(p)}
           buttonTitle={t("actions.readMore")}
           className="border-none"
+          icon={<IoArrowForwardOutline
+            aria-hidden
+            className="text-[#E30613] text-[20px] shrink-0 transition-transform group-hover:translate-x-0.5"
+          />}
         />
       ))}
       <LoadingComponent open={isLoading} />

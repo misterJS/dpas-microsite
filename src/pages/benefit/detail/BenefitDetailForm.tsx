@@ -5,17 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import {
-  SelectItem,
-} from "@/components/ui/select";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { SelectItem } from "@/components/ui/select";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { SelectSeparator } from "@radix-ui/react-select";
 import FixedBottomBar from "@/components/common/FixedBottomBar";
 import { useNavigate, useParams } from "react-router-dom";
@@ -26,46 +17,39 @@ import { useSubmissionStore } from "@/lib/store/submissionDataStore";
 import { DocKey, useDocItems } from "./docs.config";
 import { DocumentSheet } from "@/components/form/doc-sheet";
 import { IconCheckmark } from "@/assets";
-
+import MarkdownRenderer from "@/components/ui/markdown";
 
 type Props = { detail?: ProductDetail; product_code?: string; slug?: string; setIsLoadingCompute?: (val: boolean) => void; };
 
-export default function BenefitDetailForm({
-  detail,
-  product_code,
-  slug = "uob",
-  setIsLoadingCompute
-}: Props) {
+export default function BenefitDetailForm({ detail, product_code, slug = "uob", setIsLoadingCompute }: Props) {
   const { t } = useTranslation("common");
-const schema = z.object({
-  planType: z.string().min(1, t("menu.schema.planType")),
-  coverage: z.string().min(1, t("menu.schema.coverage")),
-});
-
-type FormValues = z.infer<typeof schema>;
+  const schema = z.object({
+    planType: z.string().min(1, t("menu.schema.planType")),
+    coverage: z.string().min(1, t("menu.schema.coverage")),
+  });
+  type FormValues = z.infer<typeof schema>;
   const navigate = useNavigate();
   const { brand } = useParams();
   const { submission, setSubmissionData } = useSubmissionStore();
-  
+
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: submission?.product ? {
-      planType: submission.product.package?.package_id ?? "",
-      coverage: submission.product.package?.term.term_id ?? "",
-    } : {
-      planType: undefined as unknown as FormValues["planType"],
-      coverage: undefined as unknown as FormValues["coverage"],
-    } as any,
+    defaultValues: submission?.product
+      ? {
+          planType: submission.product.package?.package_id ? String(submission.product.package.package_id) : "",
+          coverage: submission.product.package?.term.term_id ? String(submission.product.package.term.term_id) : "",
+        }
+      : {
+          planType: "",
+          coverage: "",
+        },
   });
 
   const docItems = useDocItems();
   const [openDocKey, setOpenDocKey] = useState<DocKey | null>(null);
   const openDoc = openDocKey !== null;
 
-  const active = useMemo(
-    () => docItems.find((d) => d.key === openDocKey) ?? null,
-    [docItems, openDocKey]
-  );
+  const active = useMemo(() => docItems.find((d) => d.key === openDocKey) ?? null, [docItems, openDocKey]);
 
   const handleOpen = useCallback((key: DocKey) => setOpenDocKey(key), []);
   const handleClose = useCallback(() => setOpenDocKey(null), []);
@@ -74,14 +58,94 @@ type FormValues = z.infer<typeof schema>;
     handleSetData(values);
   };
 
+  const planValue = form.watch("planType");
+  const termValue = form.watch("coverage");
+
+  const selected = useMemo(() => {
+    const pkg = detail?.packages.find((p) => String(p.package_id) === String(planValue));
+    const term = detail?.terms.find((t) => String(t.term_id) === String(termValue));
+    return { pkg, term };
+  }, [detail, planValue, termValue]);
+
+  const getPlanLabel = (val: string) => {
+    const plan = detail?.packages.find((t) => String(t.package_id) === String(val));
+    if (!plan) return "";
+    return plan.package_name;
+  };
+
+  const getTermLabel = (val: string) => {
+    const term = detail?.terms.find((t) => String(t.term_id) === String(val));
+    if (!term) return "";
+    let unitLabel: string;
+    switch (term.term_unit) {
+      case "M":
+        unitLabel = t("consent.monthsSuffix");
+        break;
+      case "T":
+        unitLabel = t("consent.yearsSuffix");
+        break;
+      default:
+        unitLabel = term.term_unit;
+        break;
+    }
+    return `${term.term} ${unitLabel}`;
+  };
+
+  const planLabel = getPlanLabel(planValue);
+  const termLabel = getTermLabel(termValue);
+
+  const benefitList = useMemo(() => {
+    let notesIndex = 1;
+    const generateNotesFlag = () => "*".repeat(notesIndex++);
+    const transformData = (type: string) => {
+      return selected.pkg?.benefits
+        ?.filter((item) => item.benef_type === type)
+        .map((item) => ({
+          benef_name: item.benef_name,
+          benef_amount: item.benef_amount,
+          notes: item.notes,
+          notes_flag: item.notes ? generateNotesFlag() : "",
+        }));
+    };
+    return {
+      main: transformData("MAIN"),
+      additional: transformData("ADDITIONAL"),
+    };
+  }, [selected]);
+
+  const { data: premium, isLoading: loadingCompute } = useComputePremium(
+    slug,
+    selected.pkg && selected.term && product_code
+      ? {
+          product_code: product_code!,
+          package_id: selected.pkg.package_id,
+          policy_term_id: selected.term.term_id,
+        }
+      : undefined
+  );
+
+  useEffect(() => {
+    if (setIsLoadingCompute) {
+      setIsLoadingCompute(loadingCompute);
+    }
+  }, [loadingCompute, setIsLoadingCompute]);
+
+  const termDescription = useMemo(() => selected.term?.term_description ?? "", [selected.term]);
+
+  const fmtCurrency = (n?: number | string) => {
+    if (n === undefined || n === null) return "-";
+    const formatter = new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      maximumFractionDigits: 0,
+    });
+    return formatter.format(Number(n)).replace(/\u00A0/, "");
+  };
+
   const handleSetData = (v: FormValues) => {
     if (detail) {
-      const detailPackage = detail.packages.find(
-        (e) => e.package_id === v.planType
-      );
-      const detailTerm = detail.terms.find(
-        (e) => e.term_id === v.coverage
-      );
+      const detailPackage = detail.packages.find((e) => String(e.package_id) === String(v.planType));
+      const detailTerm = detail.terms.find((e) => String(e.term_id) === String(v.coverage));
       const data: SubmissionReq = {
         ...submission,
         product: {
@@ -108,117 +172,23 @@ type FormValues = z.infer<typeof schema>;
     }
   };
 
-  const planValue = form.watch("planType");
-  const termValue = form.watch("coverage");
-
-  const getPlanLabel = (planValue: string) => {
-    const plan = detail?.packages.find(t => t.package_id.toString() === planValue.toString());
-    if (!plan) return "";
-    return plan.package_name;
-  };
-  const getTermLabel = (termValue: string) => {
-    const term = detail?.terms.find(t => t.term_id.toString() === termValue.toString());
-    if (!term) return "";
-
-  let unitLabel: string;
-    switch (term.term_unit) {
-      case "M":
-        unitLabel = t("consent.monthsSuffix");
-        break;
-      case "T":
-        unitLabel = t("consent.yearsSuffix");
-        break;
-      default:
-        unitLabel = term.term_unit;
-        break;
-  }
-    return `${term.term} ${unitLabel}`;
-  };
-  
-  const planLabel = getPlanLabel(planValue)
-  const termLabel = getTermLabel(termValue)
-
-  const selected = useMemo(() => {
-    const pkg = detail?.packages.find((p) => p.package_id === planValue);
-    const termNum = termValue ? termValue : undefined;
-    const term = detail?.terms.find((t) => t.term_id === termNum);
-    return { pkg, term };
-  }, [detail, planValue, termValue]);
-
-  const benefitList = useMemo(() => {
-    let notesIndex = 1;
-    const generateNotesFlag = () => "*".repeat(notesIndex++);
-    const transformData = (type: string) => {
-        return selected.pkg?.benefits
-            .filter(item => item.benef_type === type)
-            .map(item => ({
-                benef_name: item.benef_name,
-                benef_amount: item.benef_amount,
-                notes: item.notes,
-                notes_flag: item.notes ? generateNotesFlag() : ""
-            }));
-    };
-
-    return {
-        main: transformData("MAIN"),
-        additional: transformData("ADDITIONAL")
-    };
-  }, [selected]);
-
-  const { data: premium, isLoading: loadingCompute } = useComputePremium(
-    slug,
-    selected.pkg && selected.term && product_code
-      ? {
-          product_code: product_code!,
-          package_id: selected.pkg.package_id,
-          policy_term_id: selected.term.term_id,
-        }
-      : undefined
-  );    
-
-  useEffect(() => {
-    if (setIsLoadingCompute) {
-      setIsLoadingCompute(loadingCompute);
-    }
-  }, [loadingCompute, setIsLoadingCompute]);
-
-  const fmtCurrency = (n?: number | string) => {
-    if (n === undefined || n === null) return "-";
-    const formatter = new Intl.NumberFormat('id-ID', {
-      style: 'currency',
-      currency: 'IDR',
-      maximumFractionDigits: 0
-    });
-    return formatter.format(Number(n)).replace(/\u00A0/, "");
-  };
   const FORM_ID = "benefit-form";
+
   return (
     <Form {...form}>
-      <form
-        id={FORM_ID}
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6"
-      >
+      <form id={FORM_ID} onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormField
           control={form.control}
           name="coverage"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-2xl font-semibold">
-                {t("content.planTerm")}
-              </FormLabel>
+              <FormLabel className="text-2xl font-semibold">{t("content.planTerm")}</FormLabel>
               <FormControl>
-                <RadioGroup
-                  onValueChange={(v) => field.onChange(v)}
-                  value={field.value ?? ""}
-                  className="grid gap-3 md:grid-cols-2 !mt-5"
-                >
+                <RadioGroup onValueChange={(v) => field.onChange(v)} value={field.value ?? ""} className="grid gap-3 md:grid-cols-2 !mt-5">
                   {detail?.terms.map((g) => (
-                    <label key={g.term_id} className="flex items-center space-x-2">
-                      <RadioGroupItem value={g.term_id} id={`g-${g.term_id}`} />
-                      <span className="cursor-pointer text-xs">
-                        {getTermLabel(g.term_id)}
-                      </span>
+                    <label key={String(g.term_id)} className="flex items-center space-x-2">
+                      <RadioGroupItem value={String(g.term_id)} id={`g-${g.term_id}`} />
+                      <span className="cursor-pointer text-xs font-bold">{getTermLabel(String(g.term_id))}</span>
                     </label>
                   ))}
                 </RadioGroup>
@@ -232,80 +202,63 @@ type FormValues = z.infer<typeof schema>;
           control={form.control}
           name="planType"
           render={({ field }) => (
-            <FloatingSelect
-              value={field.value}
-              onValueChange={field.onChange}
-              label={''}
-              placeholder="Pilih Paket"
-              wrapperClassName="rounded-[12px] h-10 shadow-none bg-white"
-            >
+            <FloatingSelect value={field.value} onValueChange={field.onChange} label={""} placeholder="Pilih Paket" wrapperClassName="rounded-[12px] h-10 shadow-none bg-white">
               {detail?.packages.map((v, i) => (
-                <React.Fragment key={v.package_id}>
-                  <SelectItem value={v.package_id ?? ""}>{v.package_name}</SelectItem>
-                  {i < detail?.packages.length - 1 && (
-                    <SelectSeparator className="mx-3" />
-                  )}
+                <React.Fragment key={String(v.package_id)}>
+                  <SelectItem value={String(v.package_id)}>{v.package_name}</SelectItem>
+                  {i < (detail?.packages.length ?? 0) - 1 && <SelectSeparator className="mx-3" />}
                 </React.Fragment>
               ))}
             </FloatingSelect>
           )}
         />
-
         {planValue && detail && (
           <section className="rounded-[12px] border p-4 space-y-3 bg-white">
             <h2 className="text-xl font-semibold">{t("form.benefit_desc")}</h2>
-            <p className="text-sm text-muted-foreground">
-              {t("form.plan_desc")}
-            </p>
-
+            <MarkdownRenderer content={termDescription} />
             <div className="text-sm leading-6">
               <p className="font-medium">{t("form.basicBenefit")}</p>
-              {benefitList.main?.map((v)=> (
-                <div className="flex items-start">
+              {benefitList.main?.map((v, idx) => (
+                <div key={`main-${idx}`} className="flex items-start">
                   <img src={IconCheckmark} className="mr-1 mt-1" />
-                <p>
-                  {v.benef_name}<span className="text-red-600">{v.notes_flag}</span> <br />
-                  {fmtCurrency(v.benef_amount)}
-                </p>
+                  <p>
+                    {v.benef_name}
+                    <span className="text-red-600">{v.notes_flag}</span> <br />
+                    {fmtCurrency(v.benef_amount)}
+                  </p>
                 </div>
-              )
-              )}
+              ))}
               <p className="mt-3 font-medium">{t("form.aditionalBenefit")}</p>
-              {benefitList.additional?.map((v)=> (
-                <div className="flex items-start">
+              {benefitList.additional?.map((v, idx) => (
+                <div key={`add-${idx}`} className="flex items-start">
                   <img src={IconCheckmark} className="mr-1 mt-1" />
-                <p>
-                  {v.benef_name}<span className="text-red-600">{v.notes_flag}</span> <br />
-                  {fmtCurrency(v.benef_amount)}
-                </p>
+                  <p>
+                    {v.benef_name}
+                    <span className="text-red-600">{v.notes_flag}</span> <br />
+                    {fmtCurrency(v.benef_amount)}
+                  </p>
                 </div>
-              )
-              )}
+              ))}
             </div>
+            <p className="flex text-sm text-gray-500 mb-1">{t("form.benefit_notes")}</p>
             <div>
-              {[...benefitList.main ?? [], ...benefitList.additional ?? []]
-                  .map(v => (
-                    <div className="flex text-sm text-gray-500 mb-1">
-                      <span className="text-red-600">{v.notes_flag}</span><p>{v.notes}</p>
-                    </div>
-                  ))
-              }
+              {[...(benefitList.main ?? []), ...(benefitList.additional ?? [])].map((v, idx) => (
+                <div key={`note-${idx}`} className="flex text-sm text-gray-500 mb-1">
+                  <span className="text-red-600">{v.notes_flag}</span>
+                  <p>{v.notes}</p>
+                </div>
+              ))}
             </div>
-
-            <hr className="my-2" />
+            <hr className="my-2 border-gray-400" />
             <div className="text-base">
               <p className="font-semibold">{t("content.contribution")}</p>
-              <p>
-                {planLabel} ({termLabel}){" "}
-                <span className="text-[#ED1B2E] font-medium">
-                  {fmtCurrency(premium?.premium_amount ?? 0)}
-                </span>
+              <p className="font-bold text-xs">
+                {planLabel} ({termLabel}) <span className="text-[#ED1B2E]">{fmtCurrency(premium?.premium_amount ?? 0)}</span>
               </p>
             </div>
           </section>
         )}
-
-        <hr />
+        <hr className="my-2 border-gray-400" />
         <h1 className="text-2xl font-semibold">{t("form.notes_ph")}</h1>
         <div role="list" className="space-y-1">
           {docItems.map((it) => (
@@ -325,24 +278,16 @@ type FormValues = z.infer<typeof schema>;
           <div className="p-4 flex items-center justify-between bg-[#2A504E] text-white">
             <div className="space-y-1">
               <p className="text-sm font-thin">{t("form.contributeTotal")}:</p>
-              <h1 className="text-sm font-semibold">{planLabel} {termLabel ? `(${termLabel})` : ''}{" "}{fmtCurrency(premium?.premium_amount ?? 0)}</h1>
+              <h1 className="text-sm font-semibold">
+                {planLabel} {termLabel ? `(${termLabel})` : ""} {fmtCurrency(premium?.premium_amount ?? 0)}
+              </h1>
             </div>
-            <Button
-              form={FORM_ID}
-              type="submit"
-              variant="outline"
-              className="w-1/2 bg-[#2A504E] border-white md:w-auto"
-            >
+            <Button form={FORM_ID} type="submit" variant="outline" className="w-1/3 bg-[#2A504E] border-white md:w-auto">
               {t("form.next")}
             </Button>
           </div>
         </FixedBottomBar>
-        <DocumentSheet
-          open={openDoc}
-          onOpenChange={(v) => (v ? void 0 : handleClose())}
-          title={active?.label ?? ""}
-          description={active?.description}
-        >
+        <DocumentSheet open={openDoc} onOpenChange={(v) => (v ? void 0 : handleClose())} title={active?.label ?? ""} description={active?.description}>
           {active?.render()}
         </DocumentSheet>
       </form>

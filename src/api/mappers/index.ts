@@ -16,6 +16,7 @@ import type {
 } from "@/api/types";
 
 export type Option = { code: string; name: string };
+export type OptionProvince = { code: string; name: string, province_las_code: string };
 
 const toString = (value: unknown): string => {
   if (typeof value === "string") return value;
@@ -55,6 +56,7 @@ export const mapProductDetail = (item?: ProductDetail | null): ProductDetail | u
     terms: ensureArray(item.terms).map((term) => ({
       term_id: toString(term.term_id),
       term: toNumber(term.term),
+      term_description: toString(term.term_description),
       term_unit: toString(term.term_unit),
     })),
     packages: ensureArray(item.packages).map((pkg) => ({
@@ -85,6 +87,14 @@ const toOption = (code: unknown, name: unknown): Option | null => {
   return { code: c, name: n };
 };
 
+const toOptionProvince = (code: unknown, name: unknown, province_las_code: unknown): OptionProvince | null => {
+  const c = toString(code);
+  const n = toString(name) || c;
+  const l = toString(province_las_code) || c;
+  if (!c || !n || !l) return null;
+  return { code: c, name: n, province_las_code: l };
+};
+
 export const mapBranchOptions = (items?: BranchItem[] | null): Option[] =>
   ensureArray(items)
     .map((branch) =>
@@ -103,10 +113,10 @@ export const mapOptionList = (items?: OptionInput[] | null): Option[] =>
     .map((entry) => toOption(entry.code, entry.name))
     .filter((opt): opt is Option => Boolean(opt));
 
-export const mapProvinceOptions = (items?: Province[] | null): Option[] =>
+export const mapProvinceOptions = (items?: Province[] | null): OptionProvince[] =>
   ensureArray(items)
-    .map((province) => toOption(province.province_id, province.province_name))
-    .filter((opt): opt is Option => Boolean(opt));
+    .map((province) => toOptionProvince(province.province_id, province.province_name, province.province_las_code))
+    .filter((opt): opt is OptionProvince => Boolean(opt));
 
 export const mapCityOptions = (items?: City[] | null): Option[] =>
   ensureArray(items)

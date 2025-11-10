@@ -7,7 +7,7 @@ export const RELATION_VALUES = [
   { code:"GP", name: "Kakek/nenek" },
   { code:"SO", name: "Anak laki-laki" },
   { code:"DA", name: "Anak perempuan" },
-  { code:"BA", name: "Saudara Kandung" }
+  { code:"BS", name: "Saudara Kandung" }
 ]
 
 export const MARITAL_VALUES = [
@@ -44,7 +44,7 @@ export const SALARIES = [
 export const JOBS = [
   { code: "CIVS", name: "Pegawai Negeri Sipil" },
   { code: "STDN", name: "Pelajar/mahasiswa" },
-  { code: "SELF", name: "Wiraswasta" },
+  { code: "ENTR", name: "Wiraswasta" },
   { code: "RETI", name: "Pensiunan" },
   { code: "HSWF", name: "Ibu Rumah Tangga" },
   { code: "OTHR", name: "Other" }

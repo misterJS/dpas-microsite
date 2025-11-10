@@ -45,7 +45,7 @@ export const getPayment = async (
   spaj_number: string
 ): Promise<PaymentRes> => {
   const { data } = await api.get<ApiEnvelope<PaymentRes>>(
-    `/payment/${spaj_number}`,    
+    `/payment/${spaj_number}?redirect_url=${encodeURIComponent(window.location.protocol + '//' + window.location.host + '/' + window.location.pathname?.split('/')?.[1])}`,
   );
   return mapPaymentResponse(data.data);
 };

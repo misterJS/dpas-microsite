@@ -31,6 +31,9 @@ jest.mock("react-router-dom", () => ({
       product: "ACC",
     }),
   ],
+  useParams: () => ({
+    brand: "uob",
+  }),
 }))
 
 // mock store

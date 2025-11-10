@@ -51,12 +51,12 @@ export default function HealthQuestionsPage() {
 
   const handleSetData = (v: Record<string, string>) => {
     const dataQuestions = questions.map((value) => ({
-        question_id: value.id,
-        question_code: value.code,
-        question_text: value.question_text,
-        question_type: value.type,
-        question_answer_type: value.answer_type,
-        answer: v[value.id]
+      question_id: value.id,
+      question_code: value.code,
+      question_text: value.question_text,
+      question_type: value.type,
+      question_answer_type: value.answer_type,
+      answer: v[value.id]
     }))
 
     const data: SubmissionReq = {
@@ -91,7 +91,7 @@ export default function HealthQuestionsPage() {
       form.reset(defaults);
     }
   }, [submission, questions]);
-  
+
   return (
     <div className="min-h-screen bg-[#FAFAFA] flex flex-col">
       <div className="pt-4 pb-6">
@@ -103,34 +103,36 @@ export default function HealthQuestionsPage() {
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-7">
                 {isError && <p className="text-sm text-red-500">{t("content.FailedToLoad")}</p>}
                 {!isLoading && !isError && questions.map((q, idx) => (
-                    <div key={q.id} className="relative">
-                      <span className="absolute right-1 top-0 text-red-500 text-lg">*</span>
+                  <div key={q.id} className="relative">
+                    <div className="flex">
                       <p className="text-[13px] leading-5 text-[#4B4B4B]">
                         {idx + 1}. {q.question_text}
                       </p>
-                      <FormField
-                        control={form.control}
-                        name={q.id}
-                        render={({ field }) => (
-                          <FormItem className="mt-3 space-y-3">
-                            <FormControl>
-                              <RadioGroup className="space-y-3" value={field.value} onValueChange={field.onChange}>
-                                <label className="flex items-center gap-2">
-                                  <RadioGroupItem value="yes" id={`${q.id}-yes`} />
-                                  <span className="text-[14px] text-[#4B4B4B] font-bold">{t("health.yes")}</span>
-                                </label>
-                                <label className="flex items-center gap-2">
-                                  <RadioGroupItem value="no" id={`${q.id}-no`}/>
-                                  <span className="text-[14px] text-[#4B4B4B] font-bold">{t("health.no")}</span>
-                                </label>
-                              </RadioGroup>
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
+                      <div className="text-[#ED1B2E] mt-2">*</div>
                     </div>
-                  ))}
+                    <FormField
+                      control={form.control}
+                      name={q.id}
+                      render={({ field }) => (
+                        <FormItem className="mt-3 space-y-3">
+                          <FormControl>
+                            <RadioGroup className="space-y-3" value={field.value} onValueChange={field.onChange}>
+                              <label className="flex items-center gap-2">
+                                <RadioGroupItem value="yes" id={`${q.id}-yes`} />
+                                <span className="text-[14px] text-[#4B4B4B] font-bold">{t("health.yes")}</span>
+                              </label>
+                              <label className="flex items-center gap-2">
+                                <RadioGroupItem value="no" id={`${q.id}-no`} />
+                                <span className="text-[14px] text-[#4B4B4B] font-bold">{t("health.no")}</span>
+                              </label>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                ))}
 
                 <Button
                   type="submit"

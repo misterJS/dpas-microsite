@@ -12503,7 +12503,7 @@ export type ProductListItem = {
   desc: string
 }
 
-export type ProductDetailTerm = { term_id: string; term: number; term_unit: "M" | string }
+export type ProductDetailTerm = { term_id: string; term: number; term_description: string; term_unit: "M" | string }
 export type ProductBenefit = {
   benef_code: string
   benef_name: string
@@ -12524,19 +12524,19 @@ export type ProductDetail = {
 export const productList: ProductListItem[] = [
   {
     "product_id": "85b27b3a-1437-44c6-a974-04205db44b36",
-    "product_name": "PruLindungi Syariah - Accident",
+    "product_name": "Paket Perlindungan Accident",
     "microsite_id": "ab41e1c9-77e5-43d1-ab64-bd2912dc0256",
     "product_code": "T4A",
     "image": "AP1.jpg",
-    "desc": "PruLindungi Syariah - Accident"
+    "desc": "Perlindungan yang mengutamakan manfaat Meninggal Dunia Akibat Kecelakaan, dengan total Santunan Asuransi atas risiko meninggal dunia yang diakibatkan oleh Kecelakaan hingga Rp63.000.000"
   },
   {
     "product_id": "113c3268-9180-443c-9479-f6ba3d5f9a2e",
-    "product_name": "PruLindungi Syariah - Accident Disability",
+    "product_name": "Paket Perlindungan Accident Disability",
     "microsite_id": "ab41e1c9-77e5-43d1-ab64-bd2912dc0256",
     "product_code": "T4B",
     "image": "AP2.jpg",
-    "desc": "PruLindungi Syariah - Accident Disability"
+    "desc": "Perlindungan yang mengutamakan Manfaat Cacat Total Akibat Kecelakaan, dengan total Santunan Asuransi atas risiko Cacat Total yang diakibatkan oleh Kecelakaan hingga Rp54.000.000."
   },
   {
     "product_id": "113c3268-9180-443c-9479-f6ba3d5f9a2e",
@@ -12544,7 +12544,7 @@ export const productList: ProductListItem[] = [
     "microsite_id": "ab41e1c9-77e5-43d1-ab64-bd2912dc0256",
     "product_code": "T4B",
     "image": "AP3.jpg",
-    "desc": "PruLindungi Syariah - Accident Disability"
+    "desc": "Pastikan Anda membaca dan memahami Manfaat Asuransi dari produk ini"
   },
   {
     "product_id": "113c3268-9180-443c-9479-f6ba3d5f9a2e",
@@ -12552,25 +12552,27 @@ export const productList: ProductListItem[] = [
     "microsite_id": "ab41e1c9-77e5-43d1-ab64-bd2912dc0256",
     "product_code": "T4B",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4dGWQgdRtlbW5aRFnN5K5pjTRSFsVWuGf7A&s",
-    "desc": "PruLindungi Syariah - Accident Disability"
+    "desc": "Pastikan Anda membaca dan memahami Manfaat Asuransi dari produk ini"
   },
 ]
 
 export const productDetails: Record<string, ProductDetail> = {
   "T4A": {
     "product_code": "T4A",
-    "product_name": "PruLindungi Syariah - Accident",
+    "product_name": "Paket Perlindungan Accident",
     "product_id": "85b27b3a-1437-44c6-a974-04205db44b36",
-    "desc": "PruLindungi Syariah - Accident",
+    "desc": "Perlindungan yang mengutamakan manfaat Meninggal Dunia Akibat Kecelakaan, dengan total Santunan Asuransi atas risiko meninggal dunia yang diakibatkan oleh Kecelakaan hingga Rp63.000.000",
     "terms": [
       {
         "term_id": "f956a0e6-0fb8-40e5-8ba6-cbfb4440ad9a",
         "term": 6,
+        "term_description": "Pastikan Anda membaca dan memahami Manfaat Asuransi dari produk ini\nProduk Asuransi ini hanya dapat dibeli oleh Anda yang berstatus WNI dan berusia 22 tahun (19 tahun jika sudah menikah) sampai 50 tahun (ulang tahun berikutnya). Perlindungan Anda akan berlaku selama 6 bulan dari tanggal mulai Kepesertaan sebagaimana tercantum dalam Polis yang akan dikirimkan melalui *email* yang dicantumkan dalam form ini.",
         "term_unit": "M"
       },
       {
         "term_id": "28a1122e-c493-4355-9e03-e986ef93e7bf",
         "term": 12,
+        "term_description": "Pastikan Anda membaca dan memahami Manfaat Asuransi dari produk ini\nProduk Asuransi ini hanya dapat dibeli oleh Anda yang berstatus WNI dan berusia 22 tahun (19 tahun jika sudah menikah) sampai 50 tahun (ulang tahun berikutnya). Perlindungan Anda akan berlaku selama 6 bulan dari tanggal mulai Kepesertaan sebagaimana tercantum dalam Polis yang akan dikirimkan melalui *email* yang dicantumkan dalam form ini.",
         "term_unit": "M"
       }
     ],
@@ -12684,27 +12686,31 @@ export const productDetails: Record<string, ProductDetail> = {
   },
   "T4B": {
     "product_code": "T4B",
-    "product_name": "PruLindungi Syariah - Accident Disability",
+    "product_name": "Paket Perlindungan Accident Disability",
     "product_id": "113c3268-9180-443c-9479-f6ba3d5f9a2e",
-    "desc": "PruLindungi Syariah - Accident Disability",
+    "desc": "Perlindungan yang mengutamakan Manfaat Cacat Total Akibat Kecelakaan, dengan total Santunan Asuransi atas risiko Cacat Total yang diakibatkan oleh Kecelakaan hingga Rp54.000.000.",
     "terms": [
       {
         "term_id": "fdcda1f3-57c9-49a9-8638-bc58000d96cd",
+        "term_description": "Pastikan Anda membaca dan memahami Manfaat Asuransi dari produk ini\nProduk Asuransi ini hanya dapat dibeli oleh Anda yang berstatus WNI dan berusia 22 tahun (19 tahun jika sudah menikah) sampai 50 tahun (ulang tahun berikutnya). Perlindungan Anda akan berlaku selama 12 bulan dari tanggal mulai Kepesertaan sebagaimana tercantum dalam Polis yang akan dikirimkan melalui *email* yang dicantumkan dalam form ini.",
         "term": 1,
         "term_unit": "M"
       },
       {
         "term_id": "a9c554a0-8f73-4770-b3e4-c0ca1491aec3",
+        "term_description": "Pastikan Anda membaca dan memahami Manfaat Asuransi dari produk ini\nProduk Asuransi ini hanya dapat dibeli oleh Anda yang berstatus WNI dan berusia 22 tahun (19 tahun jika sudah menikah) sampai 50 tahun (ulang tahun berikutnya). Perlindungan Anda akan berlaku selama 12 bulan dari tanggal mulai Kepesertaan sebagaimana tercantum dalam Polis yang akan dikirimkan melalui *email* yang dicantumkan dalam form ini.",
         "term": 3,
         "term_unit": "M"
       },
       {
         "term_id": "b3086095-245b-4661-ac22-a97501300853",
+        "term_description": "Pastikan Anda membaca dan memahami Manfaat Asuransi dari produk ini\nProduk Asuransi ini hanya dapat dibeli oleh Anda yang berstatus WNI dan berusia 22 tahun (19 tahun jika sudah menikah) sampai 50 tahun (ulang tahun berikutnya). Perlindungan Anda akan berlaku selama 12 bulan dari tanggal mulai Kepesertaan sebagaimana tercantum dalam Polis yang akan dikirimkan melalui *email* yang dicantumkan dalam form ini.",
         "term": 6,
         "term_unit": "M"
       },
       {
         "term_id": "1fb27895-ccf0-4ecf-b6df-c10823342594",
+        "term_description": "Pastikan Anda membaca dan memahami Manfaat Asuransi dari produk ini\nProduk Asuransi ini hanya dapat dibeli oleh Anda yang berstatus WNI dan berusia 22 tahun (19 tahun jika sudah menikah) sampai 50 tahun (ulang tahun berikutnya). Perlindungan Anda akan berlaku selama 12 bulan dari tanggal mulai Kepesertaan sebagaimana tercantum dalam Polis yang akan dikirimkan melalui *email* yang dicantumkan dalam form ini.",
         "term": 12,
         "term_unit": "M"
       }
@@ -12718,7 +12724,7 @@ export const productDetails: Record<string, ProductDetail> = {
           {
             "benef_code": "RI",
             "benef_name": "Rawat Inap",
-            "benef_amount": null,
+            "benef_amount": 0,
             "benef_type": "MAIN",
             "notes": "Rawat Inap"
           },
@@ -12752,108 +12758,108 @@ import { CheckAvailabilityRes, CreateSPAJRes, DocumentRes, HealthQuestion, Payme
 
 export const questionList: HealthQuestion[] = [
   {
-      id: "1",
-      code: "HQ1",
-      question_order: 1,
-      question_text: "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?",
-      type: "HEALTH_QUESTIONNAIRE",
-      answer_type: "YES_NO",
-      yes_label: "Ya, Saya Setuju",
-      no_label: "",
-      group_type: "AGREEMENT",
-      group_label: "Persetujuan",
-      group_order: 1
+    id: "1",
+    code: "HQ1",
+    question_order: 1,
+    question_text: "Apakah Calon Peserta Yang Diasuransikan pernah mengalami gejala-gejala/diperiksa/menderita/diagnosis/mendapat pengobatan/disarankan atau menjalani rawat inap/menjalani operasi/dianjurkan untuk mendapat nasihat medis/telah mendapat nasihat medis atau dirujuk ke Dokter Spesialis untuk Paru/Gangguan Pernafasan/Gangguan Hati/Kanker/Tumor/Stroke/Serangan Jantung atau Penyakit Jantung lainnya/Kelainan Darah/HIV Positif/AIDS atau yang berhubungan dengan AIDS/Gangguan Mental atau Jiwa/Kelainan Bawaan lainnya/Penyakit Ginjal/Kencing Manis/Epilepsi/Kelainan Muskuloskeletal/Tekanan Darah Tinggi/Kelainan Hormonal?",
+    type: "HEALTH_QUESTIONNAIRE",
+    answer_type: "YES_NO",
+    yes_label: "Ya, Saya Setuju",
+    no_label: "",
+    group_type: "AGREEMENT",
+    group_label: "Persetujuan",
+    group_order: 1
   },
   {
-      id: "2",
-      code: "HQ2",
-      question_order: 2,
-      question_text: "Apakah Surat Pengajuan Asuransi Jiwa atas diri Calon Peserta Yang Diasuransikan pernah dikecualikan/ditangguhkan/ditolak/diterima dengan tingkat Kontribusi Khusus?",
-      type: "HEALTH_QUESTIONNAIRE",
-      answer_type: "YES_NO",
-      yes_label: "Ya, Saya Setuju",
-      no_label: "",
-      group_type: "AGREEMENT",
-      group_label: "Pengecualian",
-      group_order: 1
+    id: "2",
+    code: "HQ2",
+    question_order: 2,
+    question_text: "Apakah Surat Pengajuan Asuransi Jiwa atas diri Calon Peserta Yang Diasuransikan pernah dikecualikan/ditangguhkan/ditolak/diterima dengan tingkat Kontribusi Khusus?",
+    type: "HEALTH_QUESTIONNAIRE",
+    answer_type: "YES_NO",
+    yes_label: "Ya, Saya Setuju",
+    no_label: "",
+    group_type: "AGREEMENT",
+    group_label: "Pengecualian",
+    group_order: 1
   },
   {
-      id: "3",
-      code: "CS1",
-      question_order: 2,
-      question_text: "Pengelola tidak akan membayarkan klaim Manfaat PRULindungi Syariah atas beban Dana Tabarru’ yang disebabkan oleh:(1) Kondisi Yang Telah Ada Sebelumnya;(2) Bunuh diri, percobaan bunuh diri atau dugaan bunuh diri atau melukai diri sendiri oleh Peserta Yang Diasuransikan, Kejahatan atau percobaan kejahatan atau pelanggaran hukum atau percobaan pelanggaran hukum dan undang-undang oleh Peserta Yang Diasuransikan atau perlawanan yang dibuat oleh Peserta Yang Diasuransikan pada saat penahanan seseorang yang dijalankan oleh pihak yang berwenang, kecuali dibuktikan sebaliknya oleh keputusan pengadilan;(3) Terlibat dalam penugasan dinas militer atau kepolisian atau penerbangan non-komersial atau aktivitas olahraga berbahaya (bungee jumping, diving, balapan jenis apa pun, olahraga udara termasuk gantole, balon udara, terjun payung dan sky diving atau kegiatan serta olahraga berbahaya lainnya);(4) Biaya Rawat Inap terkait dengan kehamilan atau melahirkan atau kesuburan atau mempercantik diri sendiri atau cacat yang sudah diderita sebelumnya atau operasi katarak atau biaya non-medis;(5) Klaim yang timbul dalam Masa Tunggu, kecuali karena Kecelakaan;(6) Penyakit yang disebabkan oleh HIV / AIDS atau semua jenis kanker;(7) Peserta Yang Diasuransikan di bawah pengaruh atau terlibat dalam penyalahgunaan narkotika, psikotropika, alkohol, racun, gas, bahan sejenis, atau obat, kecuali apabila zat atau bahan tersebut digunakan sebagai obat dalam resep Dokter; atau(8) Penyakit yang telah ditentukan oleh Pengelola selama periode waktu menunggu 180 (seratus delapan puluh) hari dari Tanggal Mulai Kepesertaan, antara lain, TBC (Tuberculosis) dan Asma; radang empedu, batu empedu, Penyakit yang berhubungan dengan ginjal, kencing manis (Diabetes Mellitus), liver, tekanan darah tinggi atau penyakit jantung dan pembuluh darah; Epilepsi, tumor pada permukaan kulit, semua jenis tumor jinak, Haemorrhoids (wasir), Anal Fistulae, usus buntu, Semua bentuk Hernia, Amandel dengan tidakan operasi, Penyakit peningkatan fungsi kelenjar gondok, kelainan sekat rongga hidung yang memerlukan pembedahan, sinusitis, penyakit yang berhubungan dengan sistem reproduksi, Hallux Valgus.Pengecualian secara lengkap dapat dilihat pada ketentuan Polis PRULindungi Syariah.",
-      type: "CONSENT",
-      answer_type: "YES_NO",
-      yes_label: "Ya, Saya telah membaca dan memahami.",
-      no_label: "Tidak, Saya belum membaca dan memahami.",
-      group_type: "EXCEPTION",
-      group_label: "Pengecualian",
-      group_order: 1
+    id: "3",
+    code: "CS1",
+    question_order: 2,
+    question_text: "Pengelola tidak akan membayarkan klaim Manfaat PRULindungi Syariah atas beban Dana Tabarru’ yang disebabkan oleh:(1) Kondisi Yang Telah Ada Sebelumnya;(2) Bunuh diri, percobaan bunuh diri atau dugaan bunuh diri atau melukai diri sendiri oleh Peserta Yang Diasuransikan, Kejahatan atau percobaan kejahatan atau pelanggaran hukum atau percobaan pelanggaran hukum dan undang-undang oleh Peserta Yang Diasuransikan atau perlawanan yang dibuat oleh Peserta Yang Diasuransikan pada saat penahanan seseorang yang dijalankan oleh pihak yang berwenang, kecuali dibuktikan sebaliknya oleh keputusan pengadilan;(3) Terlibat dalam penugasan dinas militer atau kepolisian atau penerbangan non-komersial atau aktivitas olahraga berbahaya (bungee jumping, diving, balapan jenis apa pun, olahraga udara termasuk gantole, balon udara, terjun payung dan sky diving atau kegiatan serta olahraga berbahaya lainnya);(4) Biaya Rawat Inap terkait dengan kehamilan atau melahirkan atau kesuburan atau mempercantik diri sendiri atau cacat yang sudah diderita sebelumnya atau operasi katarak atau biaya non-medis;(5) Klaim yang timbul dalam Masa Tunggu, kecuali karena Kecelakaan;(6) Penyakit yang disebabkan oleh HIV / AIDS atau semua jenis kanker;(7) Peserta Yang Diasuransikan di bawah pengaruh atau terlibat dalam penyalahgunaan narkotika, psikotropika, alkohol, racun, gas, bahan sejenis, atau obat, kecuali apabila zat atau bahan tersebut digunakan sebagai obat dalam resep Dokter; atau(8) Penyakit yang telah ditentukan oleh Pengelola selama periode waktu menunggu 180 (seratus delapan puluh) hari dari Tanggal Mulai Kepesertaan, antara lain, TBC (Tuberculosis) dan Asma; radang empedu, batu empedu, Penyakit yang berhubungan dengan ginjal, kencing manis (Diabetes Mellitus), liver, tekanan darah tinggi atau penyakit jantung dan pembuluh darah; Epilepsi, tumor pada permukaan kulit, semua jenis tumor jinak, Haemorrhoids (wasir), Anal Fistulae, usus buntu, Semua bentuk Hernia, Amandel dengan tidakan operasi, Penyakit peningkatan fungsi kelenjar gondok, kelainan sekat rongga hidung yang memerlukan pembedahan, sinusitis, penyakit yang berhubungan dengan sistem reproduksi, Hallux Valgus.Pengecualian secara lengkap dapat dilihat pada ketentuan Polis PRULindungi Syariah.",
+    type: "CONSENT",
+    answer_type: "YES_NO",
+    yes_label: "Ya, Saya telah membaca dan memahami.",
+    no_label: "Tidak, Saya belum membaca dan memahami.",
+    group_type: "EXCEPTION",
+    group_label: "Pengecualian",
+    group_order: 1
   },
   {
-      id: "4",
-      code: "CS2",
-      question_order: 1,
-      question_text: "Dengan ini SAYA dan/atau Calon Peserta Yang Diasuransikan dan/atau Calon Pembayar Kontribusi dan/atau Calon Penerima Manfaat yang diwakilkan  oleh SAYA: Menyatakan telah membaca, mendapat penjelasan dari Tenaga Pemasar, memahami dan menyetujui serta memberikan izin kepada Prudential Syariah  untuk mengumpulkan, menyimpan, memproses, mempergunakan dan membagikan Data Pribadi (termasuk namun tidak terbatas pada nama, alamat  surat menyurat, alamat email, nomor telepon, kontak, data kesehatan maupun informasi lainnya) yang SAYA berikan dalam SPAJ Syariah ini dan  dokumen lainnya sehubungan dengan pengajuan asuransi ini, serta informasi terkait Polis SAYA jika pengajuan ini disetujui, sesuai dengan kebijakan  internal Prudential Syariah maupun peraturan perundang-undangan yang berlaku untuk keperluan:",
-      type: "CONSENT",
-      answer_type: "YES_NO",
-      yes_label: "Ya",
-      no_label: "Tidak",
-      group_type: "AGREEMENT",
-      group_label: "PERSETUJUAN PEMBERIAN DATA DAN/ATAU INFORMASI PRIBADI KEPADA PIHAK LAIN & PENAWARAN PRODUK",
-      group_order: 2
+    id: "4",
+    code: "CS2",
+    question_order: 1,
+    question_text: "Dengan ini SAYA dan/atau Calon Peserta Yang Diasuransikan dan/atau Calon Pembayar Kontribusi dan/atau Calon Penerima Manfaat yang diwakilkan  oleh SAYA: Menyatakan telah membaca, mendapat penjelasan dari Tenaga Pemasar, memahami dan menyetujui serta memberikan izin kepada Prudential Syariah  untuk mengumpulkan, menyimpan, memproses, mempergunakan dan membagikan Data Pribadi (termasuk namun tidak terbatas pada nama, alamat  surat menyurat, alamat email, nomor telepon, kontak, data kesehatan maupun informasi lainnya) yang SAYA berikan dalam SPAJ Syariah ini dan  dokumen lainnya sehubungan dengan pengajuan asuransi ini, serta informasi terkait Polis SAYA jika pengajuan ini disetujui, sesuai dengan kebijakan  internal Prudential Syariah maupun peraturan perundang-undangan yang berlaku untuk keperluan:",
+    type: "CONSENT",
+    answer_type: "YES_NO",
+    yes_label: "Ya",
+    no_label: "Tidak",
+    group_type: "AGREEMENT",
+    group_label: "PERSETUJUAN PEMBERIAN DATA DAN/ATAU INFORMASI PRIBADI KEPADA PIHAK LAIN & PENAWARAN PRODUK",
+    group_order: 2
   },
   {
-      id: "5",
-      code: "CS3",
-      question_order: 2,
-      question_text: "Saya dan/atau Calon Peserta Yang Diasuransikan bersedia menerima penawaran produk lainnya (yang tidak berhubungan dengan produk yang Saya miliki) dari Prudential Syariah dan Prudential Indonesia melalui sarana komunikasi  pribadi, baik yang dilakukan sendiri oleh Prudential Syariah dan Prudential Indonesia maupun oleh pihak ketiga atau mitra bisnis yang ditunjuk oleh atau bekerjasama dengan Prudential Syariah dan Prudential Indonesia.",
-      type: "CONSENT",
-      answer_type: "YES_NO",
-      yes_label: "Ya",
-      no_label: "Tidak",
-      group_type: "AGREEMENT",
-      group_label: "PERSETUJUAN PEMBERIAN DATA DAN/ATAU INFORMASI PRIBADI KEPADA PIHAK LAIN & PENAWARAN PRODUK",
-      group_order: 2
+    id: "5",
+    code: "CS3",
+    question_order: 2,
+    question_text: "Saya dan/atau Calon Peserta Yang Diasuransikan bersedia menerima penawaran produk lainnya (yang tidak berhubungan dengan produk yang Saya miliki) dari Prudential Syariah dan Prudential Indonesia melalui sarana komunikasi  pribadi, baik yang dilakukan sendiri oleh Prudential Syariah dan Prudential Indonesia maupun oleh pihak ketiga atau mitra bisnis yang ditunjuk oleh atau bekerjasama dengan Prudential Syariah dan Prudential Indonesia.",
+    type: "CONSENT",
+    answer_type: "YES_NO",
+    yes_label: "Ya",
+    no_label: "Tidak",
+    group_type: "AGREEMENT",
+    group_label: "PERSETUJUAN PEMBERIAN DATA DAN/ATAU INFORMASI PRIBADI KEPADA PIHAK LAIN & PENAWARAN PRODUK",
+    group_order: 2
   },
   {
-      id: "5",
-      code: "CS4",
-      question_order: 1,
-      question_text: "Pastikan Anda membaca dan memahami Syarat dan Ketentuan sebelum mengajukan kepesertaan. Harap pastikan bahwa Anda telah membaca dan memahami Syarat dan Ketentuan Produk Asuransi Jiwa PRULindungi Syariah untuk melanjutkan proses pengajuan kepesertaan.",
-      type: "CONSENT",
-      answer_type: "YES",
-      yes_label: "Ya, Saya Setuju",
-      no_label: "",
-      group_type: "STATEMENT",
-      group_label: "Pernyataan kepersertaan Asuransi Jiwa PRULindungi Syariah",
-      group_order: 3
+    id: "5",
+    code: "CS4",
+    question_order: 1,
+    question_text: "Pastikan Anda membaca dan memahami Syarat dan Ketentuan sebelum mengajukan kepesertaan. Harap pastikan bahwa Anda telah membaca dan memahami Syarat dan Ketentuan Produk Asuransi Jiwa PRULindungi Syariah untuk melanjutkan proses pengajuan kepesertaan.",
+    type: "CONSENT",
+    answer_type: "YES",
+    yes_label: "Ya, Saya Setuju",
+    no_label: "",
+    group_type: "STATEMENT",
+    group_label: "Pernyataan kepersertaan Asuransi Jiwa PRULindungi Syariah",
+    group_order: 3
   },
   {
-      id: "6",
-      code: "CS5",
-      question_order: 2,
-      question_text: "Saya mengizinkan Prudential Syariah untuk melakukan tindakan yang dianggap perlu sesuai peraturan perundangan mengenai Anti Pencucian Uang, Pencegahan Pendanaan Terorisme, dan Pencegahan Pendanaan Proliferasi Senjata Pemusnah Massal serta ketentuan Grup Prudential terkait Penerapan Daftar Sanksi Tertentu yang termasuk namun tidak terbatas pada, the Office of Financial Sanctions Implementation HM Treasury, the United Nations, the European Union, the US Treasury Department Office of Foreign Assets Control.",
-      type: "CONSENT",
-      answer_type: "YES",
-      yes_label: "Ya, Saya Setuju",
-      no_label: "",
-      group_type: "STATEMENT",
-      group_label: "Pernyataan kepersertaan Asuransi Jiwa PRULindungi Syariah",
-      group_order: 3
+    id: "6",
+    code: "CS5",
+    question_order: 2,
+    question_text: "Saya mengizinkan Prudential Syariah untuk melakukan tindakan yang dianggap perlu sesuai peraturan perundangan mengenai Anti Pencucian Uang, Pencegahan Pendanaan Terorisme, dan Pencegahan Pendanaan Proliferasi Senjata Pemusnah Massal serta ketentuan Grup Prudential terkait Penerapan Daftar Sanksi Tertentu yang termasuk namun tidak terbatas pada, the Office of Financial Sanctions Implementation HM Treasury, the United Nations, the European Union, the US Treasury Department Office of Foreign Assets Control.",
+    type: "CONSENT",
+    answer_type: "YES",
+    yes_label: "Ya, Saya Setuju",
+    no_label: "",
+    group_type: "STATEMENT",
+    group_label: "Pernyataan kepersertaan Asuransi Jiwa PRULindungi Syariah",
+    group_order: 3
   },
   {
-      id: "7",
-      code: "CS6",
-      question_order: 3,
-      question_text: "Dengan menyetujui form ini, Saya setuju untuk mengikuti kepesertaan pada Produk PRULindungi Syariah dari PT Prudential Sharia Life Assurance (Prudential Syariah) yang telah dilaporkan dan mendapatkan persetujuan dari Otoritas Jasa Keuangan (OJK).",
-      type: "CONSENT",
-      answer_type: "YES",
-      yes_label: "Ya, Saya Setuju",
-      no_label: "",
-      group_type: "STATEMENT",
-      group_label: "Pernyataan kepersertaan Asuransi Jiwa PRULindungi Syariah",
-      group_order: 3
+    id: "7",
+    code: "CS6",
+    question_order: 3,
+    question_text: "Dengan menyetujui form ini, Saya setuju untuk mengikuti kepesertaan pada Produk PRULindungi Syariah dari PT Prudential Sharia Life Assurance (Prudential Syariah) yang telah dilaporkan dan mendapatkan persetujuan dari Otoritas Jasa Keuangan (OJK).",
+    type: "CONSENT",
+    answer_type: "YES",
+    yes_label: "Ya, Saya Setuju",
+    no_label: "",
+    group_type: "STATEMENT",
+    group_label: "Pernyataan kepersertaan Asuransi Jiwa PRULindungi Syariah",
+    group_order: 3
   },
 ]
 

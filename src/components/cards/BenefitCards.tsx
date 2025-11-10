@@ -1,8 +1,7 @@
-import { useState } from "react"
+import { ReactNode, useState } from "react"
 import { Link } from "react-router-dom"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
-import { IoArrowForwardOutline } from "react-icons/io5"
 import { getImageUrl } from "@/helper/useDynamicFiles"
 
 type BenefitCardProps = {
@@ -13,7 +12,9 @@ type BenefitCardProps = {
   href?: string
   className?: string
   buttonTitle?: string
-  onClick: () => void
+  iconPosition?: "left" | "right" | "none"
+  onClick?: () => void
+  icon?: ReactNode
 }
 
 export default function BenefitCard({
@@ -24,7 +25,9 @@ export default function BenefitCard({
   href = "#",
   className,
   buttonTitle,
-  onClick
+  onClick,
+  iconPosition = "right",
+  icon
 }: BenefitCardProps) {
   const [finalSrc, setFinalSrc] = useState(imageSrc)
   const [triedLocal, setTriedLocal] = useState(false)
@@ -64,14 +67,11 @@ export default function BenefitCard({
           <div className="mt-5" onClick={onClick}>
             <Link
               to={href}
-              className="inline-flex items-center gap-2 font-semibold group"
+              className={`inline-flex items-center gap-2 font-semibold group ${iconPosition === "left" && "flex-row-reverse"}`}
               aria-label={`${title} - ${buttonTitle}`}
             >
               <span>{buttonTitle}</span>
-              <IoArrowForwardOutline
-                aria-hidden
-                className="text-[#E30613] text-[20px] shrink-0 transition-transform group-hover:translate-x-0.5"
-              />
+              {icon}
             </Link>
           </div>
         }

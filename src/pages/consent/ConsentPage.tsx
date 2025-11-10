@@ -239,7 +239,7 @@ export default function ConsentPage() {
                         </p>
                     </div>
                     <p className="leading-6">{t("consent.sendNote")}</p>
-                    <hr className="mt-2" />
+                    <hr className="mt-2 border-gray-400" />
                 </div>
 
                 <Form {...form}>
@@ -289,7 +289,7 @@ export default function ConsentPage() {
                                         </div>
                                     </div>
                                 ))}
-                                {questions.length - 1 !== idx && <hr className="mt-5" />}
+                                {questions.length - 1 !== idx && <hr className="mt-5 border-gray-400" />}
                             </section>
                         ))}
 

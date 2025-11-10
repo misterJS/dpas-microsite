@@ -17,7 +17,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Form, FormField, FormMessage } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { SelectItem, SelectSeparator } from "@/components/ui/select";
 import {
   RHFTextField,
   RHFSelectField,
@@ -29,7 +28,18 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useSubmissionStore } from "@/lib/store/submissionDataStore";
 import { SubmissionReq } from "@/api/types";
 import { useCheckAvailability } from "@/hooks/useProducts";
-import { CITY_VALUES, DISTRICT_VALUES, GENDER_VALUES, JOBS, MARITAL_VALUES, PLAN_VALUES, PROVINCE_VALUES, RELATION_VALUES, SALARIES, SUBDISTRICT_VALUES } from "@/lib/store/data";
+import {
+  CITY_VALUES,
+  DISTRICT_VALUES,
+  GENDER_VALUES,
+  JOBS,
+  MARITAL_VALUES,
+  PLAN_VALUES,
+  PROVINCE_VALUES,
+  RELATION_VALUES,
+  SALARIES,
+  SUBDISTRICT_VALUES,
+} from "@/lib/store/data";
 import { DialogComponent } from "@/components/common/DialogComponent";
 import { LoadingComponent } from "@/components/common/LoadingComponent";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -39,7 +49,7 @@ type Province = (typeof PROVINCE_VALUES)[number];
 type City = (typeof CITY_VALUES)[number];
 type District = (typeof DISTRICT_VALUES)[number];
 type Subdistrict = (typeof SUBDISTRICT_VALUES)[number];
-type TDropdown = { code: string; name: string }
+type TDropdown = { code: string; name: string };
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
   <h2 className="text-base text-[#006660] font-semibold">{children}</h2>
@@ -67,30 +77,43 @@ export default function RegisterPage() {
   );
   const navigate = useNavigate();
   const { brand } = useParams();
-  const [rejectOpen, setRejectOpen] = useState(false)
-  const [decisionDesc, setDecisionDesc] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [rejectOpen, setRejectOpen] = useState(false);
+  const [decisionDesc, setDecisionDesc] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const { submission, setSubmissionData } = useSubmissionStore();
 
   const { t } = useTranslation("common");
 
   const schema = z.object({
     branch: z.string().min(1, t("menu.schema.branch")),
-    planType: z.enum(PLAN_VALUES, { message: t("menu.schema.planType") }).optional(),
+    planType: z
+      .enum(PLAN_VALUES, { message: t("menu.schema.planType") })
+      .optional(),
     gender: z.string().min(1, t("menu.schema.gender")),
     married: z.string().min(1, t("menu.schema.married")),
     nik: z.string().regex(/^\d{16}$/, t("menu.schema.nik")),
-    fullName: z.string().min(2, t("menu.schema.fullName")).regex(/^[A-Za-z\s]+$/, t("menu.schema.regexFullname")),
-    pob: z.string().min(2, t("menu.schema.pob")).regex(/^[A-Za-z\s]+$/, t("menu.schema.regexPob")),
+    fullName: z
+      .string()
+      .min(2, t("menu.schema.fullName"))
+      .regex(/^[A-Za-z\s]+$/, t("menu.schema.regexFullname")),
+    pob: z
+      .string()
+      .min(2, t("menu.schema.pob"))
+      .regex(/^[A-Za-z\s]+$/, t("menu.schema.regexPob")),
     phone: z.string().regex(/^\d{9,13}$/, t("menu.schema.phone")),
-    beneficiaryPhone: z.string().regex(/^\d{9,13}$/, t("menu.schema.beneficiaryPhone")),
+    beneficiaryPhone: z
+      .string()
+      .regex(/^\d{9,13}$/, t("menu.schema.beneficiaryPhone")),
     dob: z
       .date({ message: t("menu.schema.dob") })
       .refine((d) => d <= new Date(), {
         message: t("menu.schema.dob2"),
       }),
     email: z.string().email(t("menu.schema.email")),
-    postalCode: z.string().min(5, t("menu.schema.postalCode")).or(z.literal('')),
+    postalCode: z
+      .string()
+      .min(5, t("menu.schema.postalCode"))
+      .or(z.literal("")),
     province: z.string().min(1, t("menu.schema.province")),
     city: z.string().min(1, t("menu.schema.city")),
     district: z.string().min(1, t("menu.schema.district")),
@@ -99,71 +122,91 @@ export default function RegisterPage() {
     jobType: z.string().min(1, t("menu.schema.jobType")),
     salaryCode: z.string(),
     salary: z.string().min(1, t("menu.schema.salary")),
-    beneficiaryName: z.string().min(2, t("menu.schema.beneficiaryName")).regex(/^[A-Za-z\s]+$/, t("menu.schema.regexBeneficiary")),
+    beneficiaryName: z
+      .string()
+      .min(2, t("menu.schema.beneficiaryName"))
+      .regex(/^[A-Za-z\s]+$/, t("menu.schema.regexBeneficiary")),
     beneficiaryAddress: z.string().min(2, t("menu.schema.beneficiaryAddress")),
-    beneficiaryRelation: z.string().min(1, t("menu.schema.beneficiaryRelation")),
+    beneficiaryRelation: z
+      .string()
+      .min(1, t("menu.schema.beneficiaryRelation")),
     agreeRealData: z.boolean().refine((v) => v === true, {
-      message: t("menu.schema.mustAgree") || "Anda harus menyetujui data sebenarnya.",
+      message:
+        t("menu.schema.mustAgree") || "Anda harus menyetujui data sebenarnya.",
     }),
   });
   type FormValues = z.infer<typeof schema>;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: submission?.client ? {
-      branch: submission.client.branch ?? "",
-      gender: submission.client.sex ?? "",
-      married: submission.client.marital_status ?? "",
-      nik: submission.client.nik ?? "",
-      fullName: submission.client.full_name ?? "",
-      pob: submission.client.pob ?? "",
-      phone: ensureLeadingZero(submission.client.phone ?? ""),
-      beneficiaryPhone: ensureLeadingZero(submission.client.benef_phone ?? ""),
-      dob: submission.client.dob ? new Date(submission.client.dob) : undefined,
-      email: submission.client.email ?? "",
-      postalCode: submission.client.zip_code ?? "",
-      province: submission.client.province_id ?? "",
-      city: submission.client.city_id ?? "",
-      district: submission.client.district_id ?? "",
-      subdistrict: submission.client.subdistrict_id ?? "",
-      addressKtp: submission.client.address ?? "",
-      jobType: submission.client.job ?? "",
-      salaryCode: submission.client.income_code ?? "",
-      salary: submission.client.income_code ?? "",
-      beneficiaryName: submission.client.benef_name ?? "",
-      beneficiaryAddress: submission.client.benef_address ?? "",
-      beneficiaryRelation: submission.client.relation ?? "",
-      agreeRealData: true,
-    } : {
-      agreeRealData: false,
-    } as any
+    defaultValues: submission?.client
+      ? {
+        branch: submission.client.branch ?? "",
+        gender: submission.client.sex ?? "",
+        married: submission.client.marital_status ?? "",
+        nik: submission.client.nik ?? "",
+        fullName: submission.client.full_name ?? "",
+        pob: submission.client.pob ?? "",
+        phone: ensureLeadingZero(submission.client.phone ?? ""),
+        beneficiaryPhone: ensureLeadingZero(
+          submission.client.benef_phone ?? ""
+        ),
+        dob: submission.client.dob
+          ? new Date(submission.client.dob)
+          : undefined,
+        email: submission.client.email ?? "",
+        postalCode: submission.client.zip_code ?? "",
+        province: submission.client.province_id ?? "",
+        city: submission.client.city_id ?? "",
+        district: submission.client.district_id ?? "",
+        subdistrict: submission.client.subdistrict_id ?? "",
+        addressKtp: submission.client.address ?? "",
+        jobType: submission.client.job ?? "",
+        salaryCode: submission.client.income_code ?? "",
+        salary: submission.client.income_code ?? "",
+        beneficiaryName: submission.client.benef_name ?? "",
+        beneficiaryAddress: submission.client.benef_address ?? "",
+        beneficiaryRelation: submission.client.relation ?? "",
+        agreeRealData: true,
+      }
+      : ({
+        agreeRealData: false,
+      } as any),
   });
 
   const onSubmit = (values: FormValues) => {
     handleSetData(values);
   };
 
-  const province = form.watch("province")
-  const city = form.watch("city")
-  const district = form.watch("district")
+  const province = form.watch("province");
+  const city = form.watch("city");
+  const district = form.watch("district");
 
-  const { data: provinces = [] } = useProvinces()
-  const { data: cities = [] } = useCities(province)
-  const { data: districts = [] } = useDistricts(province, city)
-  const { data: subdistricts = [] } = useSubdistricts(province, city, district)
-  const { data: branches = [], isLoading: loadingBranch } = useBranches() as { data?: TDropdown[]; isLoading: boolean }
-  const postalCode = form.watch("postalCode")
-  const { data: zip, isLoading: loadingZip } = useZipLookup(postalCode)
+  const { data: provinces = [] } = useProvinces();
+  const { data: cities = [] } = useCities(province);
+  const { data: districts = [] } = useDistricts(province, city);
+  const { data: subdistricts = [] } = useSubdistricts(province, city, district);
+  const { data: branches = [], isLoading: loadingBranch } = useBranches() as {
+    data?: TDropdown[];
+    isLoading: boolean;
+  };
+  const postalCode = form.watch("postalCode");
+  const { data: zip, isLoading: loadingZip } = useZipLookup(postalCode);
   const { mutate } = useCheckAvailability();
 
   const handleSetData = (v: FormValues) => {
-    setIsLoading(true)
+    setIsLoading(true);
 
-    const provinceName = provinces.find(p => p.code === v.province)?.name ?? v.province;
-    const cityName = cities.find(c => c.code === v.city)?.name ?? v.city;
-    const districtName = districts.find(d => d.code === v.district)?.name ?? v.district;
-    const subdistrictName = subdistricts.find(s => s.code === v.subdistrict)?.name ?? v.subdistrict;
-    const selectedSalary = SALARIES.find(s => v.salary === s.code);
+    const provinceName =
+      provinces.find((p) => p.code === v.province)?.name ?? v.province;
+    const provinceLasCode =
+      provinces.find((p) => p.code === v.province)?.province_las_code ?? v.province;
+    const cityName = cities.find((c) => c.code === v.city)?.name ?? v.city;
+    const districtName =
+      districts.find((d) => d.code === v.district)?.name ?? v.district;
+    const subdistrictName =
+      subdistricts.find((s) => s.code === v.subdistrict)?.name ?? v.subdistrict;
+    const selectedSalary = SALARIES.find((s) => v.salary === s.code);
 
     const data: SubmissionReq = {
       ...submission,
@@ -181,6 +224,7 @@ export default function RegisterPage() {
         country_code: "+62",
         zip_code: v.postalCode,
         province_id: v.province,
+        province_las_code: provinceLasCode,
         city_id: v.city,
         district_id: v.district,
         subdistrict_id: v.subdistrict,
@@ -195,40 +239,45 @@ export default function RegisterPage() {
         benef_phone: stripLeadingZero(v.beneficiaryPhone),
         benef_country_code: "+62",
         benef_address: v.beneficiaryAddress,
-        relation: v.beneficiaryRelation
-      }
-    }
+        relation: v.beneficiaryRelation,
+      },
+    };
 
     const paramsCheckAvailability = {
-      product_code: submission?.product?.product_code ?? '',
-      component_code: submission?.product?.package?.package_code ?? '',
-      birth_date: moment(v.dob).format('YYYYMMDD'),
+      product_code: submission?.product?.product_code ?? "",
+      component_code: submission?.product?.package?.package_code ?? "",
+      birth_date: moment(v.dob).format("YYYYMMDD"),
       email: v.email,
       ktp_id: v.nik,
-      marital_status: v.married
-    }
+      marital_status: v.married,
+    };
 
     mutate(paramsCheckAvailability, {
       onSuccess: (response) => {
-        setIsLoading(false)
-        if (response.decisions == 'Y') {
-          setSubmissionData(data)
-          navigate(`/${brand}/health-question?product=${submission?.product?.product_code}`)
+        setIsLoading(false);
+        if (response.decisions == "Y") {
+          setSubmissionData(data);
+          navigate(
+            `/${brand}/health-question?product=${submission?.product?.product_code}`
+          );
         }
       },
       onError: (err: any) => {
-        setIsLoading(false)
-        setRejectOpen(true)
-        err.status && setDecisionDesc(err.status.errors[0].message)
-      }
-    })
-  }
+        setIsLoading(false);
+        setRejectOpen(true);
+        err.status && setDecisionDesc(err.status.errors[0].message);
+      },
+    });
+  };
 
-  const { isLoading: loadingProvince } = useProvinces()
-  const { isLoading: loadingCity } = useCities(province)
-  const { isLoading: loadingDistrict } = useDistricts(province, city)
-  const { isLoading: loadingSubdistrict } = useSubdistricts(province, city, district)
-
+  const { isLoading: loadingProvince } = useProvinces();
+  const { isLoading: loadingCity } = useCities(province);
+  const { isLoading: loadingDistrict } = useDistricts(province, city);
+  const { isLoading: loadingSubdistrict } = useSubdistricts(
+    province,
+    city,
+    district
+  );
 
   React.useEffect(() => {
     if (!zip) return;
@@ -262,7 +311,10 @@ export default function RegisterPage() {
     if (!zip) return;
     const d = zip?.district_id as number | undefined;
     if (!d) return;
-    if (districts.length > 0 && districts.some((v) => v.code === d.toString())) {
+    if (
+      districts.length > 0 &&
+      districts.some((v) => v.code === d.toString())
+    ) {
       const curr = form.getValues();
       if (curr.district !== d.toString()) {
         form.setValue("district", d.toString() as District, {
@@ -277,7 +329,10 @@ export default function RegisterPage() {
     if (!zip) return;
     const s = zip?.subdistrict_id as number | undefined;
     if (!s) return;
-    if (subdistricts.length > 0 && subdistricts.some((v) => v.code === s.toString())) {
+    if (
+      subdistricts.length > 0 &&
+      subdistricts.some((v) => v.code === s.toString())
+    ) {
       const curr = form.getValues();
       if (curr.subdistrict !== s.toString()) {
         form.setValue("subdistrict", s.toString() as Subdistrict, {
@@ -320,40 +375,72 @@ export default function RegisterPage() {
 
   const agree = form.watch("agreeRealData");
 
-  const relationSearchableOptions = React.useMemo(
-    () =>
-      toSearchableOptions(RELATION_VALUES, {
+  const getLocationSearchableOptions = React.useCallback(
+    (
+      items: ReadonlyArray<{
+        code?: string | number | null | undefined;
+        name?: string | null | undefined;
+      }>
+    ) =>
+      toSearchableOptions(items, {
+        getValue: (item) => item.code ?? "",
+        getLabel: (item) => item.name ?? "",
+        getKeywords: (item) => [item.code, item.name],
+      }),
+    []
+  );
+
+  const locationSearchableOptions = React.useMemo(
+    () => ({
+      branch: getLocationSearchableOptions(branches),
+      province: getLocationSearchableOptions(provinces),
+      city: getLocationSearchableOptions(cities),
+      district: getLocationSearchableOptions(districts),
+      subdistrict: getLocationSearchableOptions(subdistricts),
+    }),
+    [
+      branches,
+      cities,
+      districts,
+      getLocationSearchableOptions,
+      provinces,
+      subdistricts,
+    ]
+  );
+
+  const staticSearchableOptions = React.useMemo(
+    () => ({
+      married: toSearchableOptions(MARITAL_VALUES, {
+        getValue: (item) => item.code,
+        getLabel: (item) => t(`menu.options.marital.${item.code}`),
+        getKeywords: (item) => [item.code, item.name],
+      }),
+      jobType: toSearchableOptions(JOBS, {
+        getValue: (item) => item.code,
+        getLabel: (item) => t(`menu.options.jobs.${item.code}`),
+        getKeywords: (item) => [item.code, item.name],
+      }),
+      salary: toSearchableOptions(SALARIES, {
+        getValue: (item) => item.code,
+        getLabel: (item) => t(`menu.options.salaries.${item.code}`),
+        getKeywords: (item) => [item.code, item.value],
+      }),
+      relation: toSearchableOptions(RELATION_VALUES, {
         getValue: (item) => item.code,
         getLabel: (item) => t(`menu.options.relations.${item.code}`),
-        getKeywords: (item) => [item.code, t(`menu.options.relation.${item.code}`), item.name],
+        getKeywords: (item) => [
+          item.code,
+          t(`menu.options.relation.${item.code}`),
+          item.name,
+        ],
       }),
+    }),
     [t]
-  );
-
-  const branchSearchableOptions = React.useMemo(
-    () =>
-      toSearchableOptions(branches, {
-        getValue: (item) => item.code,
-        getLabel: (item) => item.name,
-        getKeywords: (item) => [item.code, item.name],
-      }),
-    [branches]
-  );
-
-  const provinceSearchableOptions = React.useMemo(
-    () =>
-      toSearchableOptions(provinces, {
-        getValue: (item) => item.code,
-        getLabel: (item) => item.name,
-        getKeywords: (item) => [item.code, item.name],
-      }),
-    [provinces]
   );
 
   return (
     <div className="space-y-6">
-      <div
-      >
+      <div>
         <CardContent className="p-4">
           <h1 className="mb-4 text-2xl text-[#6AC3BE] font-semibold">
             {t("form.title_form_registration")}
@@ -369,11 +456,10 @@ export default function RegisterPage() {
                 name="branch"
                 label={t("menu.fields.branch")}
                 requiredMark
-                onValue={(v: TDropdown) => v}
-                searchableOptions={branchSearchableOptions}
+                searchableOptions={locationSearchableOptions.branch}
               />
 
-              <hr />
+              <hr className="my-2 border-gray-400" />
 
               <SectionTitle>{t("menu.sections.ktpInfo")}</SectionTitle>
               <p className="text-[10px] text-[#ED1B2E]">
@@ -394,7 +480,10 @@ export default function RegisterPage() {
                       />
                     </div>
                     <div className="flex gap-1">
-                      <label htmlFor="real-data-checkbox" className="-mt-1 cursor-pointer">
+                      <label
+                        htmlFor="real-data-checkbox"
+                        className="-mt-1 cursor-pointer"
+                      >
                         {t("menu.hints.realData")}
                       </label>
                       <span className="text-[#ED1B2E] text-xl">*</span>
@@ -421,7 +510,7 @@ export default function RegisterPage() {
                 label={t("menu.fields.nik")}
                 onInput={(e) => {
                   const target = e.target as HTMLInputElement;
-                  target.value = target.value.replace(/[^0-9]/g, '');
+                  target.value = target.value.replace(/[^0-9]/g, "");
                 }}
                 requiredMark
               />
@@ -458,19 +547,8 @@ export default function RegisterPage() {
                 name="married"
                 label={t("menu.fields.married")}
                 requiredMark
-                onValue={(v: TDropdown) => v}
-              >
-                {MARITAL_VALUES.map((v, i) => (
-                  <React.Fragment key={v.code}>
-                    <SelectItem value={v.code ?? ""}>
-                      {t(`menu.options.marital.${v.code}`)}
-                    </SelectItem>
-                    {i < MARITAL_VALUES.length - 1 && (
-                      <SelectSeparator className="mx-3" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </RHFSelectField>
+                searchableOptions={staticSearchableOptions.married}
+              />
 
               <FormField
                 control={form.control}
@@ -487,9 +565,12 @@ export default function RegisterPage() {
                       onValueChange={(v) => field.onChange(v)}
                     >
                       {GENDER_VALUES.map((g) => (
-                        <label key={g.code} className="flex items-center space-x-2">
+                        <label
+                          key={g.code}
+                          className="flex items-center space-x-2"
+                        >
                           <RadioGroupItem value={g.code} id={`g-${g.code}`} />
-                          <span className="cursor-pointer text-xs text-[#000]">
+                          <span className="cursor-pointer text-xs font-bold text-[#000]">
                             {t(`menu.options.genders.${g.code}`)}
                           </span>
                         </label>
@@ -516,7 +597,7 @@ export default function RegisterPage() {
                 requiredMark
               />
 
-              <hr />
+              <hr className="my-2 border-gray-400"/>
 
               <RHFTextField
                 name="postalCode"
@@ -531,57 +612,29 @@ export default function RegisterPage() {
                 name="province"
                 label={t("menu.fields.province")}
                 requiredMark
-                onValue={(v: TDropdown) => v}
-                searchableOptions={provinceSearchableOptions}
+                searchableOptions={locationSearchableOptions.province}
               />
 
               <RHFSelectField
                 name="city"
                 label={t("menu.fields.city")}
                 requiredMark
-                onValue={(v: City) => v}
-              >
-                {cities.map((v, i) => (
-                  <React.Fragment key={v.code}>
-                    <SelectItem value={v.code ?? ""}>{v.name}</SelectItem>
-                    {i < cities.length - 1 && (
-                      <SelectSeparator className="mx-3" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </RHFSelectField>
+                searchableOptions={locationSearchableOptions.city}
+              />
 
               <RHFSelectField
                 name="district"
                 label={t("menu.fields.district")}
                 requiredMark
-                onValue={(v: District) => v}
-              >
-                {districts.map((v, i) => (
-                  <React.Fragment key={v.code}>
-                    <SelectItem value={v.code ?? ""}>{v.name}</SelectItem>
-                    {i < districts.length - 1 && (
-                      <SelectSeparator className="mx-3" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </RHFSelectField>
+                searchableOptions={locationSearchableOptions.district}
+              />
 
               <RHFSelectField
                 name="subdistrict"
                 label={t("menu.fields.subdistrict")}
                 requiredMark
-                onValue={(v: Subdistrict) => v}
-              >
-                {subdistricts.map((v, i) => (
-                  <React.Fragment key={v.code}>
-                    <SelectItem value={v.code ?? ""}>{v.name}</SelectItem>
-                    {i < subdistricts.length - 1 && (
-                      <SelectSeparator className="mx-3" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </RHFSelectField>
+                searchableOptions={locationSearchableOptions.subdistrict}
+              />
 
               <RHFTextField
                 name="addressKtp"
@@ -596,35 +649,15 @@ export default function RegisterPage() {
                 name="jobType"
                 label={t("menu.fields.jobType")}
                 requiredMark
-              >
-                {JOBS.map((v, i) => (
-                  <React.Fragment key={v.code}>
-                    <SelectItem value={v.code ?? ""}>
-                      {t(`menu.options.jobs.${v.code}`)}
-                    </SelectItem>
-                    {i < JOBS.length - 1 && (
-                      <SelectSeparator className="mx-3" />
-                    )}
-                  </React.Fragment>
-                ))}
-              </RHFSelectField>
+                searchableOptions={staticSearchableOptions.jobType}
+              />
 
               <RHFSelectField
                 name="salary"
                 label={t("menu.fields.salary")}
                 requiredMark
-              >
-                {SALARIES.map((v, i) => {
-                  return (
-                    <React.Fragment key={v.code}>
-                      <SelectItem value={v.code ?? ""}>{t(`menu.options.salaries.${v.code}`)}</SelectItem>
-                      {i < SALARIES.length - 1 && (
-                        <SelectSeparator className="mx-3" />
-                      )}
-                    </React.Fragment>
-                  )
-                })}
-              </RHFSelectField>
+                searchableOptions={staticSearchableOptions.salary}
+              />
 
               <SectionTitle>{t("menu.sections.beneficiary")}</SectionTitle>
 
@@ -655,14 +688,14 @@ export default function RegisterPage() {
                 name="beneficiaryRelation"
                 label={t("menu.fields.beneficiaryRelation")}
                 requiredMark
-                onValue={(v: TDropdown) => v}
-                searchableOptions={relationSearchableOptions}
+                searchableOptions={staticSearchableOptions.relation}
               />
 
               <Button
                 type="submit"
                 disabled={!agree}
-                className={`bg-[#2A504E] w-full py-5 ${!agree ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`bg-[#2A504E] w-full py-5 ${!agree ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
               >
                 {t("menu.fields.submit")}
               </Button>
@@ -688,7 +721,17 @@ export default function RegisterPage() {
         secondaryLabel={t("health.reject.home")}
         secondaryTo={`/${brand}?reset_session=true`}
       />
-      <LoadingComponent open={isLoading || loadingBranch || loadingProvince || loadingCity || loadingDistrict || loadingSubdistrict || loadingZip} />
+      <LoadingComponent
+        open={
+          isLoading ||
+          loadingBranch ||
+          loadingProvince ||
+          loadingCity ||
+          loadingDistrict ||
+          loadingSubdistrict ||
+          loadingZip
+        }
+      />
     </div>
   );
 }

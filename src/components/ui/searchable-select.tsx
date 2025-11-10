@@ -162,7 +162,7 @@ export const SearchableSelect = React.forwardRef<
             >
               {triggerContent}
             </span>
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50 self-center mb-2" />
           </Button>
         </PopoverTrigger>
         <PopoverContent

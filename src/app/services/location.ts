@@ -12,10 +12,12 @@ import {
   mapDistrictOptions,
   mapSubdistrictOptions,
   type Option,
+  type OptionProvince,
 } from "@/api/mappers";
 
-export const getProvinces = async (): Promise<Option[]> => {
+export const getProvinces = async (): Promise<OptionProvince[]> => {
   const { data } = await api.get<ApiEnvelope<Province[]>>("/microsite/province");
+  
   return mapProvinceOptions(data.data);
 };
 
