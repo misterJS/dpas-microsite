@@ -26,10 +26,13 @@ export default function HealthQuestionsPage() {
   const product_code = params.get("product") || "ACC"
   const { data, isLoading, isError } = useQuestions(brand, product_code, "HEALTH_QUESTIONNAIRE")
 
-  const questions =
-    data && data.length > 0
-      ? data.flatMap((group) => group.question)
-      : []
+  const questions = useMemo(
+    () =>
+      data && data.length > 0
+        ? data.flatMap((group) => group.question)
+        : [],
+    [data]
+  )
 
   const schema = useMemo(() => {
     const AnswerEnum = z.enum(["yes", "no"] as const, { message: t("menu.schema.requiredOption") })
